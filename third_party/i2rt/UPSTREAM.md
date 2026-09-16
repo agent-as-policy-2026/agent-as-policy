@@ -24,7 +24,7 @@ cp -r /path/to/third_party/i2rt/untracked/. .               # 7 个新增文件
 
 ## 校验
 
-- `expected_sha256.txt` = `3b5fac30a1525e1f2ea39e8dae50ce139a60cb310cea9e2d40fac11d99a59446`
+- `expected_sha256.txt` = `27f1ec6f94218dd651d1826a30fbc44b8e52f577102d9f2413a9a3f5d116c440`
   这是**本机发布当日**算出的值。`git diff` 的字节输出依赖使用者的 git 版本与配置
   （diff.algorithm / renames / core.autocrlf / .gitattributes），所以不承诺逐字节可复现。
 - 若 sha 不符，改用 `file_digest.txt` 逐文件比对内容摘要，这一项与 git 环境无关。

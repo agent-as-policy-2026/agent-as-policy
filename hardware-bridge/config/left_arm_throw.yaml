@@ -29,7 +29,7 @@ i2rt:
   # SHA-256 of: git -C ../../i2rt diff --binary HEAD -- i2rt pyproject.toml
   # Recompute with ../../make_config_sha.sh <this file> after any tracked i2rt
   # change (the bridge preflight refuses a mismatch).
-  tracked_diff_sha256: "3b5fac30a1525e1f2ea39e8dae50ce139a60cb310cea9e2d40fac11d99a59446"
+  tracked_diff_sha256: "27f1ec6f94218dd651d1826a30fbc44b8e52f577102d9f2413a9a3f5d116c440"
 
 hardware:
   arm: yam

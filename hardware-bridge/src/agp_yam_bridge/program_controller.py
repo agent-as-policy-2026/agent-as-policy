@@ -1,7 +1,7 @@
-"""Buffered joint/gripper programs on top of MotionController (2026-09-14).
+"""Buffered joint/gripper programs on top of MotionController.
 
-program_controller.py of the reference throw runtime (the yam_free_agent right-arm
-throwing runtime, not part of this repo) brought into this bridge. Kept from the reference: the execution lock
+program_controller.py of the reference throw runtime (not part of this repo)
+brought into this bridge. Kept from the reference: the execution lock
 (one program or ordinary action at a time), the dispatch lock that serializes every motor exchange with cancel/idle, the
 per-program report file (program_<id>.json: program, initial position, per-tick trace,
 measured status), planning rejections that never move the arm and keep the current hold,

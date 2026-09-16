@@ -1,8 +1,7 @@
 """Task-neutral joint/hand programs: schema, 50 Hz compilation and the dispatch loop.
 
-2026-09-14: motion_program.py of the reference throw runtime (the yam_free_agent right-arm
-throwing runtime, not part of this repo) brought into this bridge, unchanged in
-behaviour. No robot imports and no task decisions live here; agp_yam_bridge.program_controller owns the hardware side.
+motion_program.py of the reference throw runtime (not part of this repo) brought into
+this bridge, unchanged in behaviour. No robot imports and no task decisions live here; agp_yam_bridge.program_controller owns the hardware side.
 
 A program is relative to the freshly measured start: `times_s` (strictly increasing from 0),
 one six-vector of joint deltas per knot (the first all zeros) and optional `gripper_events`

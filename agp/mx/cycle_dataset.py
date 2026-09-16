@@ -1,8 +1,7 @@
 """Ordered assembly-cycle evidence.
 
-The original yam_free_agent_multiple_experience/cycle_dataset.py (progress/mark; the original
-implementation is not part of this repo) brought into this framework,
-2026-09-11. Differences, both forced by the task: one stage per cycle ("assemble"; the original cycles had disassemble + assemble),
+The reference multiple-experience implementation's cycle_dataset.py (progress/mark; not part
+of this repo) brought into this framework. Differences, both forced by the task: one stage per cycle ("assemble"; the original cycles had disassemble + assemble),
 and no cycle-0 "setup" stage. The row fields, attempt ids, ordering rules and error texts are
 those of the original. The dataset export (per-attempt slices of the session recording) is not part of this module.
 """

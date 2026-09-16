@@ -513,7 +513,7 @@ index 96a699d..84044f1 100644
                          </body>
                        </body>
 diff --git a/i2rt/robots/config/yam_v1.yml b/i2rt/robots/config/yam_v1.yml
-index f8ab3f3..2117a6b 100644
+index f8ab3f3..648ebf8 100644
 --- a/i2rt/robots/config/yam_v1.yml
 +++ b/i2rt/robots/config/yam_v1.yml
 @@ -8,6 +8,18 @@ motor_list:
@@ -526,8 +526,8 @@ index f8ab3f3..2117a6b 100644
 +# held-out pose08 check (4.68 mm / 0.55 deg prediction error).
 +motor_offsets_deg_by_channel:
 +  can_follower_r: [0.0, 0.0, 0.0, 5.467439674492972, 0.0, 0.0]
-+  # Left follower: 2026-08-31 fixed-board 11-pose fit (calib/fit_joint_offsets.py,
-+  # gap_yam_real): joints 3/4/5 stable (LOO std <= 0.13 deg); consistency
++  # Left follower: fixed-board 11-pose fit (calib/fit_joint_offsets.py):
++  # joints 3/4/5 stable (LOO std <= 0.13 deg); consistency
 +  # 8.32 mm/1.156 deg -> 1.36 mm/0.257 deg RMS. Captures were taken with zero
 +  # installed offsets.
 +  can_follower_l: [0.0, 0.0, 0.813493705088, 1.9574947249, -0.359152777503, 0.0]

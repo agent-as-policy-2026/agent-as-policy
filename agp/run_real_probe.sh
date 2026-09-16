@@ -939,8 +939,8 @@ def lint(path):
         return False, "header missing: " + ", ".join(missing)
     if h["category"].split()[0].lower() not in ("process", "geometry", "task"):
         return False, "category must be process | geometry | task"
-    # "bridge internals" lists BOTH bridge package spellings: a tool written before the rename
-    # (gap_yam_bridge) must keep failing this check.
+    # "imports gap": the vendored connector package is literally named `gap`; a tool may talk to
+    # the robot only through robot_client.py, never by importing the connector itself.
     checks = [("imports gap", r"(?m)^\s*(from|import)\s+gap\b"), ("absolute /home path", r"/home/"),
               ("session reference", r"sessions/\d{8}_"),
               ("bridge internals", r"yam_real_env|hardware-bridge|agp_yam_bridge")]
