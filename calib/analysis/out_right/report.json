@@ -1,0 +1,2087 @@
+{
+  "correlations": {
+    "board_xy_from_base_m": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.39869421957898504,
+        "pearson_r": -0.22660563439377573,
+        "spearman_p": 0.3218043958686153,
+        "spearman_rho": -0.2647058823529412
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.6238279442518405,
+        "pearson_r": -0.13283785122190184,
+        "spearman_p": 0.5132505967364671,
+        "spearman_rho": -0.1764705882352941
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.5060887616202707,
+        "pearson_r": -0.1794328358981406,
+        "spearman_p": 0.47816401281702847,
+        "spearman_rho": -0.19117647058823528
+      }
+    },
+    "board_z": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.6409373202014046,
+        "pearson_r": -0.1263793618645805,
+        "spearman_p": 0.3107606271023349,
+        "spearman_rho": -0.27058823529411763
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.935099482659711,
+        "pearson_r": -0.022152304705322326,
+        "spearman_p": 0.5642819694728023,
+        "spearman_rho": -0.15588235294117647
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.8284634342418605,
+        "pearson_r": -0.0588991917368486,
+        "spearman_p": 0.5717446192454617,
+        "spearman_rho": -0.15294117647058825
+      }
+    },
+    "skew_ms": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.19463509815254862,
+        "pearson_r": -0.3421081551934226,
+        "spearman_p": 0.29994212849237334,
+        "spearman_rho": -0.2764705882352941
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.1298666481879213,
+        "pearson_r": -0.3951026417978689,
+        "spearman_p": 0.18386882202619312,
+        "spearman_rho": -0.35000000000000003
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.11695537919108534,
+        "pearson_r": -0.40773636007463543,
+        "spearman_p": 0.13091285429899088,
+        "spearman_rho": -0.3941176470588235
+      }
+    },
+    "top_board_dist_m": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.19641542267659762,
+        "pearson_r": -0.3408308241503267,
+        "spearman_p": 0.0314932282058383,
+        "spearman_rho": -0.538235294117647
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.5960203287500581,
+        "pearson_r": -0.1434829347683438,
+        "spearman_p": 0.386511349907985,
+        "spearman_rho": -0.2323529411764706
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.5122163489225223,
+        "pearson_r": -0.17689717829496573,
+        "spearman_p": 0.26386301461352274,
+        "spearman_rho": -0.29705882352941176
+      }
+    },
+    "top_offset_px": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.8801228683798205,
+        "pearson_r": 0.04101482770872725,
+        "spearman_p": 0.7534650694747835,
+        "spearman_rho": -0.08529411764705883
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.6521294571628838,
+        "pearson_r": 0.12218925384634116,
+        "spearman_p": 0.6802736949858407,
+        "spearman_rho": 0.11176470588235293
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.5861528303432291,
+        "pearson_r": 0.14730792466721043,
+        "spearman_p": 0.8034203137966693,
+        "spearman_rho": 0.06764705882352941
+      }
+    },
+    "top_px_per_square": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.143009910194259,
+        "pearson_r": 0.3831020494255757,
+        "spearman_p": 0.06205917418922617,
+        "spearman_rho": 0.4764705882352941
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.3514086934197426,
+        "pearson_r": 0.24948952445801337,
+        "spearman_p": 0.26386301461352274,
+        "spearman_rho": 0.29705882352941176
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.2613829332695954,
+        "pearson_r": 0.2985351890560095,
+        "spearman_p": 0.20425458084551504,
+        "spearman_rho": 0.33529411764705885
+      }
+    },
+    "top_tilt_deg": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.255071984080522,
+        "pearson_r": -0.3023312742904689,
+        "spearman_p": 0.41166643049796364,
+        "spearman_rho": -0.22058823529411767
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.31637119089874693,
+        "pearson_r": -0.26758486815426286,
+        "spearman_p": 0.39272049088162,
+        "spearman_rho": -0.22941176470588234
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.2441282940635362,
+        "pearson_r": -0.3090540992810752,
+        "spearman_p": 0.39898292664128926,
+        "spearman_rho": -0.22647058823529412
+      }
+    },
+    "wrist_board_dist_m": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.019947158993320148,
+        "pearson_r": 0.5744443114707449,
+        "spearman_p": 0.026314499870666506,
+        "spearman_rho": 0.5529411764705882
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.10521132658716663,
+        "pearson_r": 0.42010231574464435,
+        "spearman_p": 0.3330723066336084,
+        "spearman_rho": 0.2588235294117647
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.08490144719843933,
+        "pearson_r": 0.44401739836035986,
+        "spearman_p": 0.22604542220798232,
+        "spearman_rho": 0.3205882352941176
+      }
+    },
+    "wrist_offset_px": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.26647349295720657,
+        "pearson_r": -0.2955139842854032,
+        "spearman_p": 0.06776085019015383,
+        "spearman_rho": -0.4676470588235294
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.48687011289308696,
+        "pearson_r": -0.18748082788255427,
+        "spearman_p": 0.17995865788498175,
+        "spearman_rho": -0.3529411764705882
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.4481864171528159,
+        "pearson_r": -0.20416085547676466,
+        "spearman_p": 0.18783442010629955,
+        "spearman_rho": -0.34705882352941175
+      }
+    },
+    "wrist_reach_3d_m": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.998220110692645,
+        "pearson_r": 0.0006069290687621409,
+        "spearman_p": 0.8034203137966693,
+        "spearman_rho": -0.06764705882352941
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.9478151191185649,
+        "pearson_r": 0.01780593010928655,
+        "spearman_p": 0.7452220943671326,
+        "spearman_rho": -0.08823529411764705
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.9503927972632683,
+        "pearson_r": -0.01692536918297413,
+        "spearman_p": 0.8202418775044894,
+        "spearman_rho": -0.06176470588235294
+      }
+    },
+    "wrist_reach_xy_m": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.40621055323768923,
+        "pearson_r": -0.223106605007657,
+        "spearman_p": 0.3330723066336084,
+        "spearman_rho": -0.2588235294117647
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.5933788138084374,
+        "pearson_r": -0.14450433103063795,
+        "spearman_p": 0.4850866091454684,
+        "spearman_rho": -0.18823529411764706
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.4828990713267944,
+        "pearson_r": -0.18916250124281642,
+        "spearman_p": 0.46446421122573883,
+        "spearman_rho": -0.19705882352941176
+      }
+    },
+    "wrist_tilt_deg": {
+      "vs_loo_rotation": {
+        "pearson_p": 0.9046390238987714,
+        "pearson_r": 0.03258645799611144,
+        "spearman_p": 0.9482801500547113,
+        "spearman_rho": 0.01764705882352941
+      },
+      "vs_loo_translation": {
+        "pearson_p": 0.5201413092027208,
+        "pearson_r": 0.17363847636274923,
+        "spearman_p": 0.5132505967364671,
+        "spearman_rho": 0.1764705882352941
+      },
+      "vs_orig_translation": {
+        "pearson_p": 0.6002264746120419,
+        "pearson_r": 0.1418603119850781,
+        "spearman_p": 0.5494831434036931,
+        "spearman_rho": 0.16176470588235295
+      }
+    }
+  },
+  "error_mode_decomposition": {
+    "axis_angle_to_board_normal_mean_deg": 82.20184053332895,
+    "axis_angle_to_world_z_mean_deg": 82.16149759428777,
+    "board_normal_scatter_deg": {
+      "top_max": 1.2443937817413255,
+      "top_rms": 0.7002988513430505,
+      "wrist_max": 1.2600711623575962,
+      "wrist_rms": 0.6797683286494827,
+      "wrist_vs_top_max": 1.662586118543518,
+      "wrist_vs_top_rms": 1.1785320087149747
+    },
+    "board_z_sd_m": {
+      "diff": 0.0052836473068224015,
+      "top": 0.003217101175066626,
+      "wrist": 0.0036605487267214166
+    },
+    "leftover_rms_m": 0.008191507242970726,
+    "monte_carlo": {
+      "draws": 200,
+      "per_pair": {
+        "both": [
+          [
+            0.004960008998326891,
+            0.31549453977502245
+          ],
+          [
+            0.0031632635337012745,
+            0.19199026580143033
+          ],
+          [
+            0.0030397731688815138,
+            0.17881974836718073
+          ],
+          [
+            0.0025472455066921714,
+            0.14265490059029387
+          ],
+          [
+            0.0028553095877024083,
+            0.15407929929123312
+          ],
+          [
+            0.0026236905563542063,
+            0.14773963127178366
+          ],
+          [
+            0.004345303782917953,
+            0.2539831188857169
+          ],
+          [
+            0.004294445477537017,
+            0.2593320204617783
+          ],
+          [
+            0.002858874218819613,
+            0.16428303705268016
+          ],
+          [
+            0.0028608472161104712,
+            0.15936732564816905
+          ],
+          [
+            0.0025835601291378093,
+            0.13778425631115487
+          ],
+          [
+            0.002740804519726975,
+            0.1419914539194551
+          ],
+          [
+            0.0029871531361766847,
+            0.174022359323688
+          ],
+          [
+            0.004175619054565247,
+            0.25319517842059824
+          ],
+          [
+            0.004569185504615239,
+            0.2846571482105661
+          ],
+          [
+            0.004070731783742456,
+            0.25271333383725725
+          ]
+        ],
+        "top": [
+          [
+            0.003236678054830033,
+            0.19963226315555857
+          ],
+          [
+            0.002373194297583629,
+            0.14162596367768607
+          ],
+          [
+            0.0021077912780174176,
+            0.12115560045761872
+          ],
+          [
+            0.0019201436075841332,
+            0.10161092141237506
+          ],
+          [
+            0.001781467933007478,
+            0.09103367016318863
+          ],
+          [
+            0.0018133102655420966,
+            0.0989937079508833
+          ],
+          [
+            0.0018351279151515136,
+            0.10498318875513907
+          ],
+          [
+            0.001939476449548215,
+            0.11417973201485444
+          ],
+          [
+            0.0015890284033884886,
+            0.08703204500498414
+          ],
+          [
+            0.0016474933596450868,
+            0.0884466413447744
+          ],
+          [
+            0.0015560302688228881,
+            0.08012338206544638
+          ],
+          [
+            0.0016273921265335361,
+            0.08052225129075323
+          ],
+          [
+            0.001981997013964503,
+            0.11170610396010873
+          ],
+          [
+            0.002378580618226137,
+            0.142146354405211
+          ],
+          [
+            0.003519556563183145,
+            0.2174053358607188
+          ],
+          [
+            0.003170983748350016,
+            0.19410916952446108
+          ]
+        ],
+        "wrist": [
+          [
+            0.0038626639047213895,
+            0.25013905862949337
+          ],
+          [
+            0.001997059442823274,
+            0.12530394128269465
+          ],
+          [
+            0.0023595341758450763,
+            0.14061180682299448
+          ],
+          [
+            0.0015105853412404825,
+            0.0906998013158353
+          ],
+          [
+            0.002348246375235253,
+            0.12899670284783998
+          ],
+          [
+            0.001765374732004616,
+            0.102058776456922
+          ],
+          [
+            0.003854837091676472,
+            0.22856151932469262
+          ],
+          [
+            0.003827442074043116,
+            0.23098766601515397
+          ],
+          [
+            0.0025197996886712685,
+            0.14638704616237683
+          ],
+          [
+            0.0022787618017443907,
+            0.1299006181268303
+          ],
+          [
+            0.0021901497143216532,
+            0.11888143650886235
+          ],
+          [
+            0.002105207416986655,
+            0.11138499030232761
+          ],
+          [
+            0.0021173079750326246,
+            0.1266693950739726
+          ],
+          [
+            0.003485212399881971,
+            0.21324228945572427
+          ],
+          [
+            0.0029522584806256818,
+            0.18651851133812652
+          ],
+          [
+            0.0028177524959664014,
+            0.17952125154503917
+          ]
+        ]
+      },
+      "pooled_rms_mm_deg": {
+        "both": [
+          3.509350640316263,
+          0.2086968759589499
+        ],
+        "top": [
+          2.238388262948172,
+          0.13062064380546615
+        ],
+        "wrist": [
+          2.7266467149923783,
+          0.1643733874575229
+        ]
+      },
+      "sigma_top_px": 0.21899683876229148,
+      "sigma_wrist_px": 0.24941086914614244
+    },
+    "partial_correlations_loo_t": {
+      "board_xy_given_top_offset": -0.07978981165209795,
+      "top_board_dist_given_board_xy": -0.07868130710088148,
+      "top_offset_given_board_xy": 0.06016270756733735,
+      "wrist_reach_given_top_offset": -0.08992908504012086
+    },
+    "radial_fraction_mean": 0.7228838077422416,
+    "rotation_about_board_rms_m": 0.020439128814799073,
+    "trans_rot_coupling": {
+      "loo": {
+        "pearson_p": 2.8562898073435672e-08,
+        "pearson_r": 0.9466678069407941,
+        "spearman_p": 1.6777243705941578e-06,
+        "spearman_rho": 0.9029411764705882
+      },
+      "orig": {
+        "pearson_p": 1.2912659961340212e-08,
+        "pearson_r": 0.9524920740532103,
+        "spearman_p": 3.930242737399882e-05,
+        "spearman_rho": 0.8441176470588234
+      }
+    }
+  },
+  "holdout_scan_4_of_16": {
+    "calibration_translation_rms_m": {
+      "max": 0.01963094000439815,
+      "median": 0.017849312667438395,
+      "min": 0.01554410871325429
+    },
+    "camera_position_max_delta_vs_original_m": 0.005933278591458378,
+    "camera_position_sd_m": [
+      0.0017759441242358428,
+      0.001981591868447238,
+      0.0003998025076503273
+    ],
+    "fail_pairs": {
+      "pair01": 455,
+      "pair03": 455,
+      "pair04": 455,
+      "pair05": 196,
+      "pair07": 304,
+      "pair08": 455,
+      "pair09": 455,
+      "pair10": 455,
+      "pair11": 450,
+      "pair12": 455,
+      "pair13": 455,
+      "pair14": 325,
+      "pair15": 455,
+      "pair16": 455
+    },
+    "pass_fraction": 0.0,
+    "splits": 1820,
+    "validation_translation_max_m": {
+      "max": 0.02905245541163447,
+      "median": 0.023683052427990126,
+      "p90": 0.02631105175991297
+    }
+  },
+  "inputs": {
+    "calibration": "../calib/out/top_brio_B8C7F203_calibration.json",
+    "config": "config/right_calib.yaml",
+    "intrinsics": "../calib/out/top_brio_B8C7F203_intrinsics.json",
+    "pairs": [
+      "../calib/out/top_pairs_right/pair01.npz",
+      "../calib/out/top_pairs_right/pair02.npz",
+      "../calib/out/top_pairs_right/pair03.npz",
+      "../calib/out/top_pairs_right/pair04.npz",
+      "../calib/out/top_pairs_right/pair05.npz",
+      "../calib/out/top_pairs_right/pair06.npz",
+      "../calib/out/top_pairs_right/pair07.npz",
+      "../calib/out/top_pairs_right/pair08.npz",
+      "../calib/out/top_pairs_right/pair09.npz",
+      "../calib/out/top_pairs_right/pair10.npz",
+      "../calib/out/top_pairs_right/pair11.npz",
+      "../calib/out/top_pairs_right/pair12.npz",
+      "../calib/out/top_pairs_right/pair13.npz",
+      "../calib/out/top_pairs_right/pair14.npz",
+      "../calib/out/top_pairs_right/pair15.npz",
+      "../calib/out/top_pairs_right/pair16.npz"
+    ],
+    "wrist_intrinsics": "../calib/out/right_d405_intrinsics.json"
+  },
+  "loo_all16": {
+    "rotation_max_deg": 1.7819858361950773,
+    "rotation_rms_deg": 1.2676661798490656,
+    "status_with_loo_as_validation": "FAIL",
+    "translation_max_m": 0.024781848329875213,
+    "translation_rms_m": 0.019253958725864738
+  },
+  "original_split": {
+    "calibration": [
+      "pair01",
+      "pair02",
+      "pair03",
+      "pair05",
+      "pair06",
+      "pair07",
+      "pair09",
+      "pair10",
+      "pair11",
+      "pair13",
+      "pair14",
+      "pair15"
+    ],
+    "held_out": [
+      "pair04",
+      "pair08",
+      "pair12",
+      "pair16"
+    ]
+  },
+  "outliers": {
+    "all16_translation": {
+      "median_m": 0.018264152425879303,
+      "pairs": []
+    },
+    "factor": 2.0,
+    "loo_translation": {
+      "median_m": 0.01948176258760455,
+      "pairs": []
+    },
+    "orig_rotation": {
+      "median_deg": 1.1363212786704173,
+      "pairs": []
+    },
+    "orig_translation": {
+      "median_m": 0.018288272291010405,
+      "pairs": []
+    }
+  },
+  "per_pair": [
+    {
+      "all16_rotation_deg": 1.1980629108306733,
+      "all16_translation_m": 0.017787364097793534,
+      "b3_loo_rotation_deg": 1.2779403650907455,
+      "b3_loo_translation_m": 0.01897318837097977,
+      "board_3d_from_base_m": 0.23880818209315838,
+      "board_normal_tilt_from_world_z_deg": 0.406723498541689,
+      "board_x": 0.19064678054741768,
+      "board_xy_from_base_m": 0.23548730374482682,
+      "board_y": 0.13823196190430448,
+      "board_z": -0.03968724744336356,
+      "candidate": 2,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0011858242731862436,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.07987745426764964,
+      "loo_rotation_deg": 1.2779403650907455,
+      "loo_translation_m": 0.01897318837097977,
+      "name": "pair01",
+      "orig_rotation_deg": 1.2443678058460481,
+      "orig_translation_m": 0.018196684844005995,
+      "reproj_centre_px": 6.697711194202342,
+      "res_along_ray_mm": 2.8108615895211653,
+      "res_cam_dx_mm": -4.28536760281572,
+      "res_cam_dy_mm": -14.935657853154108,
+      "res_cam_dz_mm": 9.47000994267321,
+      "res_perp_ray_mm": 17.978275680293443,
+      "res_world_dx_mm": 17.634846428876166,
+      "res_world_dy_mm": 4.319479737097176,
+      "res_world_dz_mm": -1.2139297932073356,
+      "skew_ms": 20.161819,
+      "top_bbox_h": 209.66571044921875,
+      "top_bbox_w": 259.477783203125,
+      "top_board_dist_m": 0.9286467491533708,
+      "top_centre_u": 1233.7027646019346,
+      "top_centre_v": 948.2506297278026,
+      "top_offset_px": 509.7241445604075,
+      "top_px_per_square": 32.12207067385822,
+      "top_reversed": 0,
+      "top_tilt_deg": 27.465237706323872,
+      "wrist_board_dist_m": 0.4150243001772356,
+      "wrist_cam_x": 0.1755776940885601,
+      "wrist_cam_y": 0.006352831471561671,
+      "wrist_cam_z": 0.3535378628016508,
+      "wrist_centre_u": 191.15973275805277,
+      "wrist_centre_v": 161.4871126205202,
+      "wrist_offset_px": 131.447640800976,
+      "wrist_px_per_square": 18.56431145284986,
+      "wrist_reach_3d_m": 0.3947871648920731,
+      "wrist_reach_xy_m": 0.1756925870068571,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 3.2005326960686715
+    },
+    {
+      "all16_rotation_deg": 0.452708851070071,
+      "all16_translation_m": 0.008431251898899272,
+      "b3_loo_rotation_deg": 0.48289463779645425,
+      "b3_loo_translation_m": 0.008993335358826009,
+      "board_3d_from_base_m": 0.3715890136677415,
+      "board_normal_tilt_from_world_z_deg": 0.5614155102946495,
+      "board_x": 0.33733775631332413,
+      "board_xy_from_base_m": 0.369601411107772,
+      "board_y": 0.15102463791828352,
+      "board_z": -0.03838218318059439,
+      "candidate": 1,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0005620834599266561,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.030185786726603634,
+      "loo_rotation_deg": 0.48289463779645425,
+      "loo_translation_m": 0.008993335358826009,
+      "name": "pair02",
+      "orig_rotation_deg": 0.4142654869721504,
+      "orig_translation_m": 0.008127385547008592,
+      "reproj_centre_px": 1.0417805354836556,
+      "res_along_ray_mm": 1.3186010254020955,
+      "res_cam_dx_mm": 7.642642783372011,
+      "res_cam_dy_mm": 2.7030317729217477,
+      "res_cam_dz_mm": -0.581400335458651,
+      "res_perp_ray_mm": 8.01970617700753,
+      "res_world_dx_mm": -2.6505600982349717,
+      "res_world_dy_mm": -7.631567920619364,
+      "res_world_dz_mm": -0.8877488768465058,
+      "skew_ms": 27.457826,
+      "top_bbox_h": 179.45050048828125,
+      "top_bbox_w": 238.567626953125,
+      "top_board_dist_m": 0.9576839310840253,
+      "top_centre_u": 1202.4828559027778,
+      "top_centre_v": 744.4819917224702,
+      "top_offset_px": 324.90005564100755,
+      "top_px_per_square": 28.438853978162644,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.308301111866548,
+      "wrist_board_dist_m": 0.28868523155364256,
+      "wrist_cam_x": 0.23591903543224296,
+      "wrist_cam_y": 0.049846320428047514,
+      "wrist_cam_z": 0.21224972628400415,
+      "wrist_centre_u": 255.98260861351378,
+      "wrist_centre_v": 153.68523576524524,
+      "wrist_offset_px": 69.66222583800392,
+      "wrist_px_per_square": 24.048413171617646,
+      "wrist_reach_3d_m": 0.3212357284723015,
+      "wrist_reach_xy_m": 0.24112744957697266,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 19.530239579955165
+    },
+    {
+      "all16_rotation_deg": 1.2195149788871622,
+      "all16_translation_m": 0.019680768809983838,
+      "b3_loo_rotation_deg": 1.3008234215152938,
+      "b3_loo_translation_m": 0.02099282006398272,
+      "board_3d_from_base_m": 0.4908666727305189,
+      "board_normal_tilt_from_world_z_deg": 1.0736691492870465,
+      "board_x": 0.4595148816108582,
+      "board_xy_from_base_m": 0.489485554473727,
+      "board_y": 0.16864809994960206,
+      "board_z": -0.03679649927749083,
+      "candidate": 3,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0013120512539989031,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.08130844263184459,
+      "loo_rotation_deg": 1.3008234215152938,
+      "loo_translation_m": 0.02099282006398272,
+      "name": "pair03",
+      "orig_rotation_deg": 1.178694572859915,
+      "orig_translation_m": 0.019357751035895744,
+      "reproj_centre_px": 2.6598638809763404,
+      "res_along_ray_mm": -0.17648933103564196,
+      "res_cam_dx_mm": 17.425542207533912,
+      "res_cam_dy_mm": 7.672962143894352,
+      "res_cam_dz_mm": -3.4926574237304795,
+      "res_perp_ray_mm": 19.356946471066966,
+      "res_world_dx_mm": -8.398497001992993,
+      "res_world_dy_mm": -17.42128096030432,
+      "res_world_dz_mm": -0.8286995700337307,
+      "skew_ms": 6.15413,
+      "top_bbox_h": 152.973876953125,
+      "top_bbox_w": 222.332763671875,
+      "top_board_dist_m": 0.9970783586174728,
+      "top_centre_u": 1169.7296878875247,
+      "top_centre_v": 600.0843738374256,
+      "top_offset_px": 208.92178908661666,
+      "top_px_per_square": 25.792919510545108,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.546967495183228,
+      "wrist_board_dist_m": 0.33187598728657464,
+      "wrist_cam_x": 0.32435340222128706,
+      "wrist_cam_y": 0.06510128313945011,
+      "wrist_cam_z": 0.2480738258796695,
+      "wrist_centre_u": 282.59417603507876,
+      "wrist_centre_v": 133.84453691755022,
+      "wrist_offset_px": 58.05810737845474,
+      "wrist_px_per_square": 20.640540506500166,
+      "wrist_reach_3d_m": 0.41350203105366173,
+      "wrist_reach_xy_m": 0.3308221676353126,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 20.101555838389004
+    },
+    {
+      "all16_rotation_deg": 1.1141308199381696,
+      "all16_translation_m": 0.019200504451618444,
+      "b3_loo_rotation_deg": 1.1884133769915843,
+      "b3_loo_translation_m": 0.02048053808172632,
+      "board_3d_from_base_m": 0.6196774314955664,
+      "board_normal_tilt_from_world_z_deg": 0.8422528397249325,
+      "board_x": 0.6091505267451965,
+      "board_xy_from_base_m": 0.6188201575998542,
+      "board_y": 0.10896799171297054,
+      "board_z": -0.032584223990053104,
+      "candidate": 1,
+      "held_out": 1,
+      "loo_camera_position_delta_vs_all16_m": 0.0012800336301079024,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.07428255705990446,
+      "loo_rotation_deg": 1.1884133769915843,
+      "loo_translation_m": 0.02048053808172632,
+      "name": "pair04",
+      "orig_rotation_deg": 1.0674175157330812,
+      "orig_translation_m": 0.018799371304626306,
+      "reproj_centre_px": 6.968175842213495,
+      "res_along_ray_mm": -3.6727301658105995,
+      "res_cam_dx_mm": 13.252393889754357,
+      "res_cam_dy_mm": 12.01263420513453,
+      "res_cam_dz_mm": -5.786798518493645,
+      "res_perp_ray_mm": 18.43712056093228,
+      "res_world_dx_mm": -13.310505490737173,
+      "res_world_dy_mm": -13.252124789299435,
+      "res_world_dz_mm": -0.7924604716311734,
+      "skew_ms": 14.133176,
+      "top_bbox_h": 131.2198486328125,
+      "top_bbox_w": 215.7457275390625,
+      "top_board_dist_m": 1.0747082450336078,
+      "top_centre_u": 1221.83689468626,
+      "top_centre_v": 443.8409879169767,
+      "top_offset_px": 244.86413886287346,
+      "top_px_per_square": 23.48931742332477,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.67595861926971,
+      "wrist_board_dist_m": 0.3484862208821312,
+      "wrist_cam_x": 0.488724773886105,
+      "wrist_cam_y": -0.09025637443574185,
+      "wrist_cam_z": 0.2267417024532444,
+      "wrist_centre_u": 188.26274992927674,
+      "wrist_centre_v": 106.9676977490622,
+      "wrist_offset_px": 150.59471992672212,
+      "wrist_px_per_square": 20.82672055289349,
+      "wrist_reach_3d_m": 0.5462690887902271,
+      "wrist_reach_xy_m": 0.4969890519280171,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 20.8028528626577
+    },
+    {
+      "all16_rotation_deg": 0.8402129412767605,
+      "all16_translation_m": 0.013616786515055037,
+      "b3_loo_rotation_deg": 0.896233748393938,
+      "b3_loo_translation_m": 0.01452457228272543,
+      "board_3d_from_base_m": 0.6137694418276277,
+      "board_normal_tilt_from_world_z_deg": 0.7289762559391191,
+      "board_x": 0.6126020585286066,
+      "board_xy_from_base_m": 0.612923948076069,
+      "board_y": -0.01986162157703529,
+      "board_z": -0.032204993343298724,
+      "candidate": 3,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0009077857676703278,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.056020807119026156,
+      "loo_rotation_deg": 0.896233748393938,
+      "loo_translation_m": 0.01452457228272543,
+      "name": "pair05",
+      "orig_rotation_deg": 0.7994772745173427,
+      "orig_translation_m": 0.013212511608043946,
+      "reproj_centre_px": 8.003639819315485,
+      "res_along_ray_mm": -6.553220209082944,
+      "res_cam_dx_mm": 3.088414552436185,
+      "res_cam_dy_mm": 10.574966545779734,
+      "res_cam_dz_mm": -7.293986639735281,
+      "res_perp_ray_mm": 11.472827370965007,
+      "res_world_dx_mm": -12.764479265310463,
+      "res_world_dy_mm": -3.121072719056983,
+      "res_world_dz_mm": 1.3774749219185312,
+      "skew_ms": 24.07422,
+      "top_bbox_h": 137.4940185546875,
+      "top_bbox_w": 231.302978515625,
+      "top_board_dist_m": 1.1099543984297624,
+      "top_centre_u": 1370.9804784381201,
+      "top_centre_v": 438.17232695079986,
+      "top_offset_px": 392.0962875029179,
+      "top_px_per_square": 23.830951913427935,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.554046187777118,
+      "wrist_board_dist_m": 0.3597747845024185,
+      "wrist_cam_x": 0.4082034647384567,
+      "wrist_cam_y": -0.08375671992771763,
+      "wrist_cam_z": 0.25689105787000976,
+      "wrist_centre_u": 293.7466575985863,
+      "wrist_centre_v": 124.06168401808966,
+      "wrist_offset_px": 59.64395180085269,
+      "wrist_px_per_square": 18.51304513566333,
+      "wrist_reach_3d_m": 0.48952862262701585,
+      "wrist_reach_xy_m": 0.41670763942784944,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 26.206041525546482
+    },
+    {
+      "all16_rotation_deg": 0.48597955568436785,
+      "all16_translation_m": 0.009070873486158685,
+      "b3_loo_rotation_deg": 0.5183827648202439,
+      "b3_loo_translation_m": 0.009675598385235917,
+      "board_3d_from_base_m": 0.47298017906052214,
+      "board_normal_tilt_from_world_z_deg": 0.638568686160858,
+      "board_x": 0.47095879950388003,
+      "board_xy_from_base_m": 0.4716820975168636,
+      "board_y": -0.026111497233443234,
+      "board_z": -0.035017833545432545,
+      "candidate": 3,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0006047248990772344,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.03240320913787544,
+      "loo_rotation_deg": 0.5183827648202439,
+      "loo_translation_m": 0.009675598385235917,
+      "name": "pair06",
+      "orig_rotation_deg": 0.45269366884109796,
+      "orig_translation_m": 0.008757694903320217,
+      "reproj_centre_px": 3.637085555414432,
+      "res_along_ray_mm": -5.6907096781495925,
+      "res_cam_dx_mm": -1.2915516556592195,
+      "res_cam_dy_mm": 6.242135713407717,
+      "res_cam_dz_mm": -6.005402240966435,
+      "res_perp_ray_mm": 6.656804291749561,
+      "res_world_dx_mm": -8.34081485393176,
+      "res_world_dy_mm": 1.2473028962032284,
+      "res_world_dz_mm": 2.3605641438425584,
+      "skew_ms": 31.855575,
+      "top_bbox_h": 148.53594970703125,
+      "top_bbox_w": 244.9251708984375,
+      "top_board_dist_m": 1.0502413947364735,
+      "top_centre_u": 1405.7177404978918,
+      "top_centre_v": 583.9662683880518,
+      "top_offset_px": 428.91175469823133,
+      "top_px_per_square": 26.19979717834541,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.21085820802482,
+      "wrist_board_dist_m": 0.3095120042514591,
+      "wrist_cam_x": 0.27808830825574304,
+      "wrist_cam_y": -0.036101796113619924,
+      "wrist_cam_z": 0.20684751806521562,
+      "wrist_centre_u": 260.0327734568762,
+      "wrist_centre_v": 107.98697807675316,
+      "wrist_offset_px": 92.36948307880235,
+      "wrist_px_per_square": 21.957420966840875,
+      "wrist_reach_3d_m": 0.3484570886076365,
+      "wrist_reach_xy_m": 0.280421908686127,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 26.904237366547097
+    },
+    {
+      "all16_rotation_deg": 1.080581078973039,
+      "all16_translation_m": 0.014761871578591265,
+      "b3_loo_rotation_deg": 1.1526279350815605,
+      "b3_loo_translation_m": 0.015745996350497372,
+      "board_3d_from_base_m": 0.3188665722153139,
+      "board_normal_tilt_from_world_z_deg": 0.24586263556455523,
+      "board_x": 0.3149000084429002,
+      "board_xy_from_base_m": 0.31645713435890294,
+      "board_y": -0.03135446649697783,
+      "board_z": -0.03912509411739821,
+      "candidate": 3,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0009841247719060457,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.07204685610942511,
+      "loo_rotation_deg": 1.1526279350815605,
+      "loo_translation_m": 0.015745996350497372,
+      "name": "pair07",
+      "orig_rotation_deg": 1.1212207305239625,
+      "orig_translation_m": 0.015032130286592803,
+      "reproj_centre_px": 5.212896766594815,
+      "res_along_ray_mm": -1.3059908545551255,
+      "res_cam_dx_mm": -13.573895189850768,
+      "res_cam_dy_mm": -4.338274211750093,
+      "res_cam_dz_mm": 4.784734808922189,
+      "res_perp_ray_mm": 14.9752906095648,
+      "res_world_dx_mm": 6.074111854098091,
+      "res_world_dy_mm": 13.611628943843101,
+      "res_world_dz_mm": -1.9477329468228222,
+      "skew_ms": 5.66484,
+      "top_bbox_h": 177.31573486328125,
+      "top_bbox_w": 262.56396484375,
+      "top_board_dist_m": 1.0009911392190018,
+      "top_centre_u": 1444.7163725353423,
+      "top_centre_v": 771.8348911830357,
+      "top_offset_px": 532.7456149115554,
+      "top_px_per_square": 29.301918897422564,
+      "top_reversed": 1,
+      "top_tilt_deg": 27.678879593242414,
+      "wrist_board_dist_m": 0.3939875251532782,
+      "wrist_cam_x": 0.171324853920666,
+      "wrist_cam_y": -0.02726083072451055,
+      "wrist_cam_z": 0.3277476183136086,
+      "wrist_centre_u": 293.9645797487289,
+      "wrist_centre_v": 117.71572918362088,
+      "wrist_offset_px": 65.22350836323372,
+      "wrist_px_per_square": 17.979083434533365,
+      "wrist_reach_3d_m": 0.3708286123979254,
+      "wrist_reach_xy_m": 0.1734801385252155,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 11.119524369169557
+    },
+    {
+      "all16_rotation_deg": 1.4918886404676222,
+      "all16_translation_m": 0.020678306118569335,
+      "b3_loo_rotation_deg": 1.5913521051514017,
+      "b3_loo_translation_m": 0.022056859859807196,
+      "board_3d_from_base_m": 0.2201273414367545,
+      "board_normal_tilt_from_world_z_deg": 0.2177429739393513,
+      "board_x": 0.21592223852392578,
+      "board_xy_from_base_m": 0.21641034896946693,
+      "board_y": -0.01452673576215098,
+      "board_z": -0.040281600103856736,
+      "candidate": 1,
+      "held_out": 1,
+      "loo_camera_position_delta_vs_all16_m": 0.00137855374123794,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.0994634646900728,
+      "loo_rotation_deg": 1.5913521051514017,
+      "loo_translation_m": 0.022056859859807196,
+      "name": "pair08",
+      "orig_rotation_deg": 1.5377626110814158,
+      "orig_translation_m": 0.021027152862005353,
+      "reproj_centre_px": 6.102536043574788,
+      "res_along_ray_mm": 0.3899336367683121,
+      "res_cam_dx_mm": -14.956712049673392,
+      "res_cam_dy_mm": -10.953942178376868,
+      "res_cam_dz_mm": 9.92215061859419,
+      "res_perp_ray_mm": 21.023537029744894,
+      "res_world_dx_mm": 14.331521501017825,
+      "res_world_dy_mm": 15.023248822919777,
+      "res_world_dz_mm": -3.3242508558533057,
+      "skew_ms": 15.887242,
+      "top_bbox_h": 192.451171875,
+      "top_bbox_w": 273.6829833984375,
+      "top_board_dist_m": 0.9746064289336309,
+      "top_centre_u": 1445.6039942181299,
+      "top_centre_v": 906.9379514663939,
+      "top_offset_px": 612.6595490194464,
+      "top_px_per_square": 31.37539594551862,
+      "top_reversed": 1,
+      "top_tilt_deg": 27.24732124853468,
+      "wrist_board_dist_m": 0.3453515452046802,
+      "wrist_cam_x": 0.10606621674418103,
+      "wrist_cam_y": -0.020053271999974864,
+      "wrist_cam_z": 0.2870848637423973,
+      "wrist_centre_u": 319.1249743264819,
+      "wrist_centre_v": 147.44363463871062,
+      "wrist_offset_px": 29.410229370623984,
+      "wrist_px_per_square": 20.249943688003285,
+      "wrist_reach_3d_m": 0.3067081593996472,
+      "wrist_reach_xy_m": 0.10794524562169731,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 13.274013443502291
+    },
+    {
+      "all16_rotation_deg": 1.5069932336119507,
+      "all16_translation_m": 0.023232982809258087,
+      "b3_loo_rotation_deg": 1.6074639557884034,
+      "b3_loo_translation_m": 0.024781848329875213,
+      "board_3d_from_base_m": 0.31855833785504817,
+      "board_normal_tilt_from_world_z_deg": 0.24192493832020118,
+      "board_x": 0.27724047284001,
+      "board_xy_from_base_m": 0.31605018285349795,
+      "board_y": -0.1517413532995444,
+      "board_z": -0.039896071676814346,
+      "candidate": 2,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0015488655206171561,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.10047072217925,
+      "loo_rotation_deg": 1.6074639557884034,
+      "loo_translation_m": 0.024781848329875213,
+      "name": "pair09",
+      "orig_rotation_deg": 1.545852250453513,
+      "orig_translation_m": 0.02337775243939318,
+      "reproj_centre_px": 9.018891779924372,
+      "res_along_ray_mm": -3.8990452179325668,
+      "res_cam_dx_mm": -22.251429325881464,
+      "res_cam_dy_mm": 0.28948940344773333,
+      "res_cam_dz_mm": 7.163057863660568,
+      "res_perp_ray_mm": 23.050309227992425,
+      "res_world_dx_mm": 3.1138478437226222,
+      "res_world_dy_mm": 22.354108157198237,
+      "res_world_dz_mm": -6.092381243814504,
+      "skew_ms": 22.850149,
+      "top_bbox_h": 179.12469482421875,
+      "top_bbox_w": 267.6123046875,
+      "top_board_dist_m": 1.04283487735992,
+      "top_centre_u": 1617.0068146236358,
+      "top_centre_v": 815.3569539388021,
+      "top_offset_px": 705.2364568997046,
+      "top_px_per_square": 29.58586738509135,
+      "top_reversed": 0,
+      "top_tilt_deg": 27.392244580750077,
+      "wrist_board_dist_m": 0.3560228467601745,
+      "wrist_cam_x": 0.10823985091383188,
+      "wrist_cam_y": -0.08136869620548079,
+      "wrist_cam_z": 0.2654541311023969,
+      "wrist_centre_u": 340.87481665232826,
+      "wrist_centre_v": 142.32479398212735,
+      "wrist_offset_px": 39.38625115549697,
+      "wrist_px_per_square": 18.967476788424356,
+      "wrist_reach_3d_m": 0.2979976942316113,
+      "wrist_reach_xy_m": 0.1354131826966207,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 25.542329931126726
+    },
+    {
+      "all16_rotation_deg": 1.0743183298835295,
+      "all16_translation_m": 0.01791166001726853,
+      "b3_loo_rotation_deg": 1.145947442465757,
+      "b3_loo_translation_m": 0.019105770685086315,
+      "board_3d_from_base_m": 0.41153843941801804,
+      "board_normal_tilt_from_world_z_deg": 0.6552968443944809,
+      "board_x": 0.3835050111070748,
+      "board_xy_from_base_m": 0.4102410945637901,
+      "board_y": -0.1456765668344055,
+      "board_z": -0.0326516684063944,
+      "candidate": 1,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0011941106678178331,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.07162911258568488,
+      "loo_rotation_deg": 1.145947442465757,
+      "loo_translation_m": 0.019105770685086315,
+      "name": "pair10",
+      "orig_rotation_deg": 1.09477778730995,
+      "orig_translation_m": 0.017978669754025612,
+      "reproj_centre_px": 8.330243956070106,
+      "res_along_ray_mm": -10.25913564087936,
+      "res_cam_dx_mm": -17.401443813121645,
+      "res_cam_dy_mm": 3.028090906807484,
+      "res_cam_dz_mm": -3.3545468849303255,
+      "res_perp_ray_mm": 14.764237265309516,
+      "res_world_dx_mm": -4.268300652129714,
+      "res_world_dy_mm": 17.371453806271088,
+      "res_world_dz_mm": 1.801879109134208,
+      "skew_ms": 14.411863,
+      "top_bbox_h": 163.14501953125,
+      "top_bbox_w": 262.198486328125,
+      "top_board_dist_m": 1.0672319408037252,
+      "top_centre_u": 1577.929904513889,
+      "top_centre_v": 684.012681749132,
+      "top_offset_px": 620.3351873195434,
+      "top_px_per_square": 27.840819487585687,
+      "top_reversed": 1,
+      "top_tilt_deg": 27.699950391730994,
+      "wrist_board_dist_m": 0.3316243912472127,
+      "wrist_cam_x": 0.20874255683857756,
+      "wrist_cam_y": -0.1547028404884913,
+      "wrist_cam_z": 0.249042044395396,
+      "wrist_centre_u": 217.22281416635664,
+      "wrist_centre_v": 131.40113745795355,
+      "wrist_offset_px": 113.90829503299489,
+      "wrist_px_per_square": 21.79792497997935,
+      "wrist_reach_3d_m": 0.3599004914797322,
+      "wrist_reach_xy_m": 0.25981998362465186,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 24.749296579969343
+    },
+    {
+      "all16_rotation_deg": 1.0067894378637114,
+      "all16_translation_m": 0.017329826930856395,
+      "b3_loo_rotation_deg": 1.0739158327979204,
+      "b3_loo_translation_m": 0.018485148726246785,
+      "board_3d_from_base_m": 0.5319099707526062,
+      "board_normal_tilt_from_world_z_deg": 0.7477216010073459,
+      "board_x": 0.5105539487177121,
+      "board_xy_from_base_m": 0.5309743740538355,
+      "board_y": -0.14583707124944006,
+      "board_z": -0.03153460137968837,
+      "candidate": 3,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.001155321795390386,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.06712639493986919,
+      "loo_rotation_deg": 1.0739158327979204,
+      "loo_translation_m": 0.018485148726246785,
+      "name": "pair11",
+      "orig_rotation_deg": 1.0038534780639934,
+      "orig_translation_m": 0.01722659885651817,
+      "reproj_centre_px": 8.920690719659822,
+      "res_along_ray_mm": -11.249262715138041,
+      "res_cam_dx_mm": -13.724834290330975,
+      "res_cam_dy_mm": 8.34061152205988,
+      "res_cam_dz_mm": -6.230476009457828,
+      "res_perp_ray_mm": 13.046447659389798,
+      "res_world_dx_mm": -10.306317003321103,
+      "res_world_dy_mm": 13.690105227677996,
+      "res_world_dz_mm": 1.7653772530398237,
+      "skew_ms": 19.187764,
+      "top_bbox_h": 154.57437133789062,
+      "top_bbox_w": 253.650390625,
+      "top_board_dist_m": 1.1124984604672514,
+      "top_centre_u": 1544.219466920883,
+      "top_centre_v": 540.4252702016679,
+      "top_offset_px": 561.034128208226,
+      "top_px_per_square": 25.663463818044896,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.059256560150423,
+      "wrist_board_dist_m": 0.32250536470564595,
+      "wrist_cam_x": 0.33064141468380853,
+      "wrist_cam_y": -0.13291047265053246,
+      "wrist_cam_z": 0.23581179079735987,
+      "wrist_centre_u": 254.42316594199528,
+      "wrist_centre_v": 119.75864773704892,
+      "wrist_offset_px": 88.17925656375029,
+      "wrist_px_per_square": 21.54093456578713,
+      "wrist_reach_3d_m": 0.427312695251798,
+      "wrist_reach_xy_m": 0.3563550741104975,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 27.428284487129652
+    },
+    {
+      "all16_rotation_deg": 1.0971159303554712,
+      "all16_translation_m": 0.018616644834490072,
+      "b3_loo_rotation_deg": 1.1702635667581545,
+      "b3_loo_translation_m": 0.019857754490122788,
+      "board_3d_from_base_m": 0.6314629134169074,
+      "board_normal_tilt_from_world_z_deg": 0.7242034819733535,
+      "board_x": 0.6141431236342535,
+      "board_xy_from_base_m": 0.6307689720187243,
+      "board_y": -0.14386702107960747,
+      "board_z": -0.02959586051140618,
+      "candidate": 3,
+      "held_out": 1,
+      "loo_camera_position_delta_vs_all16_m": 0.0012411096556326614,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.0731476364066624,
+      "loo_rotation_deg": 1.1702635667581545,
+      "loo_translation_m": 0.019857754490122788,
+      "name": "pair12",
+      "orig_rotation_deg": 1.0856604864091315,
+      "orig_translation_m": 0.018379859738014818,
+      "reproj_centre_px": 12.351320376391644,
+      "res_along_ray_mm": -12.492100625092029,
+      "res_cam_dx_mm": -10.130605070093148,
+      "res_cam_dy_mm": 12.834357473254066,
+      "res_cam_dz_mm": -8.394602620233387,
+      "res_perp_ray_mm": 13.482086854848328,
+      "res_world_dx_mm": -15.286375621328924,
+      "res_world_dy_mm": 10.09581136954335,
+      "res_world_dz_mm": 1.4901533959088553,
+      "skew_ms": 24.710153,
+      "top_bbox_h": 136.76678466796875,
+      "top_bbox_w": 238.0513916015625,
+      "top_board_dist_m": 1.157422097074361,
+      "top_centre_u": 1513.5568634517608,
+      "top_centre_v": 432.5296572730655,
+      "top_offset_px": 533.9244700078438,
+      "top_px_per_square": 23.994159846568426,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.28212188284467,
+      "wrist_board_dist_m": 0.3205222726881796,
+      "wrist_cam_x": 0.42107352638666024,
+      "wrist_cam_y": -0.16707177884969007,
+      "wrist_cam_z": 0.2251985607867847,
+      "wrist_centre_u": 252.00491357228114,
+      "wrist_centre_v": 152.86897956000433,
+      "wrist_offset_px": 73.68794090574295,
+      "wrist_px_per_square": 21.07425589124626,
+      "wrist_reach_3d_m": 0.5058955284365897,
+      "wrist_reach_xy_m": 0.45300760911015303,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 35.06348281806168
+    },
+    {
+      "all16_rotation_deg": 1.3366413588651949,
+      "all16_translation_m": 0.01878287260397227,
+      "b3_loo_rotation_deg": 1.4257573139955428,
+      "b3_loo_translation_m": 0.0200350641109038,
+      "board_3d_from_base_m": 0.6398332645572525,
+      "board_normal_tilt_from_world_z_deg": 0.8178514636783911,
+      "board_x": 0.5333943213321094,
+      "board_xy_from_base_m": 0.6391673865059074,
+      "board_y": 0.35217246619156706,
+      "board_z": -0.0291831879889621,
+      "candidate": 1,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0012521915069314575,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.08911595513283045,
+      "loo_rotation_deg": 1.4257573139955428,
+      "loo_translation_m": 0.0200350641109038,
+      "name": "pair13",
+      "orig_rotation_deg": 1.2941483290085156,
+      "orig_translation_m": 0.018519233144163667,
+      "reproj_centre_px": 9.756377423587805,
+      "res_along_ray_mm": -3.9733142673164723,
+      "res_cam_dx_mm": 17.630605685681008,
+      "res_cam_dy_mm": 4.473243180462194,
+      "res_cam_dz_mm": -3.4804934782833086,
+      "res_perp_ray_mm": 18.08797307552814,
+      "res_world_dx_mm": -5.573114916844951,
+      "res_world_dy_mm": -17.648043630680675,
+      "res_world_dz_mm": 0.6700316269573348,
+      "skew_ms": 36.328832,
+      "top_bbox_h": 138.29055786132812,
+      "top_bbox_w": 211.27777099609375,
+      "top_board_dist_m": 1.0174457329110873,
+      "top_centre_u": 949.9061802455357,
+      "top_centre_v": 525.1070784311446,
+      "top_offset_px": 40.611456192650394,
+      "top_px_per_square": 24.26149954390234,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.713808661379726,
+      "wrist_board_dist_m": 0.3834491443923308,
+      "wrist_cam_x": 0.4557824238193892,
+      "wrist_cam_y": 0.14038135570591284,
+      "wrist_cam_z": 0.2809041629606365,
+      "wrist_centre_u": 180.59059724353608,
+      "wrist_centre_v": 152.4518322414822,
+      "wrist_offset_px": 143.20351574456225,
+      "wrist_px_per_square": 19.4305011173362,
+      "wrist_reach_3d_m": 0.5534904621229919,
+      "wrist_reach_xy_m": 0.47691146232032144,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 32.23313414751611
+    },
+    {
+      "all16_rotation_deg": 1.1766398161795122,
+      "all16_translation_m": 0.015001647383465226,
+      "b3_loo_rotation_deg": 1.2550901873769944,
+      "b3_loo_translation_m": 0.016001757209029646,
+      "board_3d_from_base_m": 0.5166120516725139,
+      "board_normal_tilt_from_world_z_deg": 0.8354125726497255,
+      "board_x": 0.3801515349433945,
+      "board_xy_from_base_m": 0.5154157272894698,
+      "board_y": 0.3480491092037362,
+      "board_z": -0.035137444357137664,
+      "candidate": 2,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0010001098255643605,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.07845037119959815,
+      "loo_rotation_deg": 1.2550901873769944,
+      "loo_translation_m": 0.016001757209029646,
+      "name": "pair14",
+      "orig_rotation_deg": 1.151421826816872,
+      "orig_translation_m": 0.015019968926558125,
+      "reproj_centre_px": 10.291898563972026,
+      "res_along_ray_mm": 1.7221407082364202,
+      "res_cam_dx_mm": 13.632981729660118,
+      "res_cam_dy_mm": -5.545107505738925,
+      "res_cam_dz_mm": 2.9988428540558085,
+      "res_perp_ray_mm": 14.920914782137366,
+      "res_world_dx_mm": 6.3149857700432745,
+      "res_world_dy_mm": -13.625843856721332,
+      "res_world_dz_mm": -0.23832849424865188,
+      "skew_ms": 23.304875,
+      "top_bbox_h": 162.81781005859375,
+      "top_bbox_w": 229.61407470703125,
+      "top_board_dist_m": 0.9557872353882005,
+      "top_centre_u": 956.8606218610491,
+      "top_centre_v": 698.1863403320312,
+      "top_offset_px": 196.46677235111224,
+      "top_px_per_square": 27.237545336095174,
+      "top_reversed": 0,
+      "top_tilt_deg": 28.508422703557194,
+      "wrist_board_dist_m": 0.3763137646702184,
+      "wrist_cam_x": 0.3092985042588283,
+      "wrist_cam_y": 0.2104663087265638,
+      "wrist_cam_z": 0.30788277448709206,
+      "wrist_centre_u": 331.0956474183098,
+      "wrist_centre_v": 145.27152058434865,
+      "wrist_offset_px": 32.83483733403891,
+      "wrist_px_per_square": 18.354202401240865,
+      "wrist_reach_3d_m": 0.4845136062811893,
+      "wrist_reach_xy_m": 0.3741144635612658,
+      "wrist_reversed": 1,
+      "wrist_tilt_deg": 17.781649963421128
+    },
+    {
+      "all16_rotation_deg": 1.6706120167511822,
+      "all16_translation_m": 0.023199585063474235,
+      "b3_loo_rotation_deg": 1.7819858361950773,
+      "b3_loo_translation_m": 0.024746224067705897,
+      "board_3d_from_base_m": 0.43882208215522184,
+      "board_normal_tilt_from_world_z_deg": 1.1979559880179103,
+      "board_x": 0.261556291007471,
+      "board_xy_from_base_m": 0.43745472463843554,
+      "board_y": 0.350649315902519,
+      "board_z": -0.03461478988170825,
+      "candidate": 1,
+      "held_out": 0,
+      "loo_camera_position_delta_vs_all16_m": 0.0015466390042316118,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.11137381945280395,
+      "loo_rotation_deg": 1.7819858361950773,
+      "loo_translation_m": 0.024746224067705897,
+      "name": "pair15",
+      "orig_rotation_deg": 1.67463765180023,
+      "orig_translation_m": 0.02346380133245187,
+      "reproj_centre_px": 11.454730557240852,
+      "res_along_ray_mm": 0.32398363724941714,
+      "res_cam_dx_mm": 13.10833491897674,
+      "res_cam_dy_mm": -18.50549161813727,
+      "res_cam_dz_mm": 6.022317543251423,
+      "res_perp_ray_mm": 23.461564474083183,
+      "res_world_dx_mm": 19.16429189502583,
+      "res_world_dy_mm": -13.146269680908318,
+      "res_world_dz_mm": 3.2334938700800953,
+      "skew_ms": 20.712541,
+      "top_bbox_h": 200.09649658203125,
+      "top_bbox_w": 245.63818359375,
+      "top_board_dist_m": 0.9245407028985131,
+      "top_centre_u": 954.7960185701885,
+      "top_centre_v": 848.4719674246652,
+      "top_offset_px": 346.08165533694734,
+      "top_px_per_square": 30.101681354757954,
+      "top_reversed": 1,
+      "top_tilt_deg": 28.1181920572796,
+      "wrist_board_dist_m": 0.3609391560588788,
+      "wrist_cam_x": 0.17629296549793083,
+      "wrist_cam_y": 0.2173437917129597,
+      "wrist_cam_z": 0.2897875481494734,
+      "wrist_centre_u": 294.67994520399304,
+      "wrist_centre_v": 159.6811507694305,
+      "wrist_offset_px": 31.97053576230181,
+      "wrist_px_per_square": 19.028116083339285,
+      "wrist_reach_3d_m": 0.402857737349929,
+      "wrist_reach_xy_m": 0.27985269961217285,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 24.75835673926004
+    },
+    {
+      "all16_rotation_deg": 1.5129756737437767,
+      "all16_translation_m": 0.023085484190584066,
+      "b3_loo_rotation_deg": 1.6138428979181285,
+      "b3_loo_translation_m": 0.02462451646995629,
+      "board_3d_from_base_m": 0.3629822066322596,
+      "board_normal_tilt_from_world_z_deg": 1.320030021211451,
+      "board_x": 0.2836372099207317,
+      "board_xy_from_base_m": 0.3611641538449019,
+      "board_y": 0.22358327122324412,
+      "board_z": -0.036284105461212565,
+      "candidate": 0,
+      "held_out": 1,
+      "loo_camera_position_delta_vs_all16_m": 0.0015390322793722667,
+      "loo_camera_rotation_delta_vs_all16_deg": 0.10086722417856606,
+      "loo_rotation_deg": 1.6138428979181285,
+      "loo_translation_m": 0.02462451646995629,
+      "name": "pair16",
+      "orig_rotation_deg": 1.5294301641016232,
+      "orig_translation_m": 0.02342222544663781,
+      "reproj_centre_px": 7.219851069912244,
+      "res_along_ray_mm": 0.13606983630083033,
+      "res_cam_dx_mm": 9.333873366648648,
+      "res_cam_dy_mm": -20.99237226229612,
+      "res_cam_dz_mm": 4.56067535017295,
+      "res_perp_ray_mm": 23.421830199042443,
+      "res_world_dx_mm": 20.661511701167896,
+      "res_world_dy_mm": -9.410441329437635,
+      "res_world_dz_mm": 5.757271322496593,
+      "skew_ms": 6.955427,
+      "top_bbox_h": 191.16778564453125,
+      "top_bbox_w": 244.28509521484375,
+      "top_board_dist_m": 0.93396530886894,
+      "top_centre_u": 1120.0699724469866,
+      "top_centre_v": 816.22607421875,
+      "top_offset_px": 340.74540965817073,
+      "top_px_per_square": 29.63250116159992,
+      "top_reversed": 0,
+      "top_tilt_deg": 28.10853021434631,
+      "wrist_board_dist_m": 0.3898296616514946,
+      "wrist_cam_x": 0.15963301010631786,
+      "wrist_cam_y": 0.07740373228865349,
+      "wrist_cam_z": 0.3031590649349182,
+      "wrist_centre_u": 291.4767470586868,
+      "wrist_centre_v": 196.83106946188306,
+      "wrist_offset_px": 36.30851465001814,
+      "wrist_px_per_square": 17.424469555817492,
+      "wrist_reach_3d_m": 0.3512541164741436,
+      "wrist_reach_xy_m": 0.17740923225079724,
+      "wrist_reversed": 0,
+      "wrist_tilt_deg": 34.59213622856542
+    }
+  ],
+  "reproduction": {
+    "allclose_1e-9": 1,
+    "delta_deg": 1.4012104834859979e-15,
+    "delta_m": 0.0,
+    "fixed_point_converged": 1
+  },
+  "thresholds": {
+    "max_calibration_rotation_rms_deg": 2.0,
+    "max_calibration_translation_rms_m": 0.015,
+    "max_validation_rotation_error_deg": 2.0,
+    "max_validation_translation_error_m": 0.015
+  },
+  "variants": {
+    "a_all16": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair04",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair08",
+        "pair09",
+        "pair10",
+        "pair11",
+        "pair12",
+        "pair13",
+        "pair14",
+        "pair15",
+        "pair16"
+      ],
+      "camera_to_world": [
+        [
+          0.0007682750342503722,
+          -0.88148350503677,
+          0.4722141887973741,
+          0.06383654749240189
+        ],
+        [
+          -0.9998792814934212,
+          0.0066510468598540776,
+          0.014042293824993252,
+          0.3066358148798019
+        ],
+        [
+          -0.015518769077190575,
+          -0.4721679721494866,
+          -0.8813719838312142,
+          0.8675908498759914
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 0.047104244138364885,
+      "delta_vs_original_m": 0.0004708141677849999,
+      "dpos_world_mm": [
+        0.39975950563247986,
+        0.15353087960778833,
+        0.19566958693262304
+      ],
+      "label": "(a) all 16 pairs calibrate; validation = leave-one-out (see report.json loo)",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.6706120167511853,
+        "calibration_rotation_rms_deg": 1.1884320948429798,
+        "calibration_translation_max_m": 0.023232982809258087,
+        "calibration_translation_rms_m": 0.01805058630549821,
+        "solved_from_nominal_rotation_deg": 2.0273196039241146,
+        "solved_from_nominal_translation_m": 0.2461245211433954,
+        "validation_rotation_max_deg": null,
+        "validation_translation_max_m": null
+      },
+      "note": "In-sample metrics; LOO validation is reported in report.txt/report.json.",
+      "per_pair_rotation_deg": [
+        1.1980629108306733,
+        0.452708851070071,
+        1.2195149788871622,
+        1.1141308199381696,
+        0.8402129412767605,
+        0.48597955568436785,
+        1.080581078973039,
+        1.4918886404676222,
+        1.5069932336119507,
+        1.0743183298835295,
+        1.0067894378637114,
+        1.0971159303554712,
+        1.3366413588651949,
+        1.1766398161795122,
+        1.6706120167511822,
+        1.5129756737437767
+      ],
+      "per_pair_translation_m": [
+        0.017787364097793534,
+        0.008431251898899272,
+        0.019680768809983838,
+        0.019200504451618444,
+        0.013616786515055037,
+        0.009070873486158685,
+        0.014761871578591265,
+        0.020678306118569335,
+        0.023232982809258087,
+        0.01791166001726853,
+        0.017329826930856395,
+        0.018616644834490072,
+        0.01878287260397227,
+        0.015001647383465226,
+        0.023199585063474235,
+        0.023085484190584066
+      ],
+      "status": "FAIL",
+      "validation_pairs": []
+    },
+    "b1_drop_outliers_same_split": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair09",
+        "pair10",
+        "pair11",
+        "pair13",
+        "pair14",
+        "pair15"
+      ],
+      "camera_to_world": [
+        [
+          0.0008034498000863491,
+          -0.8811605157548038,
+          0.4728165605635518,
+          0.06343678798676941
+        ],
+        [
+          -0.9998720899644903,
+          0.006844743112328806,
+          0.014455213653507465,
+          0.3064822840001941
+        ],
+        [
+          -0.015973671414582863,
+          -0.4727676966190206,
+          -0.8810423070744586,
+          0.8673951802890588
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 1.4012104834859979e-15,
+      "delta_vs_original_m": 0.0,
+      "dpos_world_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label": "(b) drop [] (orig translation residual > 2.0x median), original split membership kept",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.6746376518002313,
+        "calibration_rotation_rms_deg": 1.1405971461497861,
+        "calibration_translation_max_m": 0.023463801332451815,
+        "calibration_translation_rms_m": 0.017162818104484993,
+        "solved_from_nominal_rotation_deg": 2.004002603504906,
+        "solved_from_nominal_translation_m": 0.24581860312727352,
+        "validation_rotation_max_deg": 1.5377626110814158,
+        "validation_translation_max_m": 0.02342222544663781
+      },
+      "note": "Outliers removed from whichever group they were in; every-4th membership otherwise unchanged.",
+      "per_pair_rotation_deg": [
+        1.2443678058460481,
+        0.4142654869721504,
+        1.178694572859915,
+        1.0674175157330812,
+        0.7994772745173427,
+        0.45269366884109796,
+        1.1212207305239625,
+        1.5377626110814158,
+        1.545852250453513,
+        1.09477778730995,
+        1.0038534780639934,
+        1.0856604864091315,
+        1.2941483290085156,
+        1.151421826816872,
+        1.67463765180023,
+        1.5294301641016232
+      ],
+      "per_pair_translation_m": [
+        0.018196684844005995,
+        0.008127385547008592,
+        0.019357751035895744,
+        0.018799371304626306,
+        0.013212511608043946,
+        0.008757694903320217,
+        0.015032130286592803,
+        0.021027152862005353,
+        0.02337775243939318,
+        0.017978669754025612,
+        0.01722659885651817,
+        0.018379859738014818,
+        0.018519233144163667,
+        0.015019968926558125,
+        0.02346380133245187,
+        0.02342222544663781
+      ],
+      "status": "FAIL",
+      "validation_pairs": [
+        "pair04",
+        "pair08",
+        "pair12",
+        "pair16"
+      ]
+    },
+    "b2_drop_outliers_resplit": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair09",
+        "pair10",
+        "pair11",
+        "pair13",
+        "pair14",
+        "pair15"
+      ],
+      "camera_to_world": [
+        [
+          0.0008034498000863491,
+          -0.8811605157548038,
+          0.4728165605635518,
+          0.06343678798676941
+        ],
+        [
+          -0.9998720899644903,
+          0.006844743112328806,
+          0.014455213653507465,
+          0.3064822840001941
+        ],
+        [
+          -0.015973671414582863,
+          -0.4727676966190206,
+          -0.8810423070744586,
+          0.8673951802890588
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 1.4012104834859979e-15,
+      "delta_vs_original_m": 0.0,
+      "dpos_world_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label": "(b') drop [], every-4th split re-applied to the remaining 16 files",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.6746376518002313,
+        "calibration_rotation_rms_deg": 1.1405971461497861,
+        "calibration_translation_max_m": 0.023463801332451815,
+        "calibration_translation_rms_m": 0.017162818104484993,
+        "solved_from_nominal_rotation_deg": 2.004002603504906,
+        "solved_from_nominal_translation_m": 0.24581860312727352,
+        "validation_rotation_max_deg": 1.5377626110814158,
+        "validation_translation_max_m": 0.02342222544663781
+      },
+      "note": "Same solve_top.sh rule (sorted, zero-based index % 4 == 3 held out) on the reduced file list.",
+      "per_pair_rotation_deg": [
+        1.2443678058460481,
+        0.4142654869721504,
+        1.178694572859915,
+        1.0674175157330812,
+        0.7994772745173427,
+        0.45269366884109796,
+        1.1212207305239625,
+        1.5377626110814158,
+        1.545852250453513,
+        1.09477778730995,
+        1.0038534780639934,
+        1.0856604864091315,
+        1.2941483290085156,
+        1.151421826816872,
+        1.67463765180023,
+        1.5294301641016232
+      ],
+      "per_pair_translation_m": [
+        0.018196684844005995,
+        0.008127385547008592,
+        0.019357751035895744,
+        0.018799371304626306,
+        0.013212511608043946,
+        0.008757694903320217,
+        0.015032130286592803,
+        0.021027152862005353,
+        0.02337775243939318,
+        0.017978669754025612,
+        0.01722659885651817,
+        0.018379859738014818,
+        0.018519233144163667,
+        0.015019968926558125,
+        0.02346380133245187,
+        0.02342222544663781
+      ],
+      "status": "FAIL",
+      "validation_pairs": [
+        "pair04",
+        "pair08",
+        "pair12",
+        "pair16"
+      ]
+    },
+    "b3_drop_outliers_all_loo": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair04",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair08",
+        "pair09",
+        "pair10",
+        "pair11",
+        "pair12",
+        "pair13",
+        "pair14",
+        "pair15",
+        "pair16"
+      ],
+      "camera_to_world": [
+        [
+          0.0007682750342503722,
+          -0.88148350503677,
+          0.4722141887973741,
+          0.06383654749240189
+        ],
+        [
+          -0.9998792814934212,
+          0.0066510468598540776,
+          0.014042293824993252,
+          0.3066358148798019
+        ],
+        [
+          -0.015518769077190575,
+          -0.4721679721494866,
+          -0.8813719838312142,
+          0.8675908498759914
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 0.047104244138364885,
+      "delta_vs_original_m": 0.0004708141677849999,
+      "dpos_world_mm": [
+        0.39975950563247986,
+        0.15353087960778833,
+        0.19566958693262304
+      ],
+      "label": "(b'') drop [], all remaining 16 calibrate, LOO validation",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.6706120167511853,
+        "calibration_rotation_rms_deg": 1.1884320948429798,
+        "calibration_translation_max_m": 0.023232982809258087,
+        "calibration_translation_rms_m": 0.01805058630549821,
+        "solved_from_nominal_rotation_deg": 2.0273196039241146,
+        "solved_from_nominal_translation_m": 0.2461245211433954,
+        "validation_rotation_max_deg": null,
+        "validation_translation_max_m": null
+      },
+      "note": "LOO numbers in report.txt/report.json.",
+      "per_pair_rotation_deg": [
+        1.1980629108306733,
+        0.452708851070071,
+        1.2195149788871622,
+        1.1141308199381696,
+        0.8402129412767605,
+        0.48597955568436785,
+        1.080581078973039,
+        1.4918886404676222,
+        1.5069932336119507,
+        1.0743183298835295,
+        1.0067894378637114,
+        1.0971159303554712,
+        1.3366413588651949,
+        1.1766398161795122,
+        1.6706120167511822,
+        1.5129756737437767
+      ],
+      "per_pair_translation_m": [
+        0.017787364097793534,
+        0.008431251898899272,
+        0.019680768809983838,
+        0.019200504451618444,
+        0.013616786515055037,
+        0.009070873486158685,
+        0.014761871578591265,
+        0.020678306118569335,
+        0.023232982809258087,
+        0.01791166001726853,
+        0.017329826930856395,
+        0.018616644834490072,
+        0.01878287260397227,
+        0.015001647383465226,
+        0.023199585063474235,
+        0.023085484190584066
+      ],
+      "status": "FAIL",
+      "validation_pairs": []
+    },
+    "c_original": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair09",
+        "pair10",
+        "pair11",
+        "pair13",
+        "pair14",
+        "pair15"
+      ],
+      "camera_to_world": [
+        [
+          0.0008034498000863491,
+          -0.8811605157548038,
+          0.4728165605635518,
+          0.06343678798676941
+        ],
+        [
+          -0.9998720899644903,
+          0.006844743112328806,
+          0.014455213653507465,
+          0.3064822840001941
+        ],
+        [
+          -0.015973671414582863,
+          -0.4727676966190206,
+          -0.8810423070744586,
+          0.8673951802890588
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 1.4012104834859979e-15,
+      "delta_vs_original_m": 0.0,
+      "dpos_world_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label": "(c) original every-4th split (12 calib / 4 held-out)",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.6746376518002313,
+        "calibration_rotation_rms_deg": 1.1405971461497861,
+        "calibration_translation_max_m": 0.023463801332451815,
+        "calibration_translation_rms_m": 0.017162818104484993,
+        "solved_from_nominal_rotation_deg": 2.004002603504906,
+        "solved_from_nominal_translation_m": 0.24581860312727352,
+        "validation_rotation_max_deg": 1.5377626110814158,
+        "validation_translation_max_m": 0.02342222544663781
+      },
+      "note": "Reproduction of calib/out/top_brio_178B0DAE_calibration.json.",
+      "per_pair_rotation_deg": [
+        1.2443678058460481,
+        0.4142654869721504,
+        1.178694572859915,
+        1.0674175157330812,
+        0.7994772745173427,
+        0.45269366884109796,
+        1.1212207305239625,
+        1.5377626110814158,
+        1.545852250453513,
+        1.09477778730995,
+        1.0038534780639934,
+        1.0856604864091315,
+        1.2941483290085156,
+        1.151421826816872,
+        1.67463765180023,
+        1.5294301641016232
+      ],
+      "per_pair_translation_m": [
+        0.018196684844005995,
+        0.008127385547008592,
+        0.019357751035895744,
+        0.018799371304626306,
+        0.013212511608043946,
+        0.008757694903320217,
+        0.015032130286592803,
+        0.021027152862005353,
+        0.02337775243939318,
+        0.017978669754025612,
+        0.01722659885651817,
+        0.018379859738014818,
+        0.018519233144163667,
+        0.015019968926558125,
+        0.02346380133245187,
+        0.02342222544663781
+      ],
+      "status": "FAIL",
+      "validation_pairs": [
+        "pair04",
+        "pair08",
+        "pair12",
+        "pair16"
+      ]
+    },
+    "s2_drop_worst2_loo": {
+      "calibration_pairs": [
+        "pair01",
+        "pair02",
+        "pair03",
+        "pair05",
+        "pair06",
+        "pair07",
+        "pair10",
+        "pair11",
+        "pair13",
+        "pair14"
+      ],
+      "camera_to_world": [
+        [
+          0.0006434856622666088,
+          -0.879794766097742,
+          0.47535329542690763,
+          0.06120897401289458
+        ],
+        [
+          -0.9998681377442825,
+          0.007147170961606365,
+          0.014581669006833498,
+          0.30556150015256517
+        ],
+        [
+          -0.016226307342760843,
+          -0.475299997364048,
+          -0.8796741552732767,
+          0.867681069026432
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "delta_vs_original_deg": 0.16596786800533025,
+      "delta_vs_original_m": 0.0024274946686662965,
+      "dpos_world_mm": [
+        -2.22781397387483,
+        -0.9207838476289476,
+        0.28588873737322995
+      ],
+      "label": "(sensitivity) drop the 2 worst LOO pairs ['pair09', 'pair15'], original split membership",
+      "metrics": {
+        "calibration_rotation_max_deg": 1.394417478853887,
+        "calibration_rotation_rms_deg": 1.0070777381045473,
+        "calibration_translation_max_m": 0.020596968134584562,
+        "calibration_translation_rms_m": 0.015423201087002972,
+        "solved_from_nominal_rotation_deg": 1.865763665682393,
+        "solved_from_nominal_translation_m": 0.24363036904765165,
+        "validation_rotation_max_deg": 1.6646837744480383,
+        "validation_translation_max_m": 0.025018623891201408
+      },
+      "note": "Not the 2x-median rule; sensitivity bound only.",
+      "per_pair_rotation_deg": [
+        1.3944174788538979,
+        0.37934247845801783,
+        1.1024754371305012,
+        0.9265149231983391,
+        0.6351781924338751,
+        0.30126976542575207,
+        1.2152341919151637,
+        1.6646837744480383,
+        1.6282523365555874,
+        1.1006699294294102,
+        0.9283103919111796,
+        0.9827359317798379,
+        1.2068087666714802,
+        1.1565776971683137,
+        1.7745071705669517,
+        1.6598781308796666
+      ],
+      "per_pair_translation_m": [
+        0.0205969681345846,
+        0.006825742626958213,
+        0.01765179993921073,
+        0.016614778292057025,
+        0.010819156481896509,
+        0.006809820697387445,
+        0.016884965496648707,
+        0.023269225965900735,
+        0.02471712517188985,
+        0.01846802022627677,
+        0.016760942009197675,
+        0.017127219734889246,
+        0.017062819931311243,
+        0.015319033292125696,
+        0.02481477530392589,
+        0.025018623891201408
+      ],
+      "status": "FAIL",
+      "validation_pairs": [
+        "pair04",
+        "pair08",
+        "pair12",
+        "pair16"
+      ]
+    }
+  },
+  "wrist_chain_diagnostic": {
+    "board_normal_tilt_mean_deg": 0.7034755287940663,
+    "board_normal_tilt_sd_deg": 0.3253338015066829,
+    "board_z_max_m": -0.0291831879889621,
+    "board_z_mean_m": -0.035186087791550746,
+    "board_z_min_m": -0.040281600103856736,
+    "board_z_sd_m": 0.0036605487267214166
+  }
+}

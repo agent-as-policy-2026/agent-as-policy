@@ -1,0 +1,13 @@
+# Cycle 3 result: success
+
+I studied goal/demo_start.png, goal/top_camera.png and the extracted demonstration frames in scratch/demo_contact.png before robot motion. The blue hex ring belongs over the slim white post on its hex base; the blue round collar belongs over the wide white cylinder toward its circular base. Both white shafts protrude above their blue counterparts.
+
+I reused checkpoint cycle_02 (available_experience_version=2), its exact step.py helper, and verified vertical recipe, with fresh left-set positions. Order: hex pair, then round pair. I used the straight-down quaternion (0,1,0,0), a planned entry at [0.25,-0.04,0.15], then linear motions, keeping all work on the left half. Each action was followed by a capture and visual inspection before the next action.
+
+Initial scene: frames/0001_top.png. Fresh overhead deprojection and close wrist depth established poses recorded in scratch/measurements.json. Hex grasp at [0.358,0.063,-0.028] closed to fraction 0.4964 (47.4 mm); frames/0005_wrist.png and 0006_top.png show grasp and lift. Placement at xy [0.223,-0.088] descended through z 0.049, 0.028, -0.018. Frames/0009_wrist.png and 0010_wrist.png show the post entering and passing through the hole. After open and lift, frames/0012_wrist.png confirms the stable hex assembly.
+
+Round grasp at [0.342,-0.111,-0.012] achieved z=-0.0163 with ok=true and 5.0 mm target error; close fraction 0.5412 (51.7 mm). Frames/0015_wrist.png and 0016_top.png confirm grip and lift. Placement at xy [0.233,0.078] descended through z 0.065, 0.040, 0.008, -0.005. Frames/0019_wrist.png through 0021_wrist.png show the wide cylinder passing through the collar. It settled slightly on release in frames/0022_wrist.png while staying engaged.
+
+Final verification: frames/0023_wrist.png and frames/0023_top.png show both assemblies after open and lift. frames/0024_top.png shows both still upright and engaged after home/withdrawal, matching the demonstrated relationships. Final gripper fraction 0.9989, empty and open. Arm withdrawn to observation posture; no contact with the right set or arm. 47 counted commands, approximately 7 minutes elapsed. No failed robot commands, empty grasps, drops or recovery motions. One premature local image read occurred before capture 16 finished; I waited for completion and inspected it before proceeding.
+
+My judgement is success: both left-set blue parts are engaged with their demonstrated white counterparts and stable without gripper support. Exact commands/results are in scratch/actions.jsonl. Coordinates are historical for this cycle, not future targets.

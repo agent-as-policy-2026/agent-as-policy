@@ -1,0 +1,3 @@
+trial,session,model,backend,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,cost_usd,agent_verdict,operator_verdict,remarks
+02,20260910_181323_paper_twopairs_full_high_copus5_right_02,claude-opus-5,claude,high,default,full,right,none,0,none,0,2,2026-09-10 18:13:23,1996,no,107,57,15,9,31,202143,16408408,111947,69813,13.025373999999998,success (agent),,
+04,20260910_190043_paper_twopairs_full_high_copus5_right_04,claude-opus-5,claude,high,default,full,right,none,0,none,2,3,2026-09-10 19:00:43,1576,no,77,36,4,18,31,167842,15553405,94882,55123,11.828167500000003,success (agent),,

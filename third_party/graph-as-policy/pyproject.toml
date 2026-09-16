@@ -1,0 +1,61 @@
+# Packaging shim for the VENDORED graph-as-policy connector subset.
+#
+# This file is NOT upstream: upstream ships one pyproject.toml for the whole
+# framework (and a second one for gap-core) pulling in torch / mujoco / jax /
+# LIBERO. Only the 16 modules of the real-YAM import closure live here, so
+# this shim declares only what those modules import. See UPSTREAM.md.
+#
+# The distribution name is deliberately AgP-flavoured while the IMPORT names
+# stay upstream's (`gap`, `gap_core`) — the harness imports them by those
+# names, and keeping them makes the vendored copy diffable against upstream.
+#
+# It is a distribution of its own, a sibling of hardware-bridge rather than
+# part of it (../../hardware-bridge/pyproject.toml wires it in with
+# [tool.uv.sources]), so this Apache-2.0 code never becomes part of the
+# `agp_yam_bridge` package and its attribution stays separable.
+
+[project]
+name = "agp-vendored-gap-connector"
+version = "0.1.0.dev0"          # upstream's version string at the pinned commit
+description = "Vendored minimal graph-as-policy connector subset (packages gap, gap_core) used by the AgP session server to reach the YAM hardware bridge"
+readme = "UPSTREAM.md"
+# Matches hardware-bridge; upstream declares >=3.10 but this copy is only
+# ever installed into the bridge's 3.11 venv.
+requires-python = ">=3.11,<3.12"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "graph-as-policy authors" },
+  { name = "the Agent-as-Policy (AgP) authors" },
+]
+
+# Exactly what the 16 vendored modules import, nothing else. Every entry is
+# already a hardware-bridge dependency, so vendoring adds no new package to
+# the lock. gymnasium is intentionally absent: gap/envs/base_env.py has a
+# try/except ImportError stand-in and BaseEnv is used only as an interface.
+dependencies = [
+  "msgpack>=1.0",
+  "msgpack-numpy>=0.4.8",
+  "numpy>=1.26",
+  "scipy>=1.12",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Upstream's on-disk layout is preserved: `gap/` at the root, `gap_core/`
+# under `gap-core/src/`. Both land at the same import level.
+packages = ["gap", "gap-core/src/gap_core"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "gap",
+  "gap-core",
+  "LICENSE",
+  "NOTICE.md",
+  "UPSTREAM.md",
+  "file_digest.txt",
+  "file_digest_aggregate.txt",
+  "verify_gap.sh",
+]

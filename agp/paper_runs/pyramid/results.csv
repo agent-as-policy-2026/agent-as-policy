@@ -1,0 +1,3 @@
+trial,session,model,effort,service_tier,notes_used,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,agent_verdict,operator_verdict,remarks
+01,20260904_150034_paper_pyramid_01,gpt-6-astra,high,fast,none,2026-09-04 15:00:34,1684,no,150,56,18,0,76,success (agent),,
+02,20260904_153726_paper_pyramid_02,gpt-6-astra,high,fast,none,2026-09-04 15:37:26,978,no,105,38,12,2,53,unclear (agent),,

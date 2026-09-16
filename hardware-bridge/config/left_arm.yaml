@@ -1,0 +1,144 @@
+# LEFT-ARM RUNTIME BRIDGE CONFIG (agp-yam-bridge serve).
+#
+# Hardware identity from left_calib.yaml; envelope/safety values shared with
+# right_arm.yaml. Served on 127.0.0.1:9021; the harness (agp/server_real.py)
+# and the calib/ tools connect through the vendored connector.
+#
+# The LEFT hand-eye (wrist D405 <- left_gripper) lives in the station model of
+# the patched i2rt checkout, which tracked_diff_sha256 below pins.
+
+schema_version: 1
+
+# Loopback; port 9021 (the right bridge uses 9022). The client process runs on
+# this host and rejects frames older than 500 ms.
+bridge:
+  host: 127.0.0.1
+  port: 9021
+  request_timeout_s: 1.0
+  stale_after_s: 0.5
+
+# Paths are resolved relative to this file. hardware-bridge and the patched
+# i2rt checkout are siblings in this repo -> ../../i2rt.
+i2rt:
+  source: ../../i2rt
+  package_version: "1.1.2"
+  git_revision: "2c2f3ae7a9040e3ce892873eb9aa744eb286063f"
+  # SHA-256 of: git -C ../../i2rt diff --binary HEAD -- i2rt pyproject.toml
+  # Recompute with ../../make_config_sha.sh <this file> after any tracked i2rt
+  # change (the bridge preflight refuses a mismatch).
+  tracked_diff_sha256: "3b5fac30a1525e1f2ea39e8dae50ce139a60cb310cea9e2d40fac11d99a59446"
+
+hardware:
+  arm: yam
+  gripper: linear_4310
+  # LEFT follower chain.
+  can_channel: can_follower_l
+  can_bitrate: 1000000
+  camera_model: Intel RealSense D405
+  # LEFT wrist D405. Station-specific.
+  camera_serial: "353322271204"
+  # USB physical port of that D405 (pyrealsense2 physical_port); preflight
+  # enforces it. Station-specific.
+  camera_physical_port: "6-1"
+  arm_model: ../../i2rt/i2rt/robot_models/arm/yam/v1/yam.xml
+  gripper_model: ../../i2rt/i2rt/robot_models/gripper/linear_4310/linear_4310.xml
+  # Station model root IS left_base == bridge world frame; carries the left
+  # hand-eye (pinned by tracked_diff_sha256 above).
+  station_model: ../../i2rt/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+
+# D405 RGB-D contract, same 640x360@30 profile as the right wrist.
+camera:
+  # Must stay "wrist_d405": the connector client validates camera_0.name on
+  # every observation (the offline left_calib.yaml's "wrist_d405_left" is not
+  # a runtime name).
+  name: wrist_d405
+  width: 640
+  height: 360
+  fps: 30
+  frame_timeout_s: 1.0
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+  min_depth_m: 0.01
+  max_depth_m: 1.0
+  # left hand-eye fixed-target RMS (1.37 mm)
+  transform_translation_error_bound_m: 0.00137
+  # LEFT chain bodies in the station MJCF (flange <- camera source).
+  station_flange_body: left_gripper
+  station_camera_body: left_camera
+
+# TOP CAMERA — REQUIRED by the bridge config schema (BridgeConfig.top_camera is
+# a mandatory field and load_config dereferences top_camera.calibration_path
+# unconditionally — wrist-only is structurally impossible).
+#
+# The LEFT station's overhead camera (station-specific):
+#   /dev/v4l/by-id/usb-046d_Logitech_BRIO_178B0DAE-video-index0
+#   (Logitech BRIO, serial 178B0DAE; the right station's top is B8C7F203.)
+# Its intrinsics + camera_to_world in the LEFT_BASE frame live in the
+# calibration JSON below, which keeps "name": "top_brio" — the connector client
+# validates camera_1.name == "top_brio" on every observation.
+top_camera:
+  calibration_path: ../acceptance/top_left/top_brio_calibration.json
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+
+# First-motion envelope. Coordinates are in the LEFT_BASE frame and constrain
+# the physical grasp_site.
+acceptance:
+  # joint4=88 deg keeps the 2 deg settle-bias reserve below the model's
+  # 90 deg upper limit (gravity error cannot be corrected at 90).
+  home_joints_deg: [0, 0, 0, 88, 90, 90]
+  workspace:
+    frame: yam_base
+    tcp: grasp_site
+    # WIDE OPEN: a human supervises every run and the harness applies its own
+    # reach / table-z guards. The schema requires ordered bounds, so these are
+    # set beyond any physical reach.
+    x_m: [-2.0, 2.0]
+    y_m: [-2.0, 2.0]
+    z_m: [-0.2, 1.0]
+  # Speed caps, shared with right_arm.yaml.
+  speed_limits:
+    control_frequency_hz: 50
+    joint_velocity_deg_s: 20
+    joint_acceleration_deg_s2: 40
+    cartesian_translation_m_s: 0.03
+    cartesian_rotation_deg_s: 10
+    gripper_fraction_s: 0.25
+
+# Application-level safety thresholds (bridge-enforced on top of i2rt's
+# motor-loop checks). Keep in step with right_arm.yaml unless a per-arm
+# difference is deliberate.
+safety:
+  command_heartbeat_timeout_s: 0.5
+  feedback_stale_after_s: 0.1
+  max_tracking_error_deg: null
+  tracking_error_timeout_s: 0.5
+  joint_settle_tolerance_rad: 0.03
+  # The left arm settles at 1.6-3 mm steady-state; a tighter gate produces
+  # ~10 s ACTION_TIMEOUTs on every cartesian leg. Completion-declaration only;
+  # motion accuracy unchanged.
+  cartesian_position_tolerance_m: 0.003
+  cartesian_orientation_tolerance_deg: 1.5
+  cartesian_settle_gain_s_inv: 4.0
+  cartesian_settle_max_bias_deg: 2.0
+  # hold: a Cartesian move that finishes its trajectory but cannot settle within
+  # tolerance keeps its last command as a normal monitored hold and the result is
+  # "completed" with a detail starting "SETTLE_MISS:". idle: fault into gravity-comp
+  # idle instead, which releases the gripper and drops a held object.
+  cartesian_settle_miss: hold
+  # 0.9 trips GRIPPER_OVERCURRENT on a firm close of a 5 cm cube and lets taped
+  # cubes slip under in-air yaw.
+  gripper_max_effort_nm: 1.2
+  gripper_contact_min_effort_nm: 0.2
+  gripper_contact_release_effort_nm: 0.15
+  gripper_contact_confirmation_s: 0.1
+  gripper_contact_max_velocity_fraction_s: 0.1
+  gripper_contact_min_open_fraction: 0.05
+  # After a confirmed contact, close a further 0.04 of the stroke (~3.8 mm on the
+  # 95.5 mm opening) so the object is squeezed instead of merely touched; bounded by
+  # gripper_max_effort_nm. 0 = hold at contact.
+  gripper_contact_squeeze_fraction: 0.04
+  gripper_stall_velocity_fraction_s: 0.01
+  gripper_stall_error_fraction: 0.02
+  gripper_stall_timeout_s: 0.5
+  action_log_path: ../logs/actions.jsonl

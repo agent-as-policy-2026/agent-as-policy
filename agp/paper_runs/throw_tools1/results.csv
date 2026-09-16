@@ -1,0 +1,11 @@
+trial,session,model,backend,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,cost_usd,agent_verdict,operator_verdict,remarks
+01,20260914_133204_paper_throw_tools1_01,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-14 13:32:04,903,no,39,12,2,5,20,3364572,3248896,22843,8938,,success (agent),,
+02,20260914_141619_paper_throw_tools1_02,gpt-6-astra,codex,high,default,full,left,none,0,none,1,1,2026-09-14 14:16:18,903,no,44,13,2,7,23,2760084,2652800,19174,6016,,success (agent),,
+03,20260914_145159_paper_throw_tools1_03,gpt-6-astra,codex,high,default,full,left,none,0,none,2,0,2026-09-14 14:51:59,1099,no,54,16,3,8,28,5727614,5593344,25476,8133,,success (agent),,
+04,20260914_151654_paper_throw_tools1_04,gpt-6-astra,codex,high,default,full,left,none,0,none,2,0,2026-09-14 15:16:54,648,no,44,15,3,4,23,2565561,2469632,13415,3399,,success (agent),,
+05,20260914_160444_paper_throw_tools1_05,gpt-6-astra,codex,high,default,full,left,none,0,none,2,0,2026-09-14 16:04:44,948,no,47,14,3,6,24,5317896,5190400,19603,5351,,unclear (agent),success,operator confirmed 09-14
+06,20260914_162102_paper_throw_tools1_06,gpt-6-astra,codex,high,default,full,left,none,0,none,2,0,2026-09-14 16:21:02,1714,no,97,31,8,11,47,14121168,13763328,32638,12203,,success (agent),,
+07,20260914_165149_paper_throw_tools1_07,gpt-6-astra,codex,high,default,full,left,none,0,none,2,1,2026-09-14 16:51:49,1024,no,40,13,3,4,20,5367813,5220736,25614,8711,,success (agent),,
+08,20260914_171423_paper_throw_tools1_08,gpt-6-astra,codex,high,default,full,left,none,0,none,3,0,2026-09-14 17:14:23,724,no,36,11,2,4,19,2902612,2810752,17067,5211,,unclear (agent),success,operator confirmed 09-14
+09,20260914_172946_paper_throw_tools1_09,gpt-6-astra,codex,high,default,full,left,none,0,none,3,0,2026-09-14 17:29:46,1339,no,75,21,5,12,37,8945751,8798720,29641,8236,,success (agent),,
+10,20260914_194201_paper_throw_tools1_10,gpt-6-astra,codex,high,default,full,left,none,0,none,3,1,2026-09-14 19:42:01,1324,no,66,18,3,13,33,5779285,5620224,21946,5117,,success (agent),,

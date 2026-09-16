@@ -1,0 +1,164 @@
+# RIGHT-ARM RUNTIME BRIDGE CONFIG (agp-yam-bridge serve) — the bridge for the
+# second (right) YAM of the dual-arm rig.
+#
+# Hardware identity from right_calib.yaml; i2rt paths, git_revision,
+# tracked_diff_sha256 and the acceptance/safety blocks shared with
+# left_arm.yaml. Served on 127.0.0.1:9022; the harness connects with
+# server_real.py --arm right, which converts right_base -> left_base for agents.
+#
+# FRAME CONTRACT: this bridge reports and accepts poses in RIGHT_BASE (the
+# station-model root for the right chain). Agents work in left_base (the
+# world frame); the right-arm harness server applies T_left_right
+# (agp/config/right_base_in_left_base.json, nominal (0, -0.61, 0) /
+# identity rotation) to every pose crossing that boundary. Nothing in THIS
+# file knows about the left arm.
+#
+# EXCLUSIVE OWNERSHIP: only one bridge may hold can_follower_r, the right
+# D405 and the right BRIO; never start this config while another bridge
+# process holds them (the launcher's port gate covers 9021/9022 only).
+
+schema_version: 1
+
+# Loopback; port 9022 (the left bridge uses 9021). The client process runs on
+# this host and rejects frames older than 500 ms.
+bridge:
+  host: 127.0.0.1
+  port: 9022
+  request_timeout_s: 1.0
+  stale_after_s: 0.5
+
+# Paths are resolved relative to this file. hardware-bridge and the patched
+# i2rt checkout are siblings in this repo -> ../../i2rt.
+i2rt:
+  source: ../../i2rt
+  package_version: "1.1.2"
+  git_revision: "2c2f3ae7a9040e3ce892873eb9aa744eb286063f"
+  # SHA-256 of: git -C ../../i2rt diff --binary HEAD -- i2rt pyproject.toml
+  # Same i2rt working tree as left_arm.yaml (one checkout serves both arms),
+  # recomputed via ../../make_config_sha.sh right_arm.yaml. Any further
+  # tracked i2rt change requires explicit review, then re-running that script
+  # for BOTH configs (the bridge preflight refuses a mismatch).
+  tracked_diff_sha256: "3b5fac30a1525e1f2ea39e8dae50ce139a60cb310cea9e2d40fac11d99a59446"
+
+hardware:
+  arm: yam
+  gripper: linear_4310
+  # RIGHT follower chain. i2rt applies this chain's joint-4 encoder offset from
+  # yam_v1.yml motor_offsets_deg_by_channel by this name (preflight prints
+  # arm_motor_offsets_deg for it).
+  can_channel: can_follower_r
+  can_bitrate: 1000000
+  camera_model: Intel RealSense D405
+  # RIGHT wrist D405. Station-specific.
+  camera_serial: "353322271910"
+  # USB physical port of that D405 (pyrealsense2 physical_port); preflight
+  # enforces it. Station-specific.
+  camera_physical_port: "6-2"
+  arm_model: ../../i2rt/i2rt/robot_models/arm/yam/v1/yam.xml
+  gripper_model: ../../i2rt/i2rt/robot_models/gripper/linear_4310/linear_4310.xml
+  # SHARED station model (same file as left_arm.yaml). For this config the
+  # bridge's world frame is right_base; the right_gripper -> right_camera
+  # bodies carry the MEASURED right hand-eye (identical in our
+  # i2rt copy; blessed by tracked_diff_sha256 above).
+  station_model: ../../i2rt/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+
+# D405 RGB-D contract, same 640x360@30 profile as the left wrist.
+camera:
+  # Same name as the left bridge on purpose: the connector client validates
+  # camera_0.name == "wrist_d405" on every observation (the offline
+  # right_calib.yaml's "wrist_d405_right" is NOT a runtime name).
+  name: wrist_d405
+  width: 640
+  height: 360
+  fps: 30
+  frame_timeout_s: 1.0
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+  min_depth_m: 0.01
+  max_depth_m: 1.0
+  # right hand-eye verification error (1.68 mm)
+  transform_translation_error_bound_m: 0.0016787199367799639
+  # RIGHT chain bodies in the station MJCF (flange <- camera source).
+  station_flange_body: right_gripper
+  station_camera_body: right_camera
+
+# TOP CAMERA — REQUIRED by the bridge config schema (BridgeConfig.top_camera
+# has no default). The right station's own overhead BRIO, calibrated in the
+# RIGHT_BASE frame (station-specific; device by /dev/v4l/by-id serial). The
+# stream profile is read from the calibration JSON, not from here: the bridge
+# opens that device via V4L2/MJPG and fails closed if the driver reports a
+# different profile. In a dual-arm session this camera is consumed by the
+# bridge only (observation camera_1 == top_brio, run recording) and the
+# right-arm harness server does NOT expose it to agents — the overhead view
+# agents see is the LEFT station's BRIO (left_arm.yaml), calibrated in
+# left_base = the world frame. A standalone right-arm session serves it as
+# that session's top camera.
+top_camera:
+  calibration_path: ../acceptance/top/top_brio_calibration.json
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+
+# First-motion envelope. Coordinates are in the RIGHT_BASE frame and constrain
+# the physical grasp_site. Values identical to left_arm.yaml.
+acceptance:
+  # joint4=88 deg keeps the 2 deg settle-bias reserve below the model's
+  # 90 deg upper limit (gravity error cannot be corrected at 90).
+  home_joints_deg: [0, 0, 0, 88, 90, 90]
+  workspace:
+    frame: yam_base
+    tcp: grasp_site
+    # WIDE OPEN (same as the left arm): a human supervises every run and the
+    # harness applies its own reach / table-z guards. The schema requires
+    # ordered bounds, so these are set beyond any physical reach. NOTE: with
+    # two arms 0.61 m apart nothing here keeps the arms from each other — that
+    # is the agent's responsibility.
+    x_m: [-2.0, 2.0]
+    y_m: [-2.0, 2.0]
+    z_m: [-0.2, 1.0]
+  # Speed caps, shared with left_arm.yaml.
+  speed_limits:
+    control_frequency_hz: 50
+    joint_velocity_deg_s: 20
+    joint_acceleration_deg_s2: 40
+    cartesian_translation_m_s: 0.03
+    cartesian_rotation_deg_s: 10
+    gripper_fraction_s: 0.25
+
+# Application-level safety thresholds (bridge-enforced on top of i2rt's
+# motor-loop checks). Keep in step with left_arm.yaml unless a per-arm
+# difference is deliberate.
+safety:
+  command_heartbeat_timeout_s: 0.5
+  feedback_stale_after_s: 0.1
+  max_tracking_error_deg: null
+  tracking_error_timeout_s: 0.5
+  joint_settle_tolerance_rad: 0.03
+  # Looser than the left arm's 0.003: the right arm settles 4-7 mm from
+  # Cartesian targets, and a tighter gate ends a third of the moves in
+  # SETTLE_MISS. Completion-declaration only; motion accuracy unchanged.
+  cartesian_position_tolerance_m: 0.008
+  cartesian_orientation_tolerance_deg: 1.5
+  cartesian_settle_gain_s_inv: 4.0
+  cartesian_settle_max_bias_deg: 2.0
+  # hold: a Cartesian move that finishes its trajectory but cannot settle within
+  # tolerance keeps its last command as a normal monitored hold and the result is
+  # "completed" with a detail starting "SETTLE_MISS:". idle: fault into gravity-comp
+  # idle instead, which releases the gripper and drops a held object.
+  cartesian_settle_miss: hold
+  # 0.9 trips GRIPPER_OVERCURRENT on a firm close of a 5 cm cube and lets taped
+  # cubes slip under in-air yaw.
+  gripper_max_effort_nm: 1.2
+  gripper_contact_min_effort_nm: 0.2
+  gripper_contact_release_effort_nm: 0.15
+  gripper_contact_confirmation_s: 0.1
+  gripper_contact_max_velocity_fraction_s: 0.1
+  gripper_contact_min_open_fraction: 0.05
+  # After a confirmed contact, close a further 0.04 of the stroke (~3.8 mm on the
+  # 95.5 mm opening) so the object is squeezed instead of merely touched; bounded by
+  # gripper_max_effort_nm. 0 = hold at contact.
+  gripper_contact_squeeze_fraction: 0.04
+  gripper_stall_velocity_fraction_s: 0.01
+  gripper_stall_error_fraction: 0.02
+  gripper_stall_timeout_s: 0.5
+  # Separate log so two concurrently serving bridges never interleave one file.
+  action_log_path: ../logs/actions_right.jsonl

@@ -1,0 +1,41 @@
+# 运行时产物
+__pycache__/
+*.py[cod]
+*.pid
+*.log
+.venv/
+MUJOCO_LOG.TXT
+nohup.out
+
+# 一次性输出目录（可由脚本重生成）
+out/
+*/out/
+.pytest_cache/
+.ruff_cache/
+
+# 大数据一律在 Hugging Face，不进 git
+# 数据集: https://huggingface.co/datasets/Agent-as-Policy/<name>
+agp/sessions/
+agp/bridge_logs/
+agp/bridge_recordings*/
+agp/goal_sets/
+hardware-bridge/logs/
+calib/out/
+*.mp4
+*.npz
+*.npy
+
+# 应用 patch 后的 i2rt 工作副本（见 third_party/i2rt/UPSTREAM.md）
+/i2rt/
+
+# 不随仓库发布的验收证据子树（历史标定原始数据，体积大且与当前运行无关；
+# 桥实际加载的两份标定在 acceptance/top_left/ 与 acceptance/top/ 下，必须保留）
+hardware-bridge/acceptance/p3/
+hardware-bridge/acceptance/p5/
+hardware-bridge/acceptance/p6/
+hardware-bridge/acceptance/top/intrinsics/
+hardware-bridge/acceptance/top/pair*
+
+# 一次性探针输出与知识库备份
+agp/out/
+agp/knowledge.bak_*/

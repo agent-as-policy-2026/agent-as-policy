@@ -1,0 +1,11 @@
+trial,session,model,effort,service_tier,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260906_170749_paper_onebigpile_tools1_01,gpt-6-astra,high,default,none,1,1,2026-09-06 17:07:49,2838,no,225,77,23,13,113,19044495,18524800,31395,10943,success (agent),,
+02,20260906_175805_paper_onebigpile_tools1_02,gpt-6-astra,high,default,none,2,1,2026-09-06 17:58:05,2209,no,180,65,18,7,91,13481837,13233664,26061,12821,fail (agent),,
+03,20260906_184253_paper_onebigpile_tools1_03,gpt-6-astra,high,default,none,3,0,2026-09-06 18:42:53,1264,no,91,33,10,3,46,8425558,8245632,11542,3700,success (agent),,
+04,20260906_190445_paper_onebigpile_tools1_04,gpt-6-astra,high,default,none,3,0,2026-09-06 19:04:45,1083,no,113,40,12,4,57,5074183,4962560,12315,2611,unclear (agent),,
+05,20260906_192439_paper_onebigpile_tools1_05,gpt-6-astra,high,default,none,3,1,2026-09-06 19:24:39,3364,no,276,99,25,15,139,19820976,19188992,25410,8397,success (agent),,
+06,20260912_143524_paper_onebigpile_tools1_06,gpt-6-astra,high,default,none,4,0,2026-09-12 14:35:24,1579,no,153,53,16,7,77,13170475,12986368,17753,3936,success (agent),,
+07,20260912_150210_paper_onebigpile_tools1_07,gpt-6-astra,high,default,none,4,0,2026-09-12 15:02:10,1908,no,155,60,14,3,78,11283192,10929152,20172,5095,success (agent),,
+08,20260912_153433_paper_onebigpile_tools1_08,gpt-6-astra,high,default,none,4,0,2026-09-12 15:34:33,1804,no,185,66,20,6,93,13686957,13473792,18805,6141,success (agent),,
+09,20260912_161054_paper_onebigpile_tools1_09,gpt-6-astra,high,default,none,4,0,2026-09-12 16:10:54,1128,no,125,43,12,7,63,8927522,8797184,13612,3509,success (agent),,
+10,20260912_163129_paper_onebigpile_tools1_10,gpt-6-astra,high,default,none,4,0,2026-09-12 16:31:29,739,no,102,37,10,3,52,4491451,4328704,10921,3152,unclear (agent),,

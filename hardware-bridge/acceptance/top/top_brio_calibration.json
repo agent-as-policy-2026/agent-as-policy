@@ -1,0 +1,144 @@
+{
+  "calibration_sample_count": 12,
+  "camera": {
+    "device": "/dev/v4l/by-id/usb-046d_Logitech_BRIO_B8C7F203-video-index0",
+    "fps": 30,
+    "height": 1080,
+    "model": "Logitech BRIO",
+    "name": "top_brio",
+    "serial": "B8C7F203",
+    "width": 1920
+  },
+  "camera_matrix": [
+    [
+      1181.5686615801371,
+      0.0,
+      984.3913988340297
+    ],
+    [
+      0.0,
+      1190.645061851784,
+      503.65806742315664
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "camera_to_world": [
+    [
+      0.0008034497983568506,
+      -0.8811605157515957,
+      0.4728165605695347,
+      0.06343678798631994
+    ],
+    [
+      -0.9998720899644872,
+      0.006844743114098731,
+      0.014455213652919185,
+      0.3064822840023856
+    ],
+    [
+      -0.015973671414895946,
+      -0.4727676966249756,
+      -0.8810423070712582,
+      0.8673951802948299
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "checkerboard": {
+    "columns": 9,
+    "rows": 7,
+    "square_size_m": 0.022
+  },
+  "distortion_coefficients": [
+    0.21602167219537768,
+    -0.46902346421190094,
+    -0.01027791855995994,
+    -0.0019012418967202297,
+    0.26464398928077804
+  ],
+  "distortion_model": "opencv_radtan",
+  "metrics": {
+    "calibration_rotation_max_deg": 1.6746376518244723,
+    "calibration_rotation_rms_deg": 1.140597146230915,
+    "calibration_translation_max_m": 0.02346380133182903,
+    "calibration_translation_rms_m": 0.017162818105263416,
+    "solved_from_nominal_rotation_deg": 2.0040026031655995,
+    "solved_from_nominal_translation_m": 0.24581860312482562,
+    "validation_rotation_max_deg": 1.5377626111430105,
+    "validation_translation_max_m": 0.023422225446907616
+  },
+  "nominal_camera_to_world": [
+    [
+      -3.6732051035132107e-06,
+      -0.8660266183700871,
+      0.4999978962565532,
+      -0.16649488039785276
+    ],
+    [
+      -0.9999999999932536,
+      3.181093394380441e-06,
+      -1.8365948243337371e-06,
+      0.3049999995947349
+    ],
+    [
+      8.326672684688674e-17,
+      -0.4999978962599263,
+      -0.8660266183759294,
+      0.9543205295851617
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "reference_camera": {
+    "name": "wrist_d405_right",
+    "serial": "353322271910"
+  },
+  "schema_version": 1,
+  "status": "PASS",
+  "thresholds": {
+    "max_calibration_rotation_rms_deg": 2.0,
+    "max_calibration_translation_rms_m": 0.025,
+    "max_validation_rotation_error_deg": 2.0,
+    "max_validation_translation_error_m": 0.035
+  },
+  "type": "fixed_rgb_camera_calibration",
+  "validation": [
+    {
+      "path": "<repo>/calib/out/top_pairs_right/pair04.npz",
+      "rotation_error_deg": 1.0674175157310943,
+      "translation_error_m": 0.018799371305976052
+    },
+    {
+      "path": "<repo>/calib/out/top_pairs_right/pair08.npz",
+      "rotation_error_deg": 1.5377626111430105,
+      "translation_error_m": 0.021027152862527765
+    },
+    {
+      "path": "<repo>/calib/out/top_pairs_right/pair12.npz",
+      "rotation_error_deg": 1.0856604864655286,
+      "translation_error_m": 0.01837985973978058
+    },
+    {
+      "path": "<repo>/calib/out/top_pairs_right/pair16.npz",
+      "rotation_error_deg": 1.529430164181347,
+      "translation_error_m": 0.023422225446907616
+    }
+  ],
+  "validation_sample_count": 4,
+  "derived": {
+    "from": "an earlier right-arm bridge repo/hardware-bridge/acceptance/top/top_brio_calibration.json (right rig, 2026-09-02, 1920x1080, 12 samples)",
+    "date": "2026-09-09 copy"
+  }
+}

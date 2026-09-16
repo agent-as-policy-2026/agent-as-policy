@@ -1,0 +1,2 @@
+trial,session,model,backend,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,cost_usd,agent_verdict,operator_verdict,remarks
+05,20260911_152948_paper_twopairs_full_high_56luna_05,gpt-5.6-luna,codex,high,default,full,left,none,0,none,0,0,2026-09-11 15:29:48,963,no,69,22,9,3,35,6708176,6519808,26613,12340,,fail (agent),,

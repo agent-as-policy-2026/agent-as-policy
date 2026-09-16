@@ -1,0 +1,6 @@
+trial,session,model,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260910_121811_paper_twopairs_full_high_56sol_01,gpt-5.6-sol,high,default,full,left,none,0,none,0,0,2026-09-10 12:18:11,949,no,56,20,4,5,29,7784836,7600384,28517,12059,success (agent),,
+02,20260910_124138_paper_twopairs_full_high_56sol_02,gpt-5.6-sol,high,default,full,left,none,0,none,0,0,2026-09-10 12:41:38,1008,no,51,19,4,3,26,7806644,7646208,27173,13212,success (agent),,
+03,20260910_130635_paper_twopairs_full_high_56sol_03,gpt-5.6-sol,high,default,full,left,none,0,none,0,1,2026-09-10 13:06:35,1188,no,54,21,4,3,28,9680634,9490944,37239,18069,success (agent),,
+04,20260910_134009_paper_twopairs_full_high_56sol_04,gpt-5.6-sol,high,default,full,left,none,0,none,1,0,2026-09-10 13:40:09,769,no,54,19,4,5,28,6135442,5988864,20964,10602,success (agent),,
+05,20260910_135325_paper_twopairs_full_high_56sol_05,gpt-5.6-sol,high,default,full,left,none,0,none,1,0,2026-09-10 13:53:25,573,no,48,18,4,1,25,4104574,3969792,13485,5538,success (agent),,

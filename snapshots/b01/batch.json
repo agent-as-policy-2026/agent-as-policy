@@ -1,0 +1,15 @@
+{
+ "batch": "b01",
+ "frozen_at": "2026-09-13T17:31",
+ "sessions": 196,
+ "by_category": {
+  "paper": 148,
+  "scatter": 27,
+  "other": 21
+ },
+ "total_bytes": 89161998493,
+ "with_joints": 158,
+ "with_frames_csv": 159,
+ "root_videos": 537,
+ "frame_pngs": 17905
+}

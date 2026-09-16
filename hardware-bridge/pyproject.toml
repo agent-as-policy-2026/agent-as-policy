@@ -1,0 +1,68 @@
+[project]
+name = "agp-yam-hardware-bridge"
+version = "0.1.0"
+description = "Fail-closed YAM observation and safety motion bridge for Agent as Policy"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  # The vendored graph-as-policy connector subset (import names `gap` /
+  # `gap_core`). It is a sibling distribution under
+  # ../third_party/graph-as-policy, NOT part of this package, so its
+  # Apache-2.0 attribution stays separable; see that directory's
+  # UPSTREAM.md. Declaring it here is what makes `import gap.connector`
+  # work from this venv after a plain `uv sync`, with no PYTHONPATH.
+  "agp-vendored-gap-connector",
+  "i2rt",
+  "msgpack>=1.0",
+  "msgpack-numpy>=0.4.8",
+  "numpy>=1.26",
+  # OpenCV 5.0 removed calibrateHandEye from the Python wheel used here.
+  "opencv-contrib-python-headless>=4.10,<5",
+  "pillow>=10",
+  "pydantic>=2.0",
+  # Same librealsense Python range used by the verified LeRobot D405 path.
+  "pyrealsense2>=2.55.1.6486,<2.57.0",
+  "pyyaml>=6.0",
+  "scipy>=1.12",
+]
+
+[project.scripts]
+agp-yam-preflight = "agp_yam_bridge.preflight:main"
+agp-yam-bridge = "agp_yam_bridge.main:main"
+agp-yam-camera-acceptance = "agp_yam_bridge.camera_acceptance:main"
+
+[dependency-groups]
+dev = [
+  "h5py>=3.0",
+  "pytest>=8",
+  "ruff>=0.15,<0.16",
+]
+
+[tool.uv.sources]
+# hardware-bridge and the patched i2rt checkout are siblings in this repo, so
+# the editable source is ../i2rt (see third_party/i2rt/UPSTREAM.md for how to
+# recreate it). Never point this at
+# graph-as-policy/third_party/robots_realtime/dependencies/i2rt.
+i2rt = { path = "../i2rt", editable = true }
+# The vendored connector is in-tree (third_party/graph-as-policy), so it is
+# a relative path source like i2rt above. Editable keeps one copy of the
+# bytes the digests in that directory cover.
+agp-vendored-gap-connector = { path = "../third_party/graph-as-policy", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agp_yam_bridge"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

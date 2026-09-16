@@ -1,0 +1,108 @@
+# LEFT-ARM OFFLINE CALIBRATION CONFIG.
+#
+# This file exists for the OFFLINE agp-yam-camera-acceptance subcommands only
+# (calibrate-checkerboard / evaluate-checkerboard-pose / evaluate-jitter /
+# evaluate-points / evaluate-plane on left_pose*.npz captures produced by
+# calib/capture_left_handeye.py).  It is NOT yet a bridge runtime config: the
+# strict preflight (tracked_diff_sha256, camera_physical_port, acceptance
+# envelope, safety gates) will be revisited when the left arm is brought under
+# the bridge.  Values not used by the offline solver are carried over from
+# first_acceptance.yaml unchanged.
+
+schema_version: 1
+
+# Loopback; port 9021 so a future left bridge cannot collide with an
+# earlier right-arm bridge (port 9020).  Unused by the offline solver.
+bridge:
+  host: 127.0.0.1
+  port: 9021
+  request_timeout_s: 1.0
+  stale_after_s: 0.5
+
+# Paths are resolved relative to this file.
+i2rt:
+  source: ../../i2rt
+  package_version: "1.1.2"
+  git_revision: "2c2f3ae7a9040e3ce892873eb9aa744eb286063f"
+  # SHA-256 of: git -C ../i2rt diff --binary HEAD -- i2rt pyproject.toml
+  # Carried over from first_acceptance.yaml; only checked by the (not yet run)
+  # bridge preflight, not by the offline solver.
+  tracked_diff_sha256: "ef0864c34beec62849c39f5a3f211c0758adcbac1c4a563bbfbc747fde0673a7"
+
+hardware:
+  arm: yam
+  gripper: linear_4310
+  can_channel: can_follower_l
+  can_bitrate: 1000000
+  camera_model: Intel RealSense D405
+  # LEFT wrist D405 (udev-verified).
+  camera_serial: "353322271204"
+  # TODO(left bridge): record the left camera's physical port before bridge
+  # use; unused by the offline solver (carried over from the right arm).
+  camera_physical_port: "6-2"
+  arm_model: ../../i2rt/i2rt/robot_models/arm/yam/v1/yam.xml
+  gripper_model: ../../i2rt/i2rt/robot_models/gripper/linear_4310/linear_4310.xml
+  station_model: ../../i2rt/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+
+# D405 RGB-D contract, same 640x360@30 profile as the right wrist.
+camera:
+  name: wrist_d405_left
+  width: 640
+  height: 360
+  fps: 30
+  frame_timeout_s: 1.0
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+  min_depth_m: 0.01
+  max_depth_m: 1.0
+  # Carried over from the right arm's P3 postupdate report; only meaningful
+  # once the LEFT hand-eye has been solved, written back, and re-verified.
+  transform_translation_error_bound_m: 0.0016787199367799639
+  # LEFT chain bodies in the station MJCF (nominal flange<-camera source).
+  station_flange_body: left_gripper
+  station_camera_body: left_camera
+
+# Unused offline; carried over.
+top_camera:
+  calibration_path: ../acceptance/top/top_brio_calibration.json
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+
+# Unused offline; carried over from first_acceptance.yaml.
+acceptance:
+  home_joints_deg: [0, 0, 0, 88, 90, 90]
+  workspace:
+    frame: yam_base
+    tcp: grasp_site
+    x_m: [-1.60, 1.60]
+    y_m: [-1.75, 1.75]
+    z_m: [-0.06, 0.50]
+  speed_limits:
+    control_frequency_hz: 50
+    joint_velocity_deg_s: 20
+    joint_acceleration_deg_s2: 40
+    cartesian_translation_m_s: 0.03
+    cartesian_rotation_deg_s: 10
+    gripper_fraction_s: 0.25
+
+# Unused offline; carried over from first_acceptance.yaml.
+safety:
+  command_heartbeat_timeout_s: 0.5
+  feedback_stale_after_s: 0.1
+  max_tracking_error_deg: null
+  tracking_error_timeout_s: 0.5
+  joint_settle_tolerance_rad: 0.03
+  cartesian_position_tolerance_m: 0.0005
+  cartesian_orientation_tolerance_deg: 0.5
+  cartesian_settle_gain_s_inv: 4.0
+  cartesian_settle_max_bias_deg: 2.0
+  gripper_max_effort_nm: 0.9
+  gripper_contact_min_effort_nm: 0.2
+  gripper_contact_release_effort_nm: 0.15
+  gripper_contact_confirmation_s: 0.1
+  gripper_contact_max_velocity_fraction_s: 0.1
+  gripper_contact_min_open_fraction: 0.05
+  gripper_stall_velocity_fraction_s: 0.01
+  gripper_stall_error_fraction: 0.02
+  gripper_stall_timeout_s: 0.5
+  action_log_path: ../logs/actions.jsonl

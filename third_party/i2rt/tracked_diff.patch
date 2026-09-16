@@ -1,0 +1,1922 @@
+diff --git a/i2rt/motor_drivers/dm_driver.py b/i2rt/motor_drivers/dm_driver.py
+index 1ef6954..96ff076 100644
+--- a/i2rt/motor_drivers/dm_driver.py
++++ b/i2rt/motor_drivers/dm_driver.py
+@@ -33,6 +33,8 @@ CONTROL_PERIOD = 1.0 / CONTROL_FREQ  # 4 ms
+ 
+ EXPECTED_CONTROL_PERIOD = 0.007
+ REPORT_INTERVAL = 30.0
++STARTUP_HOLD_MAX_ATTEMPTS = 10
++STARTUP_HOLD_RETRY_DELAY_S = 0.02
+ 
+ 
+ class ControlMode:
+@@ -158,28 +160,24 @@ class DMSingleMotorCanInterface(CanInterface):
+         current_level = logging.getLogger().getEffectiveLevel()
+         logging.getLogger().setLevel(logging.ERROR)
+ 
+-        id = motor_id  # self._get_frame_id(motor_id)
+-        data = [0xFF] * 7 + [0xFC]
+-
+-        message = self._send_message_get_response(id, motor_id, data)
+-
+-        # dummy motor type just check motor status
+-        motor_info = self.parse_recv_message(message, MotorType.DM4310, ignore_error=True)
+-        if int(motor_info.error_code, 16) != MotorErrorCode.normal:
+-            while int(motor_info.error_code, 16) != MotorErrorCode.normal:
++        try:
++            id = motor_id  # self._get_frame_id(motor_id)
++            data = [0xFF] * 7 + [0xFC]
++            message = self._send_message_get_response(id, motor_id, data)
++
++            # Bound recovery so an earlier enabled joint never waits indefinitely
++            # without its startup hold being refreshed.
++            for _ in range(3):
++                motor_info = self.parse_recv_message(message, MotorType.DM4310, ignore_error=True)
++                if int(motor_info.error_code, 16) == MotorErrorCode.normal:
++                    return self.parse_recv_message(message, motor_type)
+                 logging.info(f"motor {motor_id} error: {motor_info.error_message}")
+                 self.clean_error(motor_id=motor_id)
+                 self.try_receive_message()
+-                logging.info(f"motor {motor_id} error cleaned")
+-                # enable again
+-
+                 message = self._send_message_get_response(id, motor_id, data)
+-                motor_info = self.parse_recv_message(message, motor_type, ignore_error=True)
+-        else:
+-            logging.info(f"motor {motor_id} is already on")
+-        logging.getLogger().setLevel(current_level)
+-        motor_info = self.parse_recv_message(message, motor_type)
+-        return motor_info
++            raise RuntimeError(f"motor {motor_id} did not enter the normal state after three enable attempts")
++        finally:
++            logging.getLogger().setLevel(current_level)
+ 
+     def clean_error(self, motor_id: int) -> None:
+         # self.try_receive_message()
+@@ -367,6 +365,29 @@ class MotorChain(Protocol):
+         """Set commands to the motors in the chain."""
+         raise NotImplementedError
+ 
++    def apply_commands(
++        self,
++        torques: np.ndarray,
++        pos: Optional[np.ndarray] = None,
++        vel: Optional[np.ndarray] = None,
++        kp: Optional[np.ndarray] = None,
++        kd: Optional[np.ndarray] = None,
++    ) -> List[MotorInfo]:
++        """Install and synchronously transmit one command frame per motor."""
++        raise NotImplementedError
++
++
++class DMChainEnableHoldingError(RuntimeError):
++    """Motor-chain creation failed after at least one motor entered a safe hold."""
++
++    def __init__(self, motor_chain: "DMChainCanInterface"):
++        super().__init__("DM motor enable failed after a partial enable; preserving the live chain for hold retries")
++        self.motor_chain = motor_chain
++
++    @property
++    def hold_active(self) -> bool:
++        return self.motor_chain.startup_hold_confirmed
++
+ 
+ class DMChainCanInterface(MotorChain):
+     def __init__(
+@@ -385,6 +406,8 @@ class DMChainCanInterface(MotorChain):
+         report_interval: float = REPORT_INTERVAL,
+         control_freq: float = CONTROL_FREQ,  # Control loop frequency (Hz), used for the CAN bandwidth check
+         enable_auto_recovery: bool = False,  # if True, try to clean+re-enable errored motors in the control loop instead of failing fast
++        startup_hold_kp: Optional[np.ndarray] = None,
++        startup_hold_kd: Optional[np.ndarray] = None,
+     ):
+         assert not use_buffered_reader, (
+             "buffered reader is not very stable, the latest encoder fix allows us to use the non-buffered reader"
+@@ -402,6 +425,26 @@ class DMChainCanInterface(MotorChain):
+         self.motor_offset = np.array(motor_offset, dtype=float)
+         self.motor_direction = np.array(motor_direction)
+         self.channel = channel
++        if (startup_hold_kp is None) != (startup_hold_kd is None):
++            raise ValueError("startup_hold_kp and startup_hold_kd must be provided together")
++        self._startup_hold_kp = None if startup_hold_kp is None else np.asarray(startup_hold_kp, dtype=float)
++        self._startup_hold_kd = None if startup_hold_kd is None else np.asarray(startup_hold_kd, dtype=float)
++        if self._startup_hold_kp is not None:
++            if self._startup_hold_kp.shape != (len(motor_list),) or self._startup_hold_kd.shape != (len(motor_list),):
++                raise ValueError("startup hold gains must contain one kp and kd value per motor")
++            if (
++                not np.all(np.isfinite(self._startup_hold_kp))
++                or not np.all(np.isfinite(self._startup_hold_kd))
++                or np.any(self._startup_hold_kp <= 0.0)
++                or np.any(self._startup_hold_kd < 0.0)
++            ):
++                raise ValueError("startup hold gains must be finite with kp > 0 and kd >= 0")
++        self._startup_enabled_holds: list[tuple[int, str, float, float, float]] = []
++        self._startup_hold_status_lock = threading.Lock()
++        self._startup_hold_confirmed_ids: set[int] = set()
++        self._startup_hold_last_error: str | None = None
++        self._startup_emergency_stop_event = threading.Event()
++        self._startup_emergency_thread: Optional[threading.Thread] = None
+         # Read live each control-loop iteration; must be set before _motor_on()/start_thread() since
+         # some callers (e.g. _get_gripper_only_robot) start the thread inside this constructor.
+         self.enable_auto_recovery = enable_auto_recovery
+@@ -422,16 +465,42 @@ class DMChainCanInterface(MotorChain):
+                 name=motor_chain_name,
+                 use_buffered_reader=use_buffered_reader,
+             )
++        try:
++            self._initialize_motor_chain(
++                bitrate=bitrate,
++                control_freq=control_freq,
++                report_interval=report_interval,
++                get_same_bus_device_driver=get_same_bus_device_driver,
++                start_thread=start_thread,
++            )
++        except BaseException as exc:
++            if self._start_partial_enable_hold_loop():
++                raise DMChainEnableHoldingError(self) from exc
++            self.running = False
++            try:
++                self.motor_interface.close()
++            except Exception:
++                logging.exception("Failed to close CAN interface after motor-chain initialization error")
++            raise
++
++    def _initialize_motor_chain(
++        self,
++        bitrate: int,
++        control_freq: float,
++        report_interval: float,
++        get_same_bus_device_driver: Optional[Callable],
++        start_thread: bool,
++    ) -> None:
+         # CAN bus bandwidth check with 1.1x safety factor
+         CAN_FRAME_BITS = 130  # approximate bits per CAN 2.0A frame including overhead
+-        frames_per_cycle = len(motor_list) * 2  # send + receive per motor
++        frames_per_cycle = len(self.motor_list) * 2  # send + receive per motor
+         bits_per_second = frames_per_cycle * CAN_FRAME_BITS * control_freq
+         max_bits_per_second = bitrate / 1.1
+         if bits_per_second > max_bits_per_second:
+             max_safe_freq = max_bits_per_second / (frames_per_cycle * CAN_FRAME_BITS)
+             logging.warning(
+                 f"CAN bus bandwidth exceeded: {bits_per_second:.0f} bps > {max_bits_per_second:.0f} bps "
+-                f"(bitrate={bitrate}, motors={len(motor_list)}, freq={control_freq}Hz). "
++                f"(bitrate={bitrate}, motors={len(self.motor_list)}, freq={control_freq}Hz). "
+                 f"Max safe frequency: {max_safe_freq:.0f} Hz"
+             )
+ 
+@@ -464,6 +533,7 @@ class DMChainCanInterface(MotorChain):
+         self.command_lock = threading.RLock()
+ 
+         self.start_thread_flag = False
++        self._control_thread: Optional[threading.Thread] = None
+         if start_thread:
+             self.start_thread()
+ 
+@@ -520,20 +590,136 @@ class DMChainCanInterface(MotorChain):
+     def _motor_on(self) -> None:
+         motor_feedback = []
+         self.motor_interface._drain_bus(timeout_s=0.05)
+-        for motor_id, motor_type in self.motor_list:
++        for idx, (motor_id, motor_type) in enumerate(self.motor_list):
++            self._send_partial_enabled_holds_once()
+             logging.info(f"Turning on motor_id: {motor_id}, motor_type: {motor_type}")
+             time.sleep(0.003)
+-            motor_feedback.append(self.motor_interface.motor_on(motor_id, motor_type))
++            feedback = self.motor_interface.motor_on(motor_id, motor_type)
++            if self._startup_hold_kp is not None and self._startup_hold_kd is not None:
++                target_position = float(feedback.position)
++                kp = float(self._startup_hold_kp[idx])
++                kd = float(self._startup_hold_kd[idx])
++                # Register the recovery target before the first control frame so
++                # an interruption in set_control still transfers this enabled
++                # motor to the emergency hold worker.
++                self._startup_enabled_holds.append((motor_id, motor_type, target_position, kp, kd))
++                for hold_attempt in range(STARTUP_HOLD_MAX_ATTEMPTS):
++                    try:
++                        feedback = self.motor_interface.set_control(
++                            motor_id=motor_id,
++                            motor_type=motor_type,
++                            pos=target_position,
++                            vel=0.0,
++                            kp=kp,
++                            kd=kd,
++                            torque=0.0,
++                        )
++                        break
++                    except RuntimeError as exc:
++                        self._record_startup_hold_failure(motor_id, exc)
++                        if (
++                            "error: disabled" not in str(exc).lower()
++                            or hold_attempt == STARTUP_HOLD_MAX_ATTEMPTS - 1
++                        ):
++                            raise
++                        logging.warning(
++                            "Motor %s remained disabled on startup hold attempt %s/%s; "
++                            "clearing error and re-enabling before retry.",
++                            motor_id,
++                            hold_attempt + 1,
++                            STARTUP_HOLD_MAX_ATTEMPTS,
++                        )
++                        # A motor disabled by the preceding process can acknowledge
++                        # an enable frame while its software-disable latch still
++                        # rejects MIT control. Keep earlier joints refreshed, clear
++                        # that latch, drain its stale feedback, then enable again.
++                        self._send_partial_enabled_holds_once(
++                            suppress_errors=True,
++                            exclude_motor_id=motor_id,
++                        )
++                        self.motor_interface.clean_error(motor_id)
++                        time.sleep(STARTUP_HOLD_RETRY_DELAY_S)
++                        self.motor_interface._drain_bus(timeout_s=STARTUP_HOLD_RETRY_DELAY_S)
++                        feedback = self.motor_interface.motor_on(motor_id, motor_type)
++                        target_position = float(feedback.position)
++                        self._startup_enabled_holds[-1] = (motor_id, motor_type, target_position, kp, kd)
++                self._record_startup_hold_success(motor_id)
++            motor_feedback.append(feedback)
+         self._update_absolute_positions(motor_feedback)
+         self.state = motor_feedback
+         self.running = True
+ 
++    def _start_partial_enable_hold_loop(self) -> bool:
++        if not self._startup_enabled_holds:
++            return False
++        self.running = True
++        self._startup_emergency_thread = threading.Thread(
++            target=self._partial_enable_hold_worker,
++            name="dm_partial_enable_hold",
++            daemon=False,
++        )
++        self._startup_emergency_thread.start()
++        return True
++
++    def _partial_enable_hold_worker(self) -> None:
++        while not self._startup_emergency_stop_event.is_set():
++            started_at = time.perf_counter()
++            self._send_partial_enabled_holds_once(suppress_errors=True)
++            self._startup_emergency_stop_event.wait(max(0.0, 0.02 - (time.perf_counter() - started_at)))
++
++    def _send_partial_enabled_holds_once(
++        self,
++        *,
++        suppress_errors: bool = False,
++        exclude_motor_id: int | None = None,
++    ) -> None:
++        for motor_id, motor_type, position, kp, kd in self._startup_enabled_holds:
++            if motor_id == exclude_motor_id:
++                continue
++            try:
++                self.motor_interface.set_control(
++                    motor_id=motor_id,
++                    motor_type=motor_type,
++                    pos=position,
++                    vel=0.0,
++                    kp=kp,
++                    kd=kd,
++                    torque=0.0,
++                )
++                self._record_startup_hold_success(motor_id)
++            except Exception as exc:
++                self._record_startup_hold_failure(motor_id, exc)
++                if not suppress_errors:
++                    raise
++                logging.exception("Partial-enable hold failed for motor %s", motor_id)
++
++    @property
++    def startup_hold_confirmed(self) -> bool:
++        with self._startup_hold_status_lock:
++            enabled_ids = {motor_id for motor_id, *_ in self._startup_enabled_holds}
++            return bool(enabled_ids) and enabled_ids.issubset(self._startup_hold_confirmed_ids)
++
++    @property
++    def startup_hold_last_error(self) -> str | None:
++        with self._startup_hold_status_lock:
++            return self._startup_hold_last_error
++
++    def _record_startup_hold_success(self, motor_id: int) -> None:
++        with self._startup_hold_status_lock:
++            self._startup_hold_confirmed_ids.add(motor_id)
++            self._startup_hold_last_error = None
++
++    def _record_startup_hold_failure(self, motor_id: int, exc: BaseException) -> None:
++        with self._startup_hold_status_lock:
++            self._startup_hold_confirmed_ids.discard(motor_id)
++            self._startup_hold_last_error = f"motor {motor_id}: {exc}"
++
+     def start_thread(self) -> None:
+         if self.start_thread_flag:
+             return
+         logging.info("starting separate thread for control loop")
+-        thread = threading.Thread(target=self._set_torques_and_update_state)
+-        thread.start()
++        self._control_thread = threading.Thread(target=self._set_torques_and_update_state)
++        self._control_thread.start()
+         self.start_thread_flag = True
+         time.sleep(0.1)
+         while self.state is None:
+@@ -742,12 +928,66 @@ class DMChainCanInterface(MotorChain):
+         if get_state:
+             return self.read_states(torques=torques)
+ 
++    def apply_commands(
++        self,
++        torques: np.ndarray,
++        pos: Optional[np.ndarray] = None,
++        vel: Optional[np.ndarray] = None,
++        kp: Optional[np.ndarray] = None,
++        kd: Optional[np.ndarray] = None,
++    ) -> List[MotorInfo]:
++        """Install commands and return only after every motor replies to them."""
++        commands = [
++            MotorCmd(
++                torque=torques[idx],
++                pos=pos[idx] if pos is not None else 0.0,
++                vel=vel[idx] if vel is not None else 0.0,
++                kp=kp[idx] if kp is not None else 0.0,
++                kd=kd[idx] if kd is not None else 0.0,
++            )
++            for idx in range(len(self.motor_list))
++        ]
++        with self.command_lock:
++            self.commands = commands
++            motor_feedback = self._set_commands(commands)
++        with self.state_lock:
++            self.state = motor_feedback
++            self._update_absolute_positions(motor_feedback)
++        return self.read_states(torques=torques)
++
++    def send_commands_once(
++        self,
++        torques: np.ndarray,
++        pos: Optional[np.ndarray] = None,
++        vel: Optional[np.ndarray] = None,
++        kp: Optional[np.ndarray] = None,
++        kd: Optional[np.ndarray] = None,
++    ) -> List[MotorInfo]:
++        """Install commands and synchronously transmit one control frame per motor.
++
++        This startup-only operation gives newly enabled motors a position hold
++        before the asynchronous control worker begins.
++        """
++        if self.start_thread_flag:
++            raise RuntimeError("send_commands_once is only valid before the control thread starts")
++
++        return self.apply_commands(torques, pos=pos, vel=vel, kp=kp, kd=kd)
++
+     def get_same_bus_device_states(self) -> Any:
+         with self.same_bus_device_lock:
+             return self.same_bus_device_states
+ 
+     def close(self) -> None:
+         self.running = False
++        emergency_stop_event = getattr(self, "_startup_emergency_stop_event", None)
++        if emergency_stop_event is not None:
++            emergency_stop_event.set()
++        emergency_thread = getattr(self, "_startup_emergency_thread", None)
++        if emergency_thread is not None and emergency_thread.is_alive():
++            emergency_thread.join()
++        control_thread = getattr(self, "_control_thread", None)
++        if control_thread is not None and control_thread.is_alive():
++            control_thread.join()
+         self.motor_interface.close()
+ 
+ 
+@@ -792,6 +1032,30 @@ class MultiDMChainCanInterface(MotorChain):
+             start_idx = end_idx
+         return motor_infos
+ 
++    def apply_commands(
++        self,
++        torques: np.ndarray,
++        pos: Optional[np.ndarray] = None,
++        vel: Optional[np.ndarray] = None,
++        kp: Optional[np.ndarray] = None,
++        kd: Optional[np.ndarray] = None,
++    ) -> List[MotorInfo]:
++        start_idx = 0
++        motor_infos = []
++        for interface in self.interfaces:
++            end_idx = start_idx + len(interface)
++            motor_infos.extend(
++                interface.apply_commands(
++                    torques[start_idx:end_idx],
++                    pos=None if pos is None else pos[start_idx:end_idx],
++                    vel=None if vel is None else vel[start_idx:end_idx],
++                    kp=None if kp is None else kp[start_idx:end_idx],
++                    kd=None if kd is None else kd[start_idx:end_idx],
++                )
++            )
++            start_idx = end_idx
++        return motor_infos
++
+ 
+ if __name__ == "__main__":
+     import argparse
+diff --git a/i2rt/robot_models/station/yam_station_linear_4310_d405/README.md b/i2rt/robot_models/station/yam_station_linear_4310_d405/README.md
+index db85362..f418c4e 100644
+--- a/i2rt/robot_models/station/yam_station_linear_4310_d405/README.md
++++ b/i2rt/robot_models/station/yam_station_linear_4310_d405/README.md
+@@ -42,19 +42,26 @@ The camera sits on the arms' midline, so the two rows above are exact mirrors in
+ 
+ ## Flange → wrist camera (`{side}_gripper` → `{side}_camera`)
+ 
+-**Identical for both arms** — the two mounts have byte-identical origins in the URDF, so one table
+-serves both:
++Both optical frames are measured RGB hand-eye calibrations at `640x360` against a fixed
++10x8-square board (22 mm squares, 9x7 internal corners; all 30 frames in each accepted pose
++detected). The right frame is D405 serial `353322271910`, observed from four arm poses after
++applying that follower arm's joint-4 software zero correction. The left frame is D405 serial
++`353322271204`, measured 2026-08-31 from eleven arm poses after applying the left follower's
++joint 3/4/5 software zero corrections.
+ 
+-| | |
+-| --- | --- |
+-| `xyz` | `-0.07  0  -0.077` |
+-| `quat (w,x,y,z)` | `0.153  0.69  0.69  0.153` |
++| Transform | `xyz` | `quat (w,x,y,z)` |
++| --- | --- | --- |
++| `left_gripper` → `left_camera` (measured RGB, 2026-08-31) | `-0.072824  0.002148  -0.073374` | `0.160345  0.701747  0.677653  0.150422` |
++| `right_gripper` → `right_camera` (measured RGB) | `-0.074223  0.012702  -0.073968` | `0.162385  0.695069  0.685275  0.144599` |
+ 
+-The optical axis is canted 25° off the flange's −Z approach axis, tilted back toward the gripper
+-centreline: the ray leaves the camera 70 mm behind and 77 mm below the flange and crosses the
+-gripper axis at `z = -0.228 m`, i.e. at the fingertips, past `linear_4310`'s `grasp_site` at
+-`z = -0.1347`.
++The superseded left CAD transform was `xyz  -0.070435  0  -0.077006`,
++`quat  0.153  0.69  0.69  0.153`. The CAD optical axis is canted 25° off the flange's −Z approach
++axis, tilted back toward the gripper centreline. The calibrated right frame differs from CAD by
++13.60 mm and 1.65°; its four-pose fixed-target consistency was 1.71 mm translation RMS and 0.283°
++rotation RMS, with 0.176 px corner reprojection RMS. The calibrated left frame differs from CAD by
++4.85 mm and 2.15°; its eleven-pose fixed-target consistency was 1.37 mm translation RMS and 0.266°
++rotation RMS, with 0.249 px corner reprojection RMS.
+ 
+ The whole wrist-camera chain hangs off `joint6`'s output by fixed joints, so this transform holds at
+-every arm configuration. Because both arms carry the same mount and the same base orientation, it is
+-also side-independent; only the base→top-camera extrinsics differ between arms.
++every arm configuration. The bracket geometry remains side-independent; both optical frames are
++serial-specific.
+diff --git a/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.urdf b/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.urdf
+index dae2c00..a902e4e 100644
+--- a/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.urdf
++++ b/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.urdf
+@@ -3,8 +3,10 @@
+ 
+      Derived from the raw ONShape export `yam_station_d405` (214 links) by keeping only the two
+      arms and the top camera. The arms are the repo's own yam v1 model: a rigid-transform fit
+-     against the export matches every arm link to <=0.2 mm, and each arm's wrist-camera mount
+-     matches arm/yam/v1/yam_linear_4310_d405.urdf exactly, so all arm and wrist meshes are shared from
++     against the export matches every arm link to <=0.2 mm. The wrist-camera geometry matches
++     arm/yam/v1/yam_linear_4310_d405.urdf, while the wrist optical frames carry the physical RGB
++     hand-eye calibrations (right: D405 serial 353322271910; left: D405 serial 353322271204,
++     measured 2026-08-31). All arm and wrist meshes are shared from
+      arm/yam/v1/assets/. The top-camera bracket lives in ../assets/, shared with the crank station.
+ 
+      `left_base` is the model root. See README.md for the camera extrinsics. -->
+@@ -327,7 +329,7 @@
+     </joint>
+ 
+     <joint name="left_camera_joint" type="fixed">
+-        <origin xyz="-0.019 0 -0.023" rpy="3.14159 1.57772e-30 -4.73317e-30" />
++        <origin xyz="-0.016851614786552154 0.0006308540632071341 -0.018698929652025048" rpy="3.1344315221200905 0.020967600523491114 -0.030307550226226665" />
+         <axis xyz="0 0 1" />
+         <parent link="left_camera_body" />
+         <child link="left_camera" />
+@@ -617,7 +619,7 @@
+     </joint>
+ 
+     <joint name="right_camera_joint" type="fixed">
+-        <origin xyz="-0.019 0 -0.023" rpy="3.14159 1.57772e-30 -4.73317e-30" />
++        <origin xyz="-0.00629760326411852 0.00214900505307843 -0.01864582369892485" rpy="3.140150860459003 0.02754571571195563 -0.00809988547135143" />
+         <axis xyz="0 0 1" />
+         <parent link="right_camera_body" />
+         <child link="right_camera" />
+diff --git a/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml b/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+index 96a699d..84044f1 100644
+--- a/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
++++ b/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+@@ -81,7 +81,7 @@
+                         <inertial pos="-0.0301543 -9.29024e-19 0.0250188" quat="7.0592364581229574e-17 0.73721435155243475 -8.2591776558927486e-17 -0.6756589375307066" mass="5.70792e-06" diaginertia="2.495474365437898e-10 1.0714199999999996e-09 1.1450735634562102e-09"/>
+                         <geom pos="0 0 0" quat="1 0 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="Part_2"/>
+                       </body>
+-                      <body name="left_camera" pos="-0.019 0 -0.023" quat="1.3267948966775328e-06 0.99999999999911982 -2.3665839533424946e-30 -7.8886313997220622e-31">
++                      <body name="left_camera" pos="-0.016851614786552154 0.0006308540632071341 -0.018698929652025048" quat="0.0034210910897760215 0.9998243952037758 -0.01511473241715814 -0.01053659124752125">
+                         <inertial pos="0 0 0" quat="1 0 0 0" mass="1e-09" diaginertia="4e-14 4e-14 4e-14"/>
+                       </body>
+                     </body>
+@@ -143,7 +143,7 @@
+                           <inertial pos="-0.0301543 -9.29024e-19 0.0250188" quat="7.0592364581229574e-17 0.73721435155243475 -8.2591776558927486e-17 -0.6756589375307066" mass="5.70792e-06" diaginertia="2.495474365437898e-10 1.0714199999999996e-09 1.1450735634562102e-09"/>
+                           <geom pos="0 0 0" quat="1 0 0 0" type="mesh" rgba="0.498039 0.498039 0.498039 1" mesh="Part_2"/>
+                         </body>
+-                        <body name="right_camera" pos="-0.019 0 -0.023" quat="1.3267948966775328e-06 0.99999999999911982 -2.3665839533424946e-30 -7.8886313997220622e-31">
++                        <body name="right_camera" pos="-0.00629760326411852 0.00214900505307843 -0.01864582369892485" quat="0.0006650448633163382 0.9998967358540337 -0.004039618089502926 -0.01377522520576173">
+                           <inertial pos="0 0 0" quat="1 0 0 0" mass="1e-09" diaginertia="4e-14 4e-14 4e-14"/>
+                         </body>
+                       </body>
+diff --git a/i2rt/robots/config/yam_v1.yml b/i2rt/robots/config/yam_v1.yml
+index f8ab3f3..2117a6b 100644
+--- a/i2rt/robots/config/yam_v1.yml
++++ b/i2rt/robots/config/yam_v1.yml
+@@ -8,6 +8,18 @@ motor_list:
+ 
+ directions: [1, 1, 1, 1, 1, 1]
+ 
++# Reversible per-device encoder-zero corrections. These are applied in software
++# by DMChainCanInterface; they do not write motor firmware. The right follower
++# joint4 value comes from the 2026-08-20 fixed-board 8-pose fit and independent
++# held-out pose08 check (4.68 mm / 0.55 deg prediction error).
++motor_offsets_deg_by_channel:
++  can_follower_r: [0.0, 0.0, 0.0, 5.467439674492972, 0.0, 0.0]
++  # Left follower: 2026-08-31 fixed-board 11-pose fit (calib/fit_joint_offsets.py,
++  # gap_yam_real): joints 3/4/5 stable (LOO std <= 0.13 deg); consistency
++  # 8.32 mm/1.156 deg -> 1.36 mm/0.257 deg RMS. Captures were taken with zero
++  # installed offsets.
++  can_follower_l: [0.0, 0.0, 0.813493705088, 1.9574947249, -0.359152777503, 0.0]
++
+ kp: [80.0, 80.0, 80.0, 10.0, 10.0, 10.0]
+ kd: [5.0, 5.0, 5.0, 1.5, 1.5, 1.5]
+ 
+diff --git a/i2rt/robots/get_robot.py b/i2rt/robots/get_robot.py
+index 89f7e02..ae34ce0 100644
+--- a/i2rt/robots/get_robot.py
++++ b/i2rt/robots/get_robot.py
+@@ -8,6 +8,7 @@ import numpy as np
+ from i2rt.motor_drivers.dm_driver import (
+     CanInterface,
+     DMChainCanInterface,
++    DMChainEnableHoldingError,
+     EncoderChain,
+     PassiveEncoderReader,
+     ReceiveMode,
+@@ -23,6 +24,24 @@ from i2rt.robots.utils import (
+ 
+ logger = logging.getLogger(__name__)
+ 
++SAFE_YAM_STARTUP_VERSION = 3
++
++
++class YamStartupHoldingError(RuntimeError):
++    """Robot construction failed after the current-position hold became active."""
++
++    def __init__(self, motor_chain: DMChainCanInterface, *, hold_active: bool):
++        super().__init__(
++            "YAM initialization failed after motor enable; "
++            + (
++                "the motor chain remains active at its current-position hold"
++                if hold_active
++                else "an emergency current-position hold could not be confirmed"
++            )
++        )
++        self.motor_chain = motor_chain
++        self.hold_active = hold_active
++
+ 
+ def _load_joint_limits_from_xml(*xml_paths: str) -> np.ndarray:
+     """Parse joint limits (range attributes) from one or more XML files.
+@@ -204,7 +223,10 @@ def get_yam_robot(
+     kd = hw.kd.copy()
+     grav_comp_kd = hw.grav_comp_kd.copy()
+     coulomb_friction = hw.coulomb_friction.copy()
+-    motor_offsets = [0.0] * len(motor_list)
++    motor_offsets = hw.motor_offsets_rad_by_channel.get(
++        channel, np.zeros(len(motor_list), dtype=float)
++    ).tolist()
++    logging.info(f"motor_offsets for {channel}: {motor_offsets}")
+ 
+     if with_gripper:
+         motor_type = gripper_type.get_motor_type(arm_type)
+@@ -249,60 +271,103 @@ def get_yam_robot(
+     # --- Real hardware path ---------------------------------------------------
+ 
+     # Single pass: create chain, read positions, fix wrap-around offsets in-place, then start thread.
+-    motor_chain = DMChainCanInterface(
+-        motor_list,
+-        motor_offsets,
+-        directions,
+-        channel,
+-        motor_chain_name="yam_real",
+-        receive_mode=ReceiveMode.p16,
+-        start_thread=False,
+-        get_same_bus_device_driver=get_encoder_chain if with_teaching_handle else None,
+-        use_buffered_reader=False,
+-        enable_auto_recovery=enable_auto_recovery,
+-    )
+-    motor_states = motor_chain.read_states()
+-    logging.debug(f"motor_states: {motor_states}")
+-
+-    logging.info(f"current_pos: {[m.pos for m in motor_states]}")
+-    for idx, state in enumerate(motor_states):
+-        if state.pos < -np.pi:
+-            logging.info(f"motor {idx} pos={state.pos:.3f}, offset -2π")
+-            motor_chain.motor_offset[idx] -= 2 * np.pi
+-        elif state.pos > np.pi:
+-            logging.info(f"motor {idx} pos={state.pos:.3f}, offset +2π")
+-            motor_chain.motor_offset[idx] += 2 * np.pi
+-
+-    logging.info(f"adjusted motor_offsets: {motor_chain.motor_offset.tolist()}")
+-
+-    # Start the control thread with corrected offsets.
+-    motor_chain.start_thread()
+-    logging.info(f"YAM initial motor_states: {motor_chain.read_states()}")
+-
+-    get_robot = partial(
+-        MotorChainRobot,
+-        motor_chain=motor_chain,
+-        xml_path=model_path,
+-        use_gravity_comp=True,
+-        gravity_comp_factor=effective_gravity_comp,
+-        joint_limits=joint_limits,
+-        kp=kp,
+-        kd=kd,
+-        grav_comp_kd=grav_comp_kd,
+-        coulomb_friction=coulomb_friction,
+-        use_coulomb_friction=use_coulomb_friction,
+-        zero_gravity_mode=zero_gravity_mode,
+-        joint_state_saver_factory=joint_state_saver_factory,
+-        set_realtime_and_pin_callback=set_realtime_and_pin_callback,
+-    )
++    try:
++        motor_chain = DMChainCanInterface(
++            motor_list,
++            motor_offsets,
++            directions,
++            channel,
++            motor_chain_name="yam_real",
++            receive_mode=ReceiveMode.p16,
++            start_thread=False,
++            get_same_bus_device_driver=get_encoder_chain if with_teaching_handle else None,
++            use_buffered_reader=False,
++            enable_auto_recovery=enable_auto_recovery,
++            startup_hold_kp=kp,
++            startup_hold_kd=kd,
++        )
++    except DMChainEnableHoldingError as exc:
++        raise YamStartupHoldingError(
++            exc.motor_chain, hold_active=exc.hold_active
++        ) from exc
++    hold_active = False
++    try:
++        motor_states = motor_chain.read_states()
++        logging.debug(f"motor_states: {motor_states}")
++
++        logging.info(f"current_pos: {[m.pos for m in motor_states]}")
++        for idx, state in enumerate(motor_states):
++            if state.pos < -np.pi:
++                logging.info(f"motor {idx} pos={state.pos:.3f}, offset -2π")
++                motor_chain.motor_offset[idx] -= 2 * np.pi
++            elif state.pos > np.pi:
++                logging.info(f"motor {idx} pos={state.pos:.3f}, offset +2π")
++                motor_chain.motor_offset[idx] += 2 * np.pi
++
++        logging.info(f"adjusted motor_offsets: {motor_chain.motor_offset.tolist()}")
++
++        # The first MIT control frame after motor enablement must hold the measured
++        # position.  Starting the worker with its zero-gain default leaves a loaded
++        # arm unsupported until the higher-level Robot finishes constructing.
++        hold_states = motor_chain.read_states()
++        hold_positions = np.array([state.pos for state in hold_states], dtype=float)
++        motor_chain.send_commands_once(
++            torques=np.zeros(len(hold_states)),
++            pos=hold_positions,
++            vel=None,
++            kp=kp,
++            kd=kd,
++        )
+ 
+-    if with_gripper:
+-        return get_robot(
+-            gripper_index=n_arm_joints,
+-            gripper_limits=gripper_limits,
+-            enable_gripper_calibration=gripper_needs_cal,
+-            gripper_type=gripper_type,
+-            arm_type=arm_type,
+-            limit_gripper_force=50.0,
++        # Start the control thread with corrected offsets and the current-position hold.
++        motor_chain.start_thread()
++        hold_active = True
++        logging.info(f"YAM initial motor_states: {motor_chain.read_states()}")
++
++        get_robot = partial(
++            MotorChainRobot,
++            motor_chain=motor_chain,
++            xml_path=model_path,
++            use_gravity_comp=True,
++            gravity_comp_factor=effective_gravity_comp,
++            joint_limits=joint_limits,
++            kp=kp,
++            kd=kd,
++            grav_comp_kd=grav_comp_kd,
++            coulomb_friction=coulomb_friction,
++            use_coulomb_friction=use_coulomb_friction,
++            zero_gravity_mode=zero_gravity_mode,
++            joint_state_saver_factory=joint_state_saver_factory,
++            set_realtime_and_pin_callback=set_realtime_and_pin_callback,
+         )
+-    return get_robot()
++
++        if with_gripper:
++            return get_robot(
++                gripper_index=n_arm_joints,
++                gripper_limits=gripper_limits,
++                enable_gripper_calibration=gripper_needs_cal,
++                gripper_type=gripper_type,
++                arm_type=arm_type,
++                limit_gripper_force=50.0,
++            )
++        return get_robot()
++    except BaseException as exc:
++        # Once the synchronous position hold has been installed, closing here can
++        # drop a loaded arm without an operator supporting it.  Transfer the live
++        # chain to the caller, which must keep it alive until explicit release.
++        if not hold_active:
++            try:
++                emergency_states = motor_chain.read_states()
++                emergency_positions = np.array([state.pos for state in emergency_states], dtype=float)
++                motor_chain.send_commands_once(
++                    torques=np.zeros(len(emergency_states)),
++                    pos=emergency_positions,
++                    vel=None,
++                    kp=kp,
++                    kd=kd,
++                )
++                motor_chain.start_thread()
++                hold_active = True
++            except BaseException:
++                logger.exception("Could not confirm emergency YAM current-position hold after startup failure")
++        raise YamStartupHoldingError(motor_chain, hold_active=hold_active) from exc
+diff --git a/i2rt/robots/motor_chain_robot.py b/i2rt/robots/motor_chain_robot.py
+index 18da115..b83149c 100644
+--- a/i2rt/robots/motor_chain_robot.py
++++ b/i2rt/robots/motor_chain_robot.py
+@@ -229,6 +229,7 @@ class MotorChainRobot(Robot):
+             self._joint_state_saver = None
+ 
+         self._command_lock = threading.Lock()
++        self._command_application_lock = threading.Lock()
+         self._state_lock = threading.Lock()
+         self._mcap_lock = threading.Lock()
+         self._mcap_recorder: Optional[RobotMcapRecorder] = None
+@@ -240,6 +241,10 @@ class MotorChainRobot(Robot):
+         self._commands = JointCommands.init_all_zero(len(motor_chain))
+         if zero_gravity_mode:
+             self._commands.kd = self._grav_comp_kd.copy()
++        else:
++            self._commands.pos = self.remapper.to_robot_joint_pos_space(self._joint_state.pos)
++            self._commands.kp = self._kp.copy()
++            self._commands.kd = self._kd.copy()
+         # For SWE-454, check if the current qpos is in the joint limits
+         self._check_current_qpos_in_joint_limits()
+ 
+@@ -248,10 +253,6 @@ class MotorChainRobot(Robot):
+         self._server_thread = threading.Thread(target=self.start_server, name="robot_server")
+         self._server_thread.start()
+ 
+-        if not zero_gravity_mode:
+-            # set current qpos as target pos with the default PD parameters
+-            self.command_joint_pos(self._joint_state.pos)
+-
+     def __repr__(self) -> str:
+         return f"MotorChainRobot(arm_type={self._arm_type}, gripper_type={self._gripper_type}, motor_chain={self.motor_chain})"
+ 
+@@ -356,6 +357,11 @@ class MotorChainRobot(Robot):
+ 
+         Send Torques and update the joint state.
+         """
++        with self._command_application_lock:
++            self._update_once()
++
++    def _update_once(self) -> None:
++        """Apply one buffered command while excluding synchronous transitions."""
+         with self._command_lock:
+             joint_commands = copy.deepcopy(self._commands)
+         with self._state_lock:
+@@ -400,6 +406,8 @@ class MotorChainRobot(Robot):
+         motor_torques: np.ndarray,
+         joint_commands: "JointCommands",
+         encoder_infos: Optional[List[PassiveEncoderInfo]] = None,
++        *,
++        apply_immediately: bool = False,
+     ) -> None:
+         """Send commands to motor chain, update joint state, and optionally save to disk."""
+         if (
+@@ -414,7 +422,8 @@ class MotorChainRobot(Robot):
+         else:
+             has_gripper_encoder = False
+ 
+-        motor_state = self.motor_chain.set_commands(
++        command_method = self.motor_chain.apply_commands if apply_immediately else self.motor_chain.set_commands
++        motor_state = command_method(
+             motor_torques,
+             pos=joint_commands.pos,
+             vel=joint_commands.vel,
+@@ -663,18 +672,45 @@ class MotorChainRobot(Robot):
+         self._kd = kd
+ 
+     def enter_gravity_comp_idle(self) -> None:
+-        """Reset active commands to gravity-comp idle.
++        """Synchronously transition active commands to gravity-comp idle.
+ 
+         Sets ``self._commands`` to zeros with ``kd = self._grav_comp_kd``,
+         mirroring the ``zero_gravity_mode=True`` branch in ``__init__``. Use
+         this after running PD control (e.g. ``command_joint_pos``) to re-enter
+         grav-comp idle without leaving the previous target pose/gains active.
++        The transition returns only after one complete command/feedback exchange
++        with every motor, while concurrent command installation remains blocked.
+         Leaves ``self._kp`` / ``self._kd`` unchanged so subsequent control
+         commands still use the configured control gains.
+         """
+-        with self._command_lock:
+-            self._commands = JointCommands.init_all_zero(len(self.motor_chain))
+-            self._commands.kd = self._grav_comp_kd.copy()
++        with self._command_application_lock:
++            with self._command_lock:
++                self._commands = JointCommands.init_all_zero(len(self.motor_chain))
++                self._commands.kd = self._grav_comp_kd.copy()
++                joint_commands = copy.deepcopy(self._commands)
++                with self._state_lock:
++                    gravity = self._compute_gravity_compensation(self._joint_state)
++                    friction = (
++                        self._coulomb_friction * np.sign(self._joint_state.vel)
++                        if self.use_coulomb_friction
++                        else 0.0
++                    )
++                    motor_torques = (
++                        joint_commands.torques
++                        + gravity * self.gravity_comp_factor
++                        + friction
++                    )
++                    motor_torques = np.clip(
++                        motor_torques,
++                        -self._clip_motor_torque,
++                        self._clip_motor_torque,
++                    )
++                    self._last_motor_torques = motor_torques.copy()
++                    self._update_joint_state(
++                        motor_torques,
++                        joint_commands,
++                        apply_immediately=True,
++                    )
+ 
+     def start_recording(self, save_dir: str) -> bool:
+         """Start recording joint state data asynchronously."""
+diff --git a/i2rt/robots/tests/test_robot_variants.py b/i2rt/robots/tests/test_robot_variants.py
+index ed322c4..a4c805f 100644
+--- a/i2rt/robots/tests/test_robot_variants.py
++++ b/i2rt/robots/tests/test_robot_variants.py
+@@ -4,14 +4,22 @@ Run with:
+     pytest tests/test_robot_variants.py -v
+ """
+ 
++import importlib
++from types import SimpleNamespace
++
+ import mujoco
+ import numpy as np
+ import pytest
+ 
+-from i2rt.robots.get_robot import get_yam_robot
++from i2rt.robots.get_robot import YamStartupHoldingError, get_yam_robot
+ from i2rt.robots.robot import Robot
+ from i2rt.robots.utils import ArmType, GripperType, combine_arm_and_gripper_xml
+ 
++get_robot_module = importlib.import_module("i2rt.robots.get_robot")
++dm_driver_module = importlib.import_module("i2rt.motor_drivers.dm_driver")
++motor_chain_robot_module = importlib.import_module("i2rt.robots.motor_chain_robot")
++robot_utils_module = importlib.import_module("i2rt.robots.utils")
++
+ # All YAM-family arm variants
+ YAM_ARMS = [
+     ArmType.YAM,
+@@ -49,6 +57,770 @@ def test_get_yam_robot_preserves_positional_gripper_argument() -> None:
+     robot.close()
+ 
+ 
++def test_get_yam_robot_keeps_motor_chain_holding_when_robot_initialization_is_interrupted(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """Post-enable construction failures must preserve the installed hold until explicit release."""
++
++    class RecordingMotorChain:
++        def __init__(self) -> None:
++            self.motor_offset = np.zeros(6)
++            self.closed = False
++
++        def read_states(self) -> list[SimpleNamespace]:
++            return [SimpleNamespace(pos=0.0) for _ in range(6)]
++
++        def start_thread(self) -> None:
++            pass
++
++        def send_commands_once(self, *args: object, **kwargs: object) -> None:
++            pass
++
++        def close(self) -> None:
++            self.closed = True
++
++    motor_chain = RecordingMotorChain()
++    monkeypatch.setattr(get_robot_module, "DMChainCanInterface", lambda *args, **kwargs: motor_chain)
++
++    def interrupt_robot_initialization(**_: object) -> None:
++        raise KeyboardInterrupt
++
++    monkeypatch.setattr(get_robot_module, "MotorChainRobot", interrupt_robot_initialization)
++
++    with pytest.raises(YamStartupHoldingError) as exc_info:
++        get_robot_module.get_yam_robot(
++            arm_type=ArmType.YAM,
++            gripper_type=GripperType.NO_GRIPPER,
++            sim=False,
++        )
++
++    assert exc_info.value.motor_chain is motor_chain
++    assert exc_info.value.hold_active
++    assert isinstance(exc_info.value.__cause__, KeyboardInterrupt)
++    assert not motor_chain.closed
++
++
++def test_get_yam_robot_transfers_partial_enable_hold_to_startup_owner(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """A constructor-time partial enable hold must cross the public YAM boundary."""
++    motor_chain = SimpleNamespace(startup_hold_confirmed=True)
++
++    def fail_during_partial_enable(*args: object, **kwargs: object) -> None:
++        raise dm_driver_module.DMChainEnableHoldingError(motor_chain)
++
++    monkeypatch.setattr(
++        get_robot_module, "DMChainCanInterface", fail_during_partial_enable
++    )
++
++    with pytest.raises(YamStartupHoldingError) as exc_info:
++        get_yam_robot(
++            channel="can_follower_r",
++            arm_type=ArmType.YAM,
++            gripper_type=GripperType.LINEAR_4310,
++        )
++
++    assert exc_info.value.motor_chain is motor_chain
++    assert exc_info.value.hold_active is True
++
++
++def test_get_yam_robot_configures_current_position_hold_before_control_thread(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """Starting the CAN control thread before a current-position hold must fail this test."""
++    current_pos = np.array([0.2, -0.3, 0.4, -0.5, 0.6, -0.7])
++    events: list[tuple[str, object]] = []
++
++    class RecordingMotorChain:
++        def __init__(self) -> None:
++            self.motor_offset = np.zeros(6)
++
++        def read_states(self) -> list[SimpleNamespace]:
++            return [SimpleNamespace(pos=value) for value in current_pos]
++
++        def send_commands_once(
++            self,
++            torques: np.ndarray,
++            pos: np.ndarray,
++            vel: np.ndarray | None,
++            kp: np.ndarray,
++            kd: np.ndarray,
++        ) -> None:
++            events.append(
++                (
++                    "hold_sent",
++                    {
++                        "torques": torques.copy(),
++                        "pos": pos.copy(),
++                        "vel": None if vel is None else vel.copy(),
++                        "kp": kp.copy(),
++                        "kd": kd.copy(),
++                    },
++                )
++            )
++
++        def start_thread(self) -> None:
++            events.append(("start_thread", None))
++
++        def close(self) -> None:
++            pass
++
++    motor_chain = RecordingMotorChain()
++    monkeypatch.setattr(get_robot_module, "DMChainCanInterface", lambda *args, **kwargs: motor_chain)
++    monkeypatch.setattr(get_robot_module, "MotorChainRobot", lambda **kwargs: SimpleNamespace())
++
++    get_robot_module.get_yam_robot(
++        arm_type=ArmType.YAM,
++        gripper_type=GripperType.NO_GRIPPER,
++        sim=False,
++    )
++
++    assert [name for name, _ in events] == ["hold_sent", "start_thread"]
++    hold = events[0][1]
++    assert isinstance(hold, dict)
++    np.testing.assert_allclose(hold["torques"], np.zeros(6))
++    np.testing.assert_allclose(hold["pos"], current_pos)
++    assert hold["vel"] is None
++    np.testing.assert_allclose(hold["kp"], [80.0, 80.0, 80.0, 10.0, 10.0, 10.0])
++    np.testing.assert_allclose(hold["kd"], [5.0, 5.0, 5.0, 1.5, 1.5, 1.5])
++
++
++def test_get_yam_robot_applies_follower_specific_reversible_zero_offset(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """A fitted follower offset must not affect other buses or move the startup hold."""
++    raw_positions = np.array([0.2, 0.3, 0.4, -0.5, 0.6, -0.7])
++    observed: dict[str, np.ndarray] = {}
++
++    class RecordingMotorChain:
++        def __init__(
++            self,
++            motor_list: object,
++            motor_offset: object,
++            motor_direction: object,
++            channel: str,
++            **_: object,
++        ) -> None:
++            del motor_list
++            self.motor_offset = np.asarray(motor_offset, dtype=float)
++            self.motor_direction = np.asarray(motor_direction, dtype=float)
++            self.channel = channel
++            observed[f"{channel}_offset"] = self.motor_offset.copy()
++
++        def read_states(self) -> list[SimpleNamespace]:
++            corrected = (raw_positions - self.motor_offset) * self.motor_direction
++            return [SimpleNamespace(pos=value) for value in corrected]
++
++        def send_commands_once(
++            self,
++            *,
++            pos: np.ndarray,
++            **_: object,
++        ) -> None:
++            observed[f"{self.channel}_hold_joint"] = pos.copy()
++            observed[f"{self.channel}_hold_raw"] = (
++                pos * self.motor_direction + self.motor_offset
++            )
++
++        def start_thread(self) -> None:
++            pass
++
++        def close(self) -> None:
++            pass
++
++    monkeypatch.setattr(get_robot_module, "DMChainCanInterface", RecordingMotorChain)
++    monkeypatch.setattr(get_robot_module, "MotorChainRobot", lambda **kwargs: SimpleNamespace())
++
++    get_robot_module.get_yam_robot(
++        channel="can_follower_r",
++        arm_type=ArmType.YAM,
++        gripper_type=GripperType.NO_GRIPPER,
++        sim=False,
++    )
++    get_robot_module.get_yam_robot(
++        channel="can_other",
++        arm_type=ArmType.YAM,
++        gripper_type=GripperType.NO_GRIPPER,
++        sim=False,
++    )
++
++    expected = np.zeros(6)
++    expected[3] = np.radians(5.467439674492972)
++    np.testing.assert_allclose(observed["can_follower_r_offset"], expected)
++    np.testing.assert_allclose(observed["can_other_offset"], np.zeros(6))
++    np.testing.assert_allclose(
++        observed["can_follower_r_hold_joint"], raw_positions - expected
++    )
++    np.testing.assert_allclose(observed["can_follower_r_hold_raw"], raw_positions)
++    np.testing.assert_allclose(observed["can_other_hold_joint"], raw_positions)
++    np.testing.assert_allclose(observed["can_other_hold_raw"], raw_positions)
++
++
++def test_get_yam_robot_passes_per_motor_startup_hold_gains(monkeypatch: pytest.MonkeyPatch) -> None:
++    constructor_kwargs: dict[str, object] = {}
++
++    class RecordingMotorChain:
++        def __init__(self) -> None:
++            self.motor_offset = np.zeros(6)
++
++        def read_states(self) -> list[SimpleNamespace]:
++            return [SimpleNamespace(pos=0.0) for _ in range(6)]
++
++        def send_commands_once(self, *args: object, **kwargs: object) -> None:
++            pass
++
++        def start_thread(self) -> None:
++            pass
++
++    def make_motor_chain(*args: object, **kwargs: object) -> RecordingMotorChain:
++        constructor_kwargs.update(kwargs)
++        return RecordingMotorChain()
++
++    monkeypatch.setattr(get_robot_module, "DMChainCanInterface", make_motor_chain)
++    monkeypatch.setattr(get_robot_module, "MotorChainRobot", lambda **kwargs: SimpleNamespace())
++
++    get_robot_module.get_yam_robot(
++        arm_type=ArmType.YAM,
++        gripper_type=GripperType.NO_GRIPPER,
++        sim=False,
++    )
++
++    np.testing.assert_allclose(constructor_kwargs["startup_hold_kp"], [80.0, 80.0, 80.0, 10.0, 10.0, 10.0])
++    np.testing.assert_allclose(constructor_kwargs["startup_hold_kd"], [5.0, 5.0, 5.0, 1.5, 1.5, 1.5])
++
++
++def test_send_commands_once_transmits_position_hold_synchronously() -> None:
++    """Only queueing a startup hold without sending MIT frames must fail this test."""
++    set_control_calls: list[dict[str, float | int | str]] = []
++
++    class RecordingCanInterface:
++        def set_control(self, **kwargs: float | int | str) -> SimpleNamespace:
++            set_control_calls.append(kwargs)
++            return SimpleNamespace(
++                position=float(kwargs["pos"]),
++                velocity=0.0,
++                torque=0.0,
++                error_code="0x1",
++                temperature_rotor=25.0,
++                temperature_mos=25.0,
++                id=int(kwargs["motor_id"]),
++            )
++
++    motor_chain = dm_driver_module.DMChainCanInterface.__new__(dm_driver_module.DMChainCanInterface)
++    motor_chain.motor_list = [(1, "DM4310"), (2, "DM4310")]
++    motor_chain.motor_offset = np.array([0.5, -0.2])
++    motor_chain.motor_direction = np.array([1.0, -1.0])
++    motor_chain.motor_interface = RecordingCanInterface()
++    motor_chain.command_lock = dm_driver_module.threading.RLock()
++    motor_chain.state_lock = dm_driver_module.threading.Lock()
++    motor_chain.start_thread_flag = False
++    motor_chain.commands = []
++    motor_chain.state = []
++    motor_chain.absolute_positions = np.array([1.2, 0.2])
++
++    feedback = motor_chain.send_commands_once(
++        torques=np.zeros(2),
++        pos=np.array([0.7, -0.4]),
++        vel=np.zeros(2),
++        kp=np.array([80.0, 10.0]),
++        kd=np.array([5.0, 1.5]),
++    )
++
++    assert len(set_control_calls) == 2
++    assert set_control_calls[0] == {
++        "motor_id": 1,
++        "motor_type": "DM4310",
++        "pos": 1.2,
++        "vel": 0.0,
++        "kp": 80.0,
++        "kd": 5.0,
++        "torque": 0.0,
++    }
++    assert set_control_calls[1] == {
++        "motor_id": 2,
++        "motor_type": "DM4310",
++        "pos": 0.2,
++        "vel": -0.0,
++        "kp": 10.0,
++        "kd": 1.5,
++        "torque": -0.0,
++    }
++    assert [command.pos for command in motor_chain.commands] == [0.7, -0.4]
++    assert len(feedback) == 2
++
++
++def test_gripper_calibration_preserves_arm_position_hold(monkeypatch: pytest.MonkeyPatch) -> None:
++    """Clearing arm position gains while calibrating only the gripper must fail this test."""
++    arm_pos = np.array([0.2, -0.3, 0.4, -0.5, 0.6, -0.7])
++    arm_kp = np.array([80.0, 80.0, 80.0, 10.0, 10.0, 10.0])
++    arm_kd = np.array([5.0, 5.0, 5.0, 1.5, 1.5, 1.5])
++    commands = [
++        dm_driver_module.MotorCmd(pos=pos, kp=kp, kd=kd)
++        for pos, kp, kd in zip(
++            np.append(arm_pos, 0.8),
++            np.append(arm_kp, 20.0),
++            np.append(arm_kd, 0.5),
++            strict=True,
++        )
++    ]
++
++    class RecordingMotorChain:
++        motor_list = [(index + 1, "DM4310") for index in range(7)]
++        motor_direction = np.ones(7)
++
++        def __init__(self) -> None:
++            self.commands = commands
++            self.command_lock = dm_driver_module.threading.RLock()
++            self.calls: list[dict[str, np.ndarray | None]] = []
++
++        def read_states(self) -> list[SimpleNamespace]:
++            return [
++                SimpleNamespace(pos=value, eff=float(index + 1))
++                for index, value in enumerate(np.append(arm_pos, 0.8))
++            ]
++
++        def set_commands(
++            self,
++            torques: np.ndarray,
++            pos: np.ndarray | None = None,
++            vel: np.ndarray | None = None,
++            kp: np.ndarray | None = None,
++            kd: np.ndarray | None = None,
++        ) -> None:
++            self.calls.append({"torques": torques, "pos": pos, "vel": vel, "kp": kp, "kd": kd})
++
++    motor_chain = RecordingMotorChain()
++    monkeypatch.setattr(robot_utils_module.time, "sleep", lambda _: None)
++
++    robot_utils_module.detect_gripper_limits(
++        motor_chain=motor_chain,
++        gripper_index=6,
++        test_torque=0.2,
++        max_duration=1.0,
++    )
++
++    assert motor_chain.calls
++    for call in motor_chain.calls:
++        np.testing.assert_allclose(call["torques"][:6], np.zeros(6))
++        np.testing.assert_allclose(call["pos"][:6], arm_pos)
++        np.testing.assert_allclose(call["kp"][:6], arm_kp)
++        np.testing.assert_allclose(call["kd"][:6], arm_kd)
++        assert call["kp"][6] == 0.0
++        assert call["kd"][6] == 0.0
++    assert motor_chain.calls[-1]["torques"][6] == 0.0
++
++
++def test_position_control_robot_has_current_hold_before_server_thread_starts(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """Starting the robot server before its position-hold command exists must fail this test."""
++    current_pos = np.array([0.4, -0.5])
++    commands_at_thread_start: list[object] = []
++
++    class RecordingMotorChain:
++        running = True
++
++        def __len__(self) -> int:
++            return 2
++
++        def read_states(self) -> list[SimpleNamespace]:
++            return [
++                SimpleNamespace(
++                    pos=value,
++                    vel=0.0,
++                    eff=0.0,
++                    temp_mos=25.0,
++                    temp_rotor=25.0,
++                    timestamp=1.0,
++                )
++                for value in current_pos
++            ]
++
++    class RecordingThread:
++        def __init__(self, *, target: object, name: str) -> None:
++            self.target = target
++
++        def start(self) -> None:
++            robot = self.target.__self__
++            commands_at_thread_start.append(robot._commands)
++
++        def join(self) -> None:
++            pass
++
++    monkeypatch.setattr(motor_chain_robot_module.threading, "Thread", RecordingThread)
++
++    motor_chain_robot_module.MotorChainRobot(
++        motor_chain=RecordingMotorChain(),
++        use_gravity_comp=False,
++        joint_limits=np.array([[-1.0, 1.0], [-1.0, 1.0]]),
++        kp=np.array([80.0, 10.0]),
++        kd=np.array([5.0, 1.5]),
++        zero_gravity_mode=False,
++    )
++
++    assert len(commands_at_thread_start) == 1
++    commands = commands_at_thread_start[0]
++    np.testing.assert_allclose(commands.pos, current_pos)
++    np.testing.assert_allclose(commands.kp, [80.0, 10.0])
++    np.testing.assert_allclose(commands.kd, [5.0, 1.5])
++
++
++def test_dm_chain_closes_can_interface_when_motor_enable_is_interrupted(monkeypatch: pytest.MonkeyPatch) -> None:
++    """Removing low-level constructor cleanup during motor enablement must fail this test."""
++
++    class RecordingCanInterface:
++        def __init__(self) -> None:
++            self.closed = False
++            self.fail_holds = False
++
++        def close(self) -> None:
++            self.closed = True
++
++    can_interface = RecordingCanInterface()
++    monkeypatch.setattr(dm_driver_module, "DMSingleMotorCanInterface", lambda **kwargs: can_interface)
++
++    def interrupt_motor_enable(self: object) -> None:
++        raise KeyboardInterrupt
++
++    monkeypatch.setattr(dm_driver_module.DMChainCanInterface, "_motor_on", interrupt_motor_enable)
++
++    with pytest.raises(KeyboardInterrupt):
++        dm_driver_module.DMChainCanInterface(
++            motor_list=[(1, "DM4310")],
++            motor_offset=np.zeros(1),
++            motor_direction=np.ones(1),
++            channel="can_test",
++            start_thread=False,
++        )
++
++    assert can_interface.closed
++
++
++def test_dm_chain_keeps_already_enabled_motors_holding_when_later_enable_fails(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    events: list[tuple[str, int]] = []
++
++    class RecordingCanInterface:
++        def __init__(self) -> None:
++            self.closed = False
++            self.fail_holds = False
++
++        def _drain_bus(self, **kwargs: object) -> int:
++            return 0
++
++        def motor_on(self, motor_id: int, motor_type: str) -> SimpleNamespace:
++            del motor_type
++            events.append(("enable", motor_id))
++            if motor_id == 2:
++                raise KeyboardInterrupt
++            return SimpleNamespace(position=0.4, torque=0.0)
++
++        def set_control(self, *, motor_id: int, **kwargs: object) -> SimpleNamespace:
++            if self.fail_holds:
++                raise RuntimeError("hold failed")
++            events.append(("hold", motor_id))
++            return SimpleNamespace(position=kwargs["pos"], torque=0.0)
++
++        def close(self) -> None:
++            self.closed = True
++
++    class RecordingThread:
++        def __init__(self, *, target: object, name: str, daemon: bool) -> None:
++            del target, name
++            assert not daemon
++            self.alive = False
++
++        def start(self) -> None:
++            self.alive = True
++
++        def is_alive(self) -> bool:
++            return self.alive
++
++        def join(self) -> None:
++            self.alive = False
++
++    can_interface = RecordingCanInterface()
++    monkeypatch.setattr(dm_driver_module, "DMSingleMotorCanInterface", lambda **kwargs: can_interface)
++    monkeypatch.setattr(dm_driver_module.threading, "Thread", RecordingThread)
++
++    with pytest.raises(dm_driver_module.DMChainEnableHoldingError) as exc_info:
++        dm_driver_module.DMChainCanInterface(
++            motor_list=[(1, "DM4310"), (2, "DM4310")],
++            motor_offset=np.zeros(2),
++            motor_direction=np.ones(2),
++            channel="can_test",
++            start_thread=False,
++            startup_hold_kp=np.array([80.0, 80.0]),
++            startup_hold_kd=np.array([5.0, 5.0]),
++        )
++
++    assert events[:4] == [("enable", 1), ("hold", 1), ("hold", 1), ("enable", 2)]
++    assert exc_info.value.motor_chain.running
++    assert exc_info.value.hold_active
++    assert not can_interface.closed
++
++    can_interface.fail_holds = True
++    exc_info.value.motor_chain._send_partial_enabled_holds_once(suppress_errors=True)
++    assert not exc_info.value.hold_active
++
++    exc_info.value.motor_chain.close()
++    assert can_interface.closed
++
++
++def test_dm_chain_retries_first_motor_hold_if_initial_hold_send_fails(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    class RecordingCanInterface:
++        def __init__(self) -> None:
++            self.closed = False
++
++        def _drain_bus(self, **kwargs: object) -> int:
++            return 0
++
++        def motor_on(self, motor_id: int, motor_type: str) -> SimpleNamespace:
++            del motor_id, motor_type
++            return SimpleNamespace(position=0.4, torque=0.0)
++
++        def set_control(self, **kwargs: object) -> SimpleNamespace:
++            del kwargs
++            raise KeyboardInterrupt
++
++        def close(self) -> None:
++            self.closed = True
++
++    class RecordingThread:
++        def __init__(self, *, target: object, name: str, daemon: bool) -> None:
++            del target, name
++            assert not daemon
++            self.alive = False
++
++        def start(self) -> None:
++            self.alive = True
++
++        def is_alive(self) -> bool:
++            return self.alive
++
++        def join(self) -> None:
++            self.alive = False
++
++    can_interface = RecordingCanInterface()
++    monkeypatch.setattr(dm_driver_module, "DMSingleMotorCanInterface", lambda **kwargs: can_interface)
++    monkeypatch.setattr(dm_driver_module.threading, "Thread", RecordingThread)
++
++    with pytest.raises(dm_driver_module.DMChainEnableHoldingError) as exc_info:
++        dm_driver_module.DMChainCanInterface(
++            motor_list=[(1, "DM4310")],
++            motor_offset=np.zeros(1),
++            motor_direction=np.ones(1),
++            channel="can_test",
++            start_thread=False,
++            startup_hold_kp=np.array([80.0]),
++            startup_hold_kd=np.array([5.0]),
++        )
++
++    assert exc_info.value.motor_chain._startup_enabled_holds == [(1, "DM4310", 0.4, 80.0, 5.0)]
++    assert not exc_info.value.hold_active
++    assert not can_interface.closed
++
++    exc_info.value.motor_chain.close()
++
++
++def test_dm_chain_retries_transient_disabled_response_on_initial_hold(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    class TransientDisabledCanInterface:
++        def __init__(self) -> None:
++            self.hold_attempts = 0
++            self.closed = False
++
++        def _drain_bus(self, **kwargs: object) -> int:
++            return 0
++
++        def motor_on(self, motor_id: int, motor_type: str) -> SimpleNamespace:
++            del motor_id, motor_type
++            return SimpleNamespace(position=0.4, torque=0.0)
++
++        def clean_error(self, motor_id: int) -> None:
++            del motor_id
++
++        def set_control(self, **kwargs: object) -> SimpleNamespace:
++            self.hold_attempts += 1
++            if self.hold_attempts == 1:
++                raise RuntimeError("Motor error detected: motor id: 1, error: disabled")
++            return SimpleNamespace(position=kwargs["pos"], torque=0.0)
++
++        def close(self) -> None:
++            self.closed = True
++
++    can_interface = TransientDisabledCanInterface()
++    monkeypatch.setattr(dm_driver_module, "DMSingleMotorCanInterface", lambda **kwargs: can_interface)
++    monkeypatch.setattr(dm_driver_module.time, "sleep", lambda _seconds: None)
++    monkeypatch.setattr(
++        dm_driver_module.DMChainCanInterface,
++        "_start_partial_enable_hold_loop",
++        lambda _self: False,
++    )
++
++    motor_chain = dm_driver_module.DMChainCanInterface(
++        motor_list=[(1, "DM4310")],
++        motor_offset=np.zeros(1),
++        motor_direction=np.ones(1),
++        channel="can_test",
++        start_thread=False,
++        startup_hold_kp=np.array([80.0]),
++        startup_hold_kd=np.array([5.0]),
++    )
++
++    assert can_interface.hold_attempts == 2
++    assert motor_chain.startup_hold_confirmed
++    motor_chain.close()
++    assert can_interface.closed
++
++
++def test_dm_chain_clears_error_and_reenables_motor_when_initial_hold_stays_disabled(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """A software-disabled motor may need clear-error and enable before accepting MIT control."""
++
++    class EnableAgainCanInterface:
++        def __init__(self) -> None:
++            self.enable_attempts = 0
++            self.clear_error_attempts = 0
++            self.error_cleared = False
++            self.hold_attempts = 0
++            self.closed = False
++
++        def _drain_bus(self, **kwargs: object) -> int:
++            return 0
++
++        def motor_on(self, motor_id: int, motor_type: str) -> SimpleNamespace:
++            del motor_id, motor_type
++            self.enable_attempts += 1
++            return SimpleNamespace(position=0.4, torque=0.0)
++
++        def clean_error(self, motor_id: int) -> None:
++            del motor_id
++            self.clear_error_attempts += 1
++            self.error_cleared = True
++
++        def set_control(self, **kwargs: object) -> SimpleNamespace:
++            self.hold_attempts += 1
++            if not self.error_cleared or self.enable_attempts < 2:
++                raise RuntimeError("Motor error detected: motor id: 1, error: disabled")
++            return SimpleNamespace(position=kwargs["pos"], torque=0.0)
++
++        def close(self) -> None:
++            self.closed = True
++
++    can_interface = EnableAgainCanInterface()
++    monkeypatch.setattr(dm_driver_module, "DMSingleMotorCanInterface", lambda **kwargs: can_interface)
++    monkeypatch.setattr(dm_driver_module.time, "sleep", lambda _seconds: None)
++    monkeypatch.setattr(
++        dm_driver_module.DMChainCanInterface,
++        "_start_partial_enable_hold_loop",
++        lambda _self: False,
++    )
++
++    motor_chain = dm_driver_module.DMChainCanInterface(
++        motor_list=[(1, "DM4310")],
++        motor_offset=np.zeros(1),
++        motor_direction=np.ones(1),
++        channel="can_test",
++        start_thread=False,
++        startup_hold_kp=np.array([80.0]),
++        startup_hold_kd=np.array([5.0]),
++    )
++
++    assert can_interface.enable_attempts == 2
++    assert can_interface.clear_error_attempts == 1
++    assert can_interface.hold_attempts == 2
++    assert motor_chain.startup_hold_confirmed
++    motor_chain.close()
++    assert can_interface.closed
++
++
++def test_dm_chain_joins_control_thread_before_closing_can_interface(monkeypatch: pytest.MonkeyPatch) -> None:
++    """Closing CAN before the control thread exits must fail this test."""
++    events: list[str] = []
++
++    class RecordingThread:
++        alive = False
++
++        def __init__(self, **_: object) -> None:
++            pass
++
++        def start(self) -> None:
++            self.alive = True
++            events.append("thread started")
++
++        def is_alive(self) -> bool:
++            return self.alive
++
++        def join(self) -> None:
++            self.alive = False
++            events.append("thread joined")
++
++    class RecordingCanInterface:
++        def close(self) -> None:
++            events.append("CAN closed")
++
++    motor_chain = dm_driver_module.DMChainCanInterface.__new__(dm_driver_module.DMChainCanInterface)
++    motor_chain.running = True
++    motor_chain.start_thread_flag = False
++    motor_chain.state = []
++    motor_chain.motor_interface = RecordingCanInterface()
++    monkeypatch.setattr(dm_driver_module.threading, "Thread", RecordingThread)
++    monkeypatch.setattr(dm_driver_module.time, "sleep", lambda _: None)
++
++    motor_chain.start_thread()
++    motor_chain.close()
++
++    assert events == ["thread started", "thread joined", "CAN closed"]
++
++
++def test_dm_chain_joins_worker_if_start_is_interrupted_after_thread_begins(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """Closing CAN while an interrupted startup worker is alive must fail this test."""
++    events: list[str] = []
++
++    class InterruptedThread:
++        alive = False
++
++        def __init__(self, **_: object) -> None:
++            pass
++
++        def start(self) -> None:
++            self.alive = True
++            events.append("thread started")
++            raise KeyboardInterrupt
++
++        def is_alive(self) -> bool:
++            return self.alive
++
++        def join(self) -> None:
++            self.alive = False
++            events.append("thread joined")
++
++    class RecordingCanInterface:
++        def close(self) -> None:
++            events.append("CAN closed")
++
++    motor_chain = dm_driver_module.DMChainCanInterface.__new__(dm_driver_module.DMChainCanInterface)
++    motor_chain.running = True
++    motor_chain.start_thread_flag = False
++    motor_chain.state = []
++    motor_chain.motor_interface = RecordingCanInterface()
++    monkeypatch.setattr(dm_driver_module.threading, "Thread", InterruptedThread)
++
++    with pytest.raises(KeyboardInterrupt):
++        motor_chain.start_thread()
++    motor_chain.close()
++
++    assert events == ["thread started", "thread joined", "CAN closed"]
++
++
+ # ---------------------------------------------------------------------------
+ # All arm x gripper combos: smoke-test loading
+ # ---------------------------------------------------------------------------
+diff --git a/i2rt/robots/utils.py b/i2rt/robots/utils.py
+index 77866f4..3bf976d 100644
+--- a/i2rt/robots/utils.py
++++ b/i2rt/robots/utils.py
+@@ -127,6 +127,7 @@ class _ArmHWConfig:
+     gravity_comp_factor: np.ndarray  # per-joint factor, one per arm joint (6 elements)
+     grav_comp_kd: np.ndarray  # motor MIT-mode kd used only in grav-comp idle mode (6 elements)
+     coulomb_friction: np.ndarray  # per-joint Coulomb friction magnitude (Nm), one per arm joint (6 elements)
++    motor_offsets_rad_by_channel: Dict[str, np.ndarray]
+ 
+ 
+ _ARM_CONFIG_RE = re.compile(r"^(?P<arm>.+)_v(?P<version>\d+)\.yml$")
+@@ -164,6 +165,17 @@ def _load_arm_config(arm_type: "ArmType") -> _ArmHWConfig:
+     assert (coulomb_friction >= 0).all(), (
+         f"coulomb_friction values must be non-negative in {config_path}: {coulomb_friction}"
+     )
++    motor_offsets_rad_by_channel = {}
++    raw_offsets = raw.get("motor_offsets_deg_by_channel", {})
++    if not isinstance(raw_offsets, dict):
++        raise ValueError(f"motor_offsets_deg_by_channel must be a map in {config_path}")
++    for channel, values in raw_offsets.items():
++        offsets_deg = np.asarray(values, dtype=float)
++        if offsets_deg.shape != (len(motor_list),) or not np.isfinite(offsets_deg).all():
++            raise ValueError(
++                f"motor offsets for {channel!r} must contain {len(motor_list)} finite degrees"
++            )
++        motor_offsets_rad_by_channel[str(channel)] = np.radians(offsets_deg)
+ 
+     logger.info(f"  motor_list:          {motor_list}")
+     logger.info(f"  directions:          {directions}")
+@@ -172,6 +184,7 @@ def _load_arm_config(arm_type: "ArmType") -> _ArmHWConfig:
+     logger.info(f"  gravity_comp_factor: {gravity_comp_factor}")
+     logger.info(f"  grav_comp_kd:        {grav_comp_kd}")
+     logger.info(f"  coulomb_friction:    {coulomb_friction}")
++    logger.info(f"  channel offsets:     {raw_offsets}")
+ 
+     return _ArmHWConfig(
+         motor_list=motor_list,
+@@ -181,6 +194,7 @@ def _load_arm_config(arm_type: "ArmType") -> _ArmHWConfig:
+         gravity_comp_factor=gravity_comp_factor,
+         grav_comp_kd=grav_comp_kd,
+         coulomb_friction=coulomb_friction,
++        motor_offsets_rad_by_channel=motor_offsets_rad_by_channel,
+     )
+ 
+ 
+@@ -807,52 +821,72 @@ def detect_gripper_limits(
+     logger = logging.getLogger(__name__)
+     positions = []
+     num_motors = len(motor_chain.motor_list)
+-    zero_torques = np.zeros(num_motors)
+-
+     # Get motor direction for the gripper
+     motor_direction = motor_chain.motor_direction[gripper_index]
+ 
++    # Calibration runs after the CAN worker has started. Preserve the arm's
++    # current-position hold while switching only the gripper into torque mode.
++    with motor_chain.command_lock:
++        startup_commands = tuple(motor_chain.commands)
++    hold_pos = np.array([command.pos for command in startup_commands], dtype=float)
++    hold_vel = np.array([command.vel for command in startup_commands], dtype=float)
++    hold_kp = np.array([command.kp for command in startup_commands], dtype=float)
++    hold_kd = np.array([command.kd for command in startup_commands], dtype=float)
++    hold_kp[gripper_index] = 0.0
++    hold_kd[gripper_index] = 0.0
++
++    def command_gripper_torque(torque: float) -> None:
++        torques = np.zeros(num_motors)
++        torques[gripper_index] = torque
++        motor_chain.set_commands(
++            torques=torques,
++            pos=hold_pos,
++            vel=hold_vel,
++            kp=hold_kp,
++            kd=hold_kd,
++        )
++
+     # Record initial position
+     initial_states = motor_chain.read_states()
+-    init_torque = np.array([state.eff for state in initial_states])
+     initial_pos = initial_states[gripper_index].pos
+     positions.append(initial_pos)
+     logger.info(f"Gripper calibration starting from position: {initial_pos:.4f}")
+ 
+-    # Test both directions
+-    for direction in [1, -1]:
+-        logger.info(f"Testing gripper direction: {direction}")
+-        test_torques = init_torque
+-        test_torques[gripper_index] = direction * test_torque
++    try:
++        # Test both directions
++        for direction in [1, -1]:
++            logger.info(f"Testing gripper direction: {direction}")
+ 
+-        start_time = time.time()
+-        last_pos = None
+-        position_stable_count = 0
++            start_time = time.time()
++            last_pos = None
++            position_stable_count = 0
+ 
+-        while time.time() - start_time < max_duration:
+-            motor_chain.set_commands(torques=test_torques)
+-            time.sleep(check_interval)
++            while time.time() - start_time < max_duration:
++                command_gripper_torque(direction * test_torque)
++                time.sleep(check_interval)
+ 
+-            states = motor_chain.read_states()
+-            current_pos = states[gripper_index].pos
+-            positions.append(current_pos)
++                states = motor_chain.read_states()
++                current_pos = states[gripper_index].pos
++                positions.append(current_pos)
+ 
+-            # Check if position has stopped changing (gripper hit limit)
+-            if last_pos is not None:
+-                pos_change = abs(current_pos - last_pos)
+-                if pos_change < position_threshold:
+-                    position_stable_count += 1
+-                else:
+-                    position_stable_count = 0
++                # Check if position has stopped changing (gripper hit limit)
++                if last_pos is not None:
++                    pos_change = abs(current_pos - last_pos)
++                    if pos_change < position_threshold:
++                        position_stable_count += 1
++                    else:
++                        position_stable_count = 0
+ 
+-                # Check if gripper has hit limit (position stable)
+-                if position_stable_count >= 3:
+-                    logger.info(f"Gripper limit detected: pos={current_pos:.4f}")
+-                    break
++                    # Check if gripper has hit limit (position stable)
++                    if position_stable_count >= 3:
++                        logger.info(f"Gripper limit detected: pos={current_pos:.4f}")
++                        break
+ 
+-            last_pos = current_pos
++                last_pos = current_pos
+ 
+-        time.sleep(0.3)
++            time.sleep(0.3)
++    finally:
++        command_gripper_torque(0.0)
+ 
+     # Calculate detected limits
+     min_pos = min(positions)
+diff --git a/i2rt/utils/viser_control_interface.py b/i2rt/utils/viser_control_interface.py
+index 95c6db0..8bbf439 100644
+--- a/i2rt/utils/viser_control_interface.py
++++ b/i2rt/utils/viser_control_interface.py
+@@ -14,7 +14,7 @@ See examples/control_with_viser/ for a runnable entry-point and README.
+ """
+ 
+ import time
+-from typing import Any, Dict, List, Optional
++from typing import Any, Dict, List, Optional, Sequence
+ 
+ import mujoco
+ import numpy as np
+@@ -33,6 +33,23 @@ _BTN_Z_OFFSETS = [0.10, 0.04]
+ _BTN_LABELS = ["SYNC", "RECORD"]
+ 
+ 
++def parse_joint_target_degrees(text: str, joint_ranges_deg: Sequence[tuple[float, float]]) -> np.ndarray:
++    """Parse a comma- or whitespace-separated joint target in degrees."""
++    try:
++        target = np.asarray([float(token) for token in text.replace(",", " ").split()], dtype=float)
++    except ValueError as exc:
++        raise ValueError("joint angles must be finite numbers") from exc
++    expected_count = len(joint_ranges_deg)
++    if target.size != expected_count:
++        raise ValueError(f"expected {expected_count} joint angles, got {target.size}")
++    if not np.all(np.isfinite(target)):
++        raise ValueError("joint angles must be finite numbers")
++    for index, (angle, (lo, hi)) in enumerate(zip(target, joint_ranges_deg, strict=True), start=1):
++        if angle < lo or angle > hi:
++            raise ValueError(f"j{index} must be between {lo:.1f} and {hi:.1f} deg")
++    return target
++
++
+ class ViserControlInterface:
+     """Browser-based robot visualiser and controller with a safety gate.
+ 
+@@ -366,6 +383,17 @@ class ViserControlInterface:
+                 s = server.gui.add_slider(f"j{i + 1}", min=lo, max=hi, step=0.1, initial_value=0.0)
+                 s.disabled = True
+                 joint_sliders.append(s)
++            joint_target_input = server.gui.add_text(
++                "Joint target",
++                initial_value=" ".join("0" for _ in range(self._n_arm)),
++                disabled=True,
++                visible=self._is_sim,
++                hint="Space- or comma-separated angles, for example: 0 20 30 0 10 0",
++            )
++            apply_joint_target_btn = server.gui.add_button("Apply target", disabled=True, visible=self._is_sim)
++            joint_target_status = server.gui.add_markdown(
++                "Paste all joint angles above, then apply them together.", visible=self._is_sim
++            )
+ 
+         # ---- GUI — gripper slider --------------------------------------------
+         gripper_slider: Optional[Any] = None
+@@ -422,6 +450,7 @@ class ViserControlInterface:
+             for i, s in enumerate(joint_sliders):
+                 if i < len(q):
+                     s.value = float(np.degrees(q[i]))
++            joint_target_input.value = " ".join(f"{np.degrees(q[i]):.1f}" for i in range(min(self._n_arm, len(q))))
+             if gripper_slider is not None and self._gripper_index is not None:
+                 gripper_slider.value = float(q[self._gripper_index])
+ 
+@@ -433,6 +462,8 @@ class ViserControlInterface:
+                 ik_ctrl.visible = False
+                 for s in joint_sliders:
+                     s.disabled = True
++                joint_target_input.disabled = True
++                apply_joint_target_btn.disabled = True
+                 if gripper_slider is not None:
+                     gripper_slider.disabled = True
+             elif sel == "IK control":
+@@ -440,6 +471,8 @@ class ViserControlInterface:
+                 ik_ctrl.visible = True
+                 for s in joint_sliders:
+                     s.disabled = True
++                joint_target_input.disabled = True
++                apply_joint_target_btn.disabled = True
+                 if gripper_slider is not None:
+                     gripper_slider.disabled = False
+                 # Snap IK target to current EE pose
+@@ -455,6 +488,8 @@ class ViserControlInterface:
+                 ik_ctrl.visible = False
+                 for s in joint_sliders:
+                     s.disabled = False
++                joint_target_input.disabled = not self._is_sim
++                apply_joint_target_btn.disabled = not self._is_sim
+                 if gripper_slider is not None:
+                     gripper_slider.disabled = False
+                 # Sync sliders to current robot positions
+@@ -462,9 +497,23 @@ class ViserControlInterface:
+                 for i, s in enumerate(joint_sliders):
+                     if i < len(q):
+                         s.value = float(np.degrees(q[i]))
++                joint_target_input.value = " ".join(f"{np.degrees(q[i]):.1f}" for i in range(min(self._n_arm, len(q))))
+                 if gripper_slider is not None and self._gripper_index is not None:
+                     gripper_slider.value = float(q[self._gripper_index])
+ 
++        @apply_joint_target_btn.on_click
++        def _(_: object) -> None:
++            if not self._is_sim or not state["enabled"] or state["mode"] != "joint":
++                return
++            try:
++                target_deg = parse_joint_target_degrees(joint_target_input.value, joint_ranges)
++            except ValueError as exc:
++                joint_target_status.content = f"**Input error:** {exc}"
++                return
++            for slider, angle in zip(joint_sliders, target_deg, strict=True):
++                slider.value = float(angle)
++            joint_target_status.content = "**Applied:** " + " ".join(f"{angle:g}" for angle in target_deg) + " deg"
++
+         if apply_btn is not None:
+ 
+             @apply_btn.on_click

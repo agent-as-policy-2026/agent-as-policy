@@ -1,0 +1,21 @@
+# rclone filter rules used by scripts/data_sync.sh (first matching rule wins).
+# Keep this list in sync with the "Large data" section of .gitignore.
+- .git/**
+- .venv/**
+- .worktrees/**
++ *.mp4
++ *.npz
++ hardware-bridge/logs/actions.jsonl
++ hardware-bridge/logs/actions_right.jsonl
++ agp/sessions/*/frames/**
++ agp/sessions/*/frames_right/**
++ agp/sessions/*/record/**
++ agp/sessions/*/record_right/**
++ agp/sessions/*/bridge_rec/**
++ agp/sessions/*/bridge_rec_right/**
++ agp/sessions/*/goal/**
++ agp/sessions/**.png
++ agp/sessions/**.jpg
++ agp/sessions/*/run_joints*.csv
++ agp/sessions/*/run_video_*_frames.csv
+- *

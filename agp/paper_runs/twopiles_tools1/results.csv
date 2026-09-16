@@ -1,0 +1,11 @@
+trial,session,model,effort,service_tier,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,agent_verdict,operator_verdict,remarks
+01,20260904_215438_paper_twopiles_tools1_01,gpt-6-astra,high,default,none,1,0,2026-09-04 21:54:38,1309,no,129,39,17,8,65,success (agent),,
+02,20260904_232204_paper_twopiles_tools1_02,gpt-6-astra,high,default,none,1,0,2026-09-04 23:22:04,1218,no,103,37,12,2,52,unclear (agent),,
+03,20260905_000722_paper_twopiles_tools1_03,gpt-6-astra,high,default,none,1,0,2026-09-05 00:07:21,933,no,85,31,10,2,43,unclear (agent),,
+04,20260905_004219_paper_twopiles_tools1_04,gpt-6-astra,high,default,none,1,0,2026-09-05 00:42:19,1428,no,125,47,14,1,63,unclear (agent),,
+05,20260905_013322_paper_twopiles_tools1_05,gpt-6-astra,high,default,none,1,0,2026-09-05 01:33:22,1818,no,165,60,20,4,83,unclear (agent),,
+06,20260905_022055_paper_twopiles_tools1_06,gpt-6-astra,high,default,none,1,0,2026-09-05 02:20:55,1518,no,123,44,14,4,62,unclear (agent),,
+07,20260905_030947_paper_twopiles_tools1_07,gpt-6-astra,high,default,none,1,0,2026-09-05 03:09:47,1113,no,103,39,12,0,52,success (agent),,
+08,20260905_034725_paper_twopiles_tools1_08,gpt-6-astra,high,default,none,1,0,2026-09-05 03:47:25,1129,no,121,46,14,0,61,success (agent),,
+09,20260905_042628_paper_twopiles_tools1_09,gpt-6-astra,high,default,none,1,0,2026-09-05 04:26:28,1383,no,115,40,12,9,58,success (agent),,
+10,20260905_051046_paper_twopiles_tools1_10,gpt-6-astra,high,default,none,1,0,2026-09-05 05:10:46,1083,no,99,36,12,1,50,unclear (agent),,

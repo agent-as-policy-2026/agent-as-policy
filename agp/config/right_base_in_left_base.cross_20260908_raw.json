@@ -1,0 +1,36 @@
+{
+ "translation": [
+  -0.00860924851822678,
+  -0.6249034798143231,
+  -0.01406086206597057
+ ],
+ "rotation_wxyz": [
+  0.999788881654596,
+  0.0026570318901509267,
+  0.00032372818414137854,
+  -0.020372223772818755
+ ],
+ "source": "cross rig 2026-09-08: 12 pairs (pair11 excluded), calib rms 13.5 mm / 0.88 deg, validation 18.3 mm / 1.38 deg; left top pose = config/top_calib.json snapshot of the 2026-09-02 installed calibration",
+ "date": "2026-09-08",
+ "frame": "pose of right_base in left_base (p_left = R p_right + t)",
+ "delta_vs_nominal": {
+  "translation_mm": 22.22,
+  "translation_diff_mm": [
+   -8.61,
+   -14.9,
+   -14.06
+  ],
+  "rotation_deg": 2.355
+ },
+ "inputs": {
+  "left_top": {
+   "file": "<repo>/agp/config/top_calib.json",
+   "cam": "top",
+   "frame_in_file": "robot_base (left_base)"
+  },
+  "top_in_right_base": {
+   "spec": "<repo>/calib/out/top_brio_178B0DAE_in_right_base_calibration.json",
+   "meaning": "pose of left_top_cam in right_base (cross rig)"
+  }
+ }
+}

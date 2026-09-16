@@ -1,0 +1,7 @@
+{
+ "translation": [0.0, -0.61, 0.0],
+ "rotation_wxyz": [1.0, 0.0, 0.0, 0.0],
+ "source": "EXAMPLE ONLY - the nominal station offset (i2rt station README: left_base -> right_base = 0 -0.61 0 / quat 1 0 0 0). server_real.py --arm right uses these same values when config/right_base_in_left_base.json does not exist. Do NOT copy this file to that name by hand: write the real one with tools/solve_base_transform.py from a simultaneous left-top / right-wrist calibration.",
+ "date": "2026-09-08",
+ "frame": "pose of right_base in left_base (p_left = R p_right + t; q_left = q_T * q_right, scalar-first)"
+}

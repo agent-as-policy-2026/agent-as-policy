@@ -1,0 +1,2 @@
+trial,session,model,effort,service_tier,interface,harness,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260907_203105_paper_singleinsert_bare_medium_yieldbatch_01,gpt-6-astra,medium,default,bare,"yield,batch",none,0,0,2026-09-07 20:31:05,349,no,22,9,2,2,9,841098,794496,5068,671,success (agent),,

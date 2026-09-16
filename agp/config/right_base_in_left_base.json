@@ -1,0 +1,48 @@
+{
+ "translation": [
+  -0.00860924851822678,
+  -0.6249034798143231,
+  0.0
+ ],
+ "rotation_wxyz": [
+  0.999788881654596,
+  0.0026570318901509267,
+  0.00032372818414137854,
+  -0.020372223772818755
+ ],
+ "source": "cross rig 2026-09-08 (12 pairs, calib rms 13.5 mm / 0.88 deg, validation 18.3 mm / 1.38 deg) with z CORRECTED 2026-09-08 20:30 from right-wrist depth table fits: the solver's z (-0.01406) put the right arm's own table at world -0.058..-0.060 while left table_z is -0.045; measured right_base table -0.0442/-0.0455 => t_z = 0.000 (+-0.002)",
+ "date": "2026-09-08",
+ "frame": "pose of right_base in left_base (p_left = R p_right + t)",
+ "delta_vs_nominal": {
+  "translation_mm": 17.21,
+  "translation_diff_mm": [
+   -8.61,
+   -14.9,
+   0.0
+  ],
+  "rotation_deg": 2.355
+ },
+ "inputs": {
+  "left_top": {
+   "file": "<repo>/agp/config/top_calib.json",
+   "cam": "top",
+   "frame_in_file": "robot_base (left_base)"
+  },
+  "top_in_right_base": {
+   "spec": "<repo>/calib/out/top_brio_178B0DAE_in_right_base_calibration.json",
+   "meaning": "pose of left_top_cam in right_base (cross rig)"
+  }
+ },
+ "z_correction": {
+  "solver_t_z_m": -0.01406086206597057,
+  "corrected_t_z_m": 0.0,
+  "evidence": [
+   "session 20260908_200027 frames_right/0001 (cam 0.39 m above): bare wood median world z -0.0595 -> right_base -0.0455",
+   "session 20260908_200027 frames_right/0007 (cam 0.08 m above, p10-p90 1 mm): bare wood median world z -0.0583 -> right_base -0.0442",
+   "left arm table_z (board-plane fit, left_base) = -0.045; both bases therefore stand at the same height",
+   "symptom: 8/8 right-arm closes at world z -0.034..-0.044 read 0.011 (empty); left grasps at the same z"
+  ],
+  "raw_solver_file": "config/right_base_in_left_base.cross_20260908_raw.json",
+  "verify": "new session: right wrist deproject on bare table must read world z -0.045 +- 0.003"
+ }
+}

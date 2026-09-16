@@ -1,0 +1,6 @@
+trial,session,model,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260910_140416_paper_twopairs_full_high_56terra_01,gpt-5.6-terra,high,default,full,left,none,0,none,0,0,2026-09-10 14:04:16,1879,no,122,35,10,25,52,6284014,6118784,40447,23797,fail (agent),,
+02,20260910_143952_paper_twopairs_full_high_56terra_02,gpt-5.6-terra,high,default,full,left,none,0,none,0,0,2026-09-10 14:39:52,1353,no,102,48,14,4,37,5108249,4859264,32214,18449,success (agent),,
+03,20260910_150447_paper_twopairs_full_high_56terra_03,gpt-5.6-terra,high,default,full,left,none,0,none,0,0,2026-09-10 15:04:47,1323,no,121,38,12,14,61,8950932,8725248,35323,18222,unclear (agent),,
+04,20260910_153132_paper_twopairs_full_high_56terra_04,gpt-5.6-terra,high,default,full,left,none,0,none,0,0,2026-09-10 15:31:32,1158,no,81,27,6,7,42,6249853,6063104,32423,17979,success (agent),,
+05,20260910_160051_paper_twopairs_full_high_56terra_05,gpt-5.6-terra,high,default,full,left,none,0,none,0,1,2026-09-10 16:00:51,903,no,70,22,14,7,27,2675368,2569984,22301,12554,fail (agent),,

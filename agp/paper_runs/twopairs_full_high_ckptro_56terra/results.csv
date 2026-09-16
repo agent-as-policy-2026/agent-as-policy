@@ -1,0 +1,6 @@
+trial,session,model,backend,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,cost_usd,agent_verdict,operator_verdict,remarks
+01,20260910_225159_paper_twopairs_full_high_ckptro_56terra_01,gpt-5.6-terra,codex,high,default,full,left,none,0,ckpt,0,0,2026-09-10 22:51:59,1443,no,101,38,8,4,51,12206946,11980032,30864,16484,,fail (agent),,
+02,20260910_231736_paper_twopairs_full_high_ckptro_56terra_02,gpt-5.6-terra,codex,high,default,full,left,none,0,ckpt,0,0,2026-09-10 23:17:36,963,no,61,21,4,5,31,7394395,7185408,17634,5835,,success (agent),,
+02,20260910_233513_paper_twopairs_full_high_ckptro_56terra_02,gpt-5.6-terra,codex,high,default,full,left,none,0,ckpt,0,0,2026-09-10 23:35:13,813,no,57,22,4,2,29,5724870,5582976,22533,10717,,success (agent),,
+03,20260910_235006_paper_twopairs_full_high_ckptro_56terra_03,gpt-5.6-terra,codex,high,default,full,left,none,0,ckpt,0,0,2026-09-10 23:50:06,513,no,47,19,4,0,24,2969034,2869632,10687,2774,,success (agent),,
+04,20260910_235942_paper_twopairs_full_high_ckptro_56terra_04,gpt-5.6-terra,codex,high,default,full,left,none,0,ckpt,0,0,2026-09-10 23:59:42,1414,no,115,40,14,5,58,10783593,10538880,34743,17049,,fail (agent),,

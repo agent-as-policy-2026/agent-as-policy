@@ -1,0 +1,15 @@
+# Cycle 1 result: success
+
+I studied `goal/demo_start.png`, `goal/top_camera.png`, and the video extracted at 1 fps into `scratch/demo_001.png` through `demo_014.png` (overview: `scratch/demo_contact.png`) before any motion. The blue hexagonal ring slides over the slim white cylinder onto its hexagonal base. The blue round collar slides over the wider white cylinder and rests near its circular base. No threading or particular rotational alignment was demonstrated.
+
+I operated only on the four parts in the left half. I assembled the hexagonal pair first, leaving its white post in place, then the round pair, leaving its white cylinder approximately in place. Each blue part was grasped externally with the tool down, lifted clear of the white post, translated above it, lowered in stages, released, and visually checked after withdrawal.
+
+The initial scene is `frames/0001_top.png`. A first linear change from the tilted observation posture to the downward approach was rejected with IK_FAILED without motion. Using plan mode to `[0.25,-0.04,0.15]` succeeded. Subsequent manipulation moves used linear mode and the existing interface motion limits.
+
+The hexagonal grasp closed to fraction 0.5508 (52.6 mm); `frames/0007_wrist.png` confirms the lift. The post is visibly through the hole at `frames/0010_wrist.png`. I opened at commanded grasp z=-0.018 and lifted to z=0.14. `frames/0013_wrist.png` confirms the released assembly.
+
+The round collar's first approach to z=-0.021 returned SETTLE_MISS. I inspected `frames/0016_wrist.png` and `frames/0016_top.png`, raised/corrected the target to z=-0.012, and then closed. The grasp returned fraction 0.5279 (50.4 mm); `frames/0019_wrist.png` confirms the lift. I lowered over the wide cylinder through z=0.065, 0.040, 0.008, and -0.005, then opened. `frames/0022_wrist.png` shows engagement; `frames/0025_wrist.png` shows release. There was slight settling/position change at release, with the collar remaining around the cylinder.
+
+Final evidence: `frames/0026_top.png` shows both assemblies after vertical withdrawal, and `frames/0027_top.png` shows both still stable after home/observation withdrawal. `frames/0027_wrist.png` additionally shows the round assembly. Both blue parts are engaged with their demonstrated white counterparts near their bases, both assemblies stand independently in the left half, and the gripper is open (final state fraction 0.999). I judge both assemblies successful. The right set and right arm were not touched.
+
+53 counted commands were used, finishing robot operations around 21:43:46, about eight minutes after starting. No commanded grasp point was below the table. `scratch/step.py` was actually used for the manipulation actions from the first grasp descent onward; it executes one documented client command and captures frames for inspection. `scratch/actions.jsonl` records its exact commands and returned results, including the unsuccessful round descent. `scratch/measurements.json` records the measured geometry and successful target sequence. Reuse the procedure with freshly measured poses, not the cycle-1 coordinates.

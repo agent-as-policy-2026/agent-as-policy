@@ -1,0 +1,11 @@
+trial,session,model,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260909_173954_paper_assembly_full_high_right_01,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-09 17:39:54,2341,no,188,66,18,11,95,12810719,12503936,26949,6683,success (agent),,
+02,20260909_181930_paper_assembly_full_high_right_02,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-09 18:19:30,3241,no,248,72,24,31,124,17096997,16690688,43032,14403,success (agent),,
+03,20260909_191715_paper_assembly_full_high_right_03,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-09 19:17:15,5411,yes,346,124,31,26,174,,,,,fail (agent),,
+04,20260909_204906_paper_assembly_full_high_right_04,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-09 20:49:06,2926,no,225,72,19,26,113,16018942,15789952,37287,12607,success (agent),,
+05,20260912_144207_paper_assembly_full_high_right_05,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-12 14:42:07,5411,yes,345,114,35,32,174,,,,,no RESULT.md,,
+06,20260912_161307_paper_assembly_full_high_right_06,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-12 16:13:07,1021,no,107,37,8,16,54,4602761,4462464,14335,3472,success (agent),,
+07,20260912_165057_paper_assembly_full_high_right_07,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-12 16:50:57,1890,no,153,54,11,13,77,10437042,10252032,23366,5319,success (agent),,
+08,20260912_172314_paper_assembly_full_high_right_08,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-12 17:23:14,1020,no,102,39,8,8,52,3945386,3847552,14565,2934,success (agent),,
+09,20260913_151359_paper_assembly_full_high_right_09,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-13 15:13:59,2310,no,167,57,11,15,85,11948277,11612416,26956,7678,success (agent),,
+10,20260913_155317_paper_assembly_full_high_right_10,gpt-6-astra,high,default,full,right,none,0,none,0,0,2026-09-13 15:53:17,3615,no,259,86,24,21,130,27072870,26822400,43461,16583,success (agent),,

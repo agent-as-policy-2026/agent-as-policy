@@ -1,0 +1,6 @@
+trial,session,model,backend,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,cost_usd,agent_verdict,operator_verdict,remarks
+03,20260910_173323_paper_twopairs_full_high_6astra_03,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-10 17:33:23,589,no,47,18,4,1,24,2576739,2493184,7749,685,,success (agent),,
+05,20260910_174339_paper_twopairs_full_high_6astra_05,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-10 17:43:39,514,no,45,17,4,1,23,3933254,3848960,7668,833,,success (agent),,
+06,20260914_105715_paper_twopairs_full_high_6astra_06,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-14 10:57:15,558,no,49,17,6,2,25,2688632,2519552,6878,1096,,success (agent),,
+07,20260914_110942_paper_twopairs_full_high_6astra_07,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-14 11:09:42,934,no,65,21,6,10,33,4315224,4114688,11182,3007,,success (agent),,
+09,20260914_112700_paper_twopairs_full_high_6astra_09,gpt-6-astra,codex,high,default,full,left,none,0,none,0,0,2026-09-14 11:27:00,693,no,45,17,4,3,23,3984624,3879040,8313,1171,,success (agent),,

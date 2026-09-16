@@ -1,0 +1,11 @@
+trial,session,model,effort,service_tier,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,agent_verdict,operator_verdict,remarks
+01,20260904_155618_paper_pyramid_tools1_01,gpt-6-astra,high,fast,none,0,0,2026-09-04 15:56:17,1053,no,113,39,12,5,57,unclear (agent),,
+02,20260904_161611_paper_pyramid_tools1_02,gpt-6-astra,high,fast,none,0,0,2026-09-04 16:16:11,1428,no,147,52,18,3,74,unclear (agent),,
+03,20260904_164513_paper_pyramid_tools1_03,gpt-6-astra,high,fast,none,0,0,2026-09-04 16:45:13,1729,no,149,53,16,8,75,unclear (agent),,
+04,20260904_171625_paper_pyramid_tools1_04,gpt-6-astra,high,fast,none,0,0,2026-09-04 17:16:25,934,no,109,39,12,3,55,unclear (agent),,
+05,20260904_173848_paper_pyramid_tools1_05,gpt-6-astra,high,fast,none,0,1,2026-09-04 17:38:48,1998,no,143,49,16,7,72,unclear (agent),,
+06,20260904_181345_paper_pyramid_tools1_06,gpt-6-astra,high,fast,none,1,0,2026-09-04 18:13:45,1249,no,144,51,15,6,73,success (agent),,
+07,20260904_184812_paper_pyramid_tools1_07,gpt-6-astra,high,fast,none,1,0,2026-09-04 18:48:12,1053,no,117,40,14,4,59,unclear (agent),,
+08,20260904_195435_paper_pyramid_tools1_08,gpt-6-astra,high,fast,none,1,0,2026-09-04 19:54:35,1113,no,105,39,12,2,53,success (agent),,
+09,20260904_201514_paper_pyramid_tools1_09,gpt-6-astra,high,fast,none,1,0,2026-09-04 20:15:14,1489,no,149,53,18,5,75,unclear (agent),,
+10,20260904_204355_paper_pyramid_tools1_10,gpt-6-astra,high,fast,none,1,0,2026-09-04 20:43:55,1383,no,153,56,18,2,77,success (agent),,

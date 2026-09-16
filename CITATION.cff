@@ -1,0 +1,71 @@
+cff-version: 1.2.0
+message: >-
+  If you use this dataset, please cite it as below. This file describes the
+  dataset (CC BY 4.0); the code in this repository is Apache-2.0 — see LICENSE
+  and NOTICE.
+type: dataset
+title: "Agent as Policy — Real Dual-Arm LLM-Agent Manipulation Trials"
+version: "b02"
+date-released: "2026-09-15"
+license: CC-BY-4.0
+repository-code: "https://github.com/agent-as-policy-2026/agent-as-policy"
+url: "https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy"
+identifiers:
+  - type: url
+    value: "https://arxiv.org/abs/2609.12541"
+    description: "The paper the dataset accompanies"
+abstract: >-
+  Real-robot session recordings, per-command traces, and evaluation metadata
+  accompanying the paper "Agent as Policy for Robotic Manipulation".
+keywords:
+  - robotic manipulation
+  - LLM agent
+  - real-robot dataset
+authors:
+  - family-names: Jia
+    given-names: Mengzhao
+    affiliation: "University of Notre Dame"
+  - family-names: Lin
+    given-names: Yang
+    affiliation: "University of California San Diego"
+  - family-names: Zhang
+    given-names: Xixin
+    affiliation: "San Diego State University"
+  - family-names: Zhang
+    given-names: Zhihan
+    affiliation: "University of Notre Dame"
+  - family-names: Liu
+    given-names: Xiaobai
+    affiliation: "San Diego State University"
+  - family-names: Jiang
+    given-names: Meng
+    affiliation: "University of Notre Dame"
+preferred-citation:
+  type: article
+  title: "Agent as Policy for Robotic Manipulation"
+  journal: "arXiv preprint arXiv:2609.12541"
+  year: 2026
+  url: "https://arxiv.org/abs/2609.12541"
+  doi: "10.48550/arXiv.2609.12541"
+  notes: >-
+    In the paper, Mengzhao Jia, Yang Lin, and Xixin Zhang are marked as core
+    contributors.
+  authors:
+    - family-names: Jia
+      given-names: Mengzhao
+      affiliation: "University of Notre Dame"
+    - family-names: Lin
+      given-names: Yang
+      affiliation: "University of California San Diego"
+    - family-names: Zhang
+      given-names: Xixin
+      affiliation: "San Diego State University"
+    - family-names: Zhang
+      given-names: Zhihan
+      affiliation: "University of Notre Dame"
+    - family-names: Liu
+      given-names: Xiaobai
+      affiliation: "San Diego State University"
+    - family-names: Jiang
+      given-names: Meng
+      affiliation: "University of Notre Dame"

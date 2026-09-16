@@ -1,0 +1,195 @@
+====================================================================================================
+TOP-CAMERA EXTRINSICS RESIDUAL ANALYSIS  (BRIO 178B0DAE, world = left_base)
+====================================================================================================
+pairs: 16  (../calib/out/top_pairs_right)
+board: 9x7 inner corners, 22.0 mm squares -> 176 x 132 mm inner extent
+top K: fx=1181.57 fy=1190.65 cx=984.39 cy=503.66; intrinsics RMS 0.219 px
+wrist distortion: inverse_brown_conrady [-0.05205  0.06446  0.00064  0.00035 -0.02221]
+original split: calib=['pair01', 'pair02', 'pair03', 'pair05', 'pair06', 'pair07', 'pair09', 'pair10', 'pair11', 'pair13', 'pair14', 'pair15']
+                held-out=['pair04', 'pair08', 'pair12', 'pair16']
+
+----------------------------------------------------------------------------------------------------
+(c) ORIGINAL SOLVE REPRODUCTION
+----------------------------------------------------------------------------------------------------
+reimplemented-vs-JSON camera_to_world: 0.000 um, 0.0000 arcsec  (allclose 1e-9: True)
+  calibration_translation_rms_m              mine=0.017162818  json=0.017162818  d=+0.00e+00
+  calibration_translation_max_m              mine=0.023463801  json=0.023463801  d=+0.00e+00
+  calibration_rotation_rms_deg               mine=1.140597146  json=1.140597146  d=+0.00e+00
+  calibration_rotation_max_deg               mine=1.674637652  json=1.674637652  d=+0.00e+00
+  validation_translation_max_m               mine=0.023422225  json=0.023422225  d=+0.00e+00
+  validation_rotation_max_deg                mine=1.537762611  json=1.537762611  d=+0.00e+00
+  solved_from_nominal_translation_m          mine=0.245818603  json=0.245818603  d=+0.00e+00
+  solved_from_nominal_rotation_deg           mine=2.004002604  json=2.004002604  d=+0.00e+00
+  fixed point converged (closest-to-final == closest-to-previous): True
+  status: FAIL (json FAIL)
+  reproducibility: pair01 top corners cold-vs-warm detection max |dpx| = 0.007; all-warm re-solve moves the camera by 0.001 mm / 0.0000 deg, cal rms 17.162 mm (vs 17.163), val max 23.423 mm (vs 23.422)
+
+----------------------------------------------------------------------------------------------------
+1. PER-PAIR RESIDUALS  [mm, deg]
+   orig  = vs the ORIGINAL solved average (12-pair solve): in-sample for calib pairs (exactly the solver's per-sample calibration error), out-of-sample for the 4 held-out (*) (exactly the solver's validation error)
+   all16 = in-sample vs the 16-pair solve;  LOO = vs the 15-pair solve that excludes the pair (out-of-sample for every pair)
+----------------------------------------------------------------------------------------------------
+pair       orig_t  orig_r  all16_t all16_r   LOO_t   LOO_r cand skew_ms   res_world dx dy dz [mm]    cam dz  along   perp
+pair01      18.20   1.244    17.79   1.198   18.97   1.278    2    20.2     +17.6    +4.3    -1.2      +9.5   +2.8   18.0
+pair02       8.13   0.414     8.43   0.453    8.99   0.483    1    27.5      -2.7    -7.6    -0.9      -0.6   +1.3    8.0
+pair03      19.36   1.179    19.68   1.220   20.99   1.301    3     6.2      -8.4   -17.4    -0.8      -3.5   -0.2   19.4
+pair04 *    18.80   1.067    19.20   1.114   20.48   1.188    1    14.1     -13.3   -13.3    -0.8      -5.8   -3.7   18.4
+pair05      13.21   0.799    13.62   0.840   14.52   0.896    3    24.1     -12.8    -3.1    +1.4      -7.3   -6.6   11.5
+pair06       8.76   0.453     9.07   0.486    9.68   0.518    3    31.9      -8.3    +1.2    +2.4      -6.0   -5.7    6.7
+pair07      15.03   1.121    14.76   1.081   15.75   1.153    3     5.7      +6.1   +13.6    -1.9      +4.8   -1.3   15.0
+pair08 *    21.03   1.538    20.68   1.492   22.06   1.591    1    15.9     +14.3   +15.0    -3.3      +9.9   +0.4   21.0
+pair09      23.38   1.546    23.23   1.507   24.78   1.607    2    22.9      +3.1   +22.4    -6.1      +7.2   -3.9   23.1
+pair10      17.98   1.095    17.91   1.074   19.11   1.146    1    14.4      -4.3   +17.4    +1.8      -3.4  -10.3   14.8
+pair11      17.23   1.004    17.33   1.007   18.49   1.074    3    19.2     -10.3   +13.7    +1.8      -6.2  -11.2   13.0
+pair12 *    18.38   1.086    18.62   1.097   19.86   1.170    3    24.7     -15.3   +10.1    +1.5      -8.4  -12.5   13.5
+pair13      18.52   1.294    18.78   1.337   20.04   1.426    1    36.3      -5.6   -17.6    +0.7      -3.5   -4.0   18.1
+pair14      15.02   1.151    15.00   1.177   16.00   1.255    2    23.3      +6.3   -13.6    -0.2      +3.0   +1.7   14.9
+pair15      23.46   1.675    23.20   1.671   24.75   1.782    1    20.7     +19.2   -13.1    +3.2      +6.0   +0.3   23.5
+pair16 *    23.42   1.529    23.09   1.513   24.62   1.614    0     7.0     +20.7    -9.4    +5.8      +4.6   +0.1   23.4
+
+orig  translation mm: calib12 rms=17.163 med=17.603 max=23.464 | heldout4 rms=20.506 med=19.913 max=23.422 | all16 rms=18.057 med=18.288 max=23.464
+orig  rotation   deg: calib12 rms=1.141 med=1.136 max=1.675 | heldout4 rms=1.325 med=1.308 max=1.538 | all16 rms=1.189 med=1.136 max=1.675
+all16 translation mm: rms=18.051 med=18.264 max=23.233   rotation deg: rms=1.188 med=1.145 max=1.671
+LOO   translation mm: rms=19.254 med=19.482 max=24.782   rotation deg: rms=1.268 med=1.222 max=1.782
+residual direction (orig, all 16): mean |along top-camera ray| 4.12 mm vs mean |perpendicular| 16.38 mm; rms cam-frame (dx,dy,dz) = (13.28, 10.61, 6.11) mm; rms world (dx,dy,dz) = (11.92, 13.29, 2.69) mm
+mean residual vector (world, mm) over 16: (+0.40, +0.15, +0.20)  [calib-12 mean is 0 by construction]
+selected orientation candidate per pair (2*wrist_reversed + top_reversed): [2, 1, 3, 1, 3, 3, 3, 1, 2, 1, 3, 3, 1, 2, 1, 0]
+
+----------------------------------------------------------------------------------------------------
+2. OUTLIERS  (> 2.0 x median)
+----------------------------------------------------------------------------------------------------
+orig  translation: median 18.29 mm, threshold 36.58 mm -> []
+orig  rotation   : median 1.136 deg, threshold 2.273 deg -> []
+all16 translation: median 18.26 mm, threshold 36.53 mm -> []
+LOO   translation: median 19.48 mm, threshold 38.96 mm -> []
+
+pair      orig_t  LOO_t |  top centre(u,v) off_px px/sq      bbox dTop_m tiltT | wr_distwr_tilt wr_offwr_px/sq |     board xy (m)  r_xy   z_mm nTilt |  wrist reach xy/3d  skew
+pair01     18.20  18.97 | (1233.7,948.3)  509.7 32.12  259x210   0.929  27.5 |   0.415    3.2  131.4   18.56 | (+0.191,+0.138) 0.235  -39.7  0.41 |    0.176/0.395     20.2   
+pair02      8.13   8.99 | (1202.5,744.5)  324.9 28.44  239x179   0.958  28.3 |   0.289   19.5   69.7   24.05 | (+0.337,+0.151) 0.370  -38.4  0.56 |    0.241/0.321     27.5   
+pair03     19.36  20.99 | (1169.7,600.1)  208.9 25.79  222x153   0.997  28.5 |   0.332   20.1   58.1   20.64 | (+0.460,+0.169) 0.489  -36.8  1.07 |    0.331/0.414      6.2   
+pair04 *   18.80  20.48 | (1221.8,443.8)  244.9 23.49  216x131   1.075  28.7 |   0.348   20.8  150.6   20.83 | (+0.609,+0.109) 0.619  -32.6  0.84 |    0.497/0.546     14.1   
+pair05     13.21  14.52 | (1371.0,438.2)  392.1 23.83  231x137   1.110  28.6 |   0.360   26.2   59.6   18.51 | (+0.613,-0.020) 0.613  -32.2  0.73 |    0.417/0.490     24.1   
+pair06      8.76   9.68 | (1405.7,584.0)  428.9 26.20  245x149   1.050  28.2 |   0.310   26.9   92.4   21.96 | (+0.471,-0.026) 0.472  -35.0  0.64 |    0.280/0.348     31.9   
+pair07     15.03  15.75 | (1444.7,771.8)  532.7 29.30  263x177   1.001  27.7 |   0.394   11.1   65.2   17.98 | (+0.315,-0.031) 0.316  -39.1  0.25 |    0.173/0.371      5.7   
+pair08 *   21.03  22.06 | (1445.6,906.9)  612.7 31.38  274x192   0.975  27.2 |   0.345   13.3   29.4   20.25 | (+0.216,-0.015) 0.216  -40.3  0.22 |    0.108/0.307     15.9   
+pair09     23.38  24.78 | (1617.0,815.4)  705.2 29.59  268x179   1.043  27.4 |   0.356   25.5   39.4   18.97 | (+0.277,-0.152) 0.316  -39.9  0.24 |    0.135/0.298     22.9   
+pair10     17.98  19.11 | (1577.9,684.0)  620.3 27.84  262x163   1.067  27.7 |   0.332   24.7  113.9   21.80 | (+0.384,-0.146) 0.410  -32.7  0.66 |    0.260/0.360     14.4   
+pair11     17.23  18.49 | (1544.2,540.4)  561.0 25.66  254x155   1.112  28.1 |   0.323   27.4   88.2   21.54 | (+0.511,-0.146) 0.531  -31.5  0.75 |    0.356/0.427     19.2   
+pair12 *   18.38  19.86 | (1513.6,432.5)  533.9 23.99  238x137   1.157  28.3 |   0.321   35.1   73.7   21.07 | (+0.614,-0.144) 0.631  -29.6  0.72 |    0.453/0.506     24.7   
+pair13     18.52  20.04 | (949.9,525.1)   40.6 24.26  211x138   1.017  28.7 |   0.383   32.2  143.2   19.43 | (+0.533,+0.352) 0.639  -29.2  0.82 |    0.477/0.553     36.3   
+pair14     15.02  16.00 | (956.9,698.2)  196.5 27.24  230x163   0.956  28.5 |   0.376   17.8   32.8   18.35 | (+0.380,+0.348) 0.515  -35.1  0.84 |    0.374/0.485     23.3   
+pair15     23.46  24.75 | (954.8,848.5)  346.1 30.10  246x200   0.925  28.1 |   0.361   24.8   32.0   19.03 | (+0.262,+0.351) 0.437  -34.6  1.20 |    0.280/0.403     20.7   
+pair16 *   23.42  24.62 | (1120.1,816.2)  340.7 29.63  244x191   0.934  28.1 |   0.390   34.6   36.3   17.42 | (+0.284,+0.224) 0.361  -36.3  1.32 |    0.177/0.351      7.0   
+   (* held-out in the original split; << translation outlier on orig residual; <L outlier on LOO residual only)
+   top-camera solved position (world): (+0.0634, +0.3065, +0.8674) m; optical axis (world) [ 0.473  0.014 -0.881]; principal point (984.4,503.7)
+   wrist-chain-only diagnostic (board lies on one table; NOT camera ground truth): board centre z mean -35.2 mm, sd 3.66 mm, range -40.3..-29.2 mm; board normal tilt from world z mean 0.70 deg, sd 0.33 deg
+
+hypothesis tests: translation residual vs geometry (n=16; Pearson r / Spearman rho with p-values)
+factor                                 range |  orig_t r      p    rho      p |   LOO_t r      p    rho      p |   LOO_r r      p
+board_xy_from_base_m       0.216..0.639      |    -0.179  0.506 -0.191  0.478 |    -0.133  0.624 -0.176  0.513 |    -0.227  0.399
+wrist_reach_xy_m           0.108..0.497      |    -0.189  0.483 -0.197  0.464 |    -0.145  0.593 -0.188  0.485 |    -0.223  0.406
+wrist_reach_3d_m           0.298..0.553      |    -0.017  0.950 -0.062  0.820 |    +0.018  0.948 -0.088  0.745 |    +0.001  0.998
+top_offset_px             40.611..705.236    |    +0.147  0.586 +0.068  0.803 |    +0.122  0.652 +0.112  0.680 |    +0.041  0.880
+top_px_per_square         23.489..32.122     |    +0.299  0.261 +0.335  0.204 |    +0.249  0.351 +0.297  0.264 |    +0.383  0.143
+top_board_dist_m           0.925..1.157      |    -0.177  0.512 -0.297  0.264 |    -0.143  0.596 -0.232  0.387 |    -0.341  0.196
+top_tilt_deg              27.247..28.714     |    -0.309  0.244 -0.226  0.399 |    -0.268  0.316 -0.229  0.393 |    -0.302  0.255
+wrist_board_dist_m         0.289..0.415      |    +0.444  0.085 +0.321  0.226 |    +0.420  0.105 +0.259  0.333 |    +0.574  0.020
+wrist_tilt_deg             3.201..35.063     |    +0.142  0.600 +0.162  0.549 |    +0.174  0.520 +0.176  0.513 |    +0.033  0.905
+wrist_offset_px           29.410..150.595    |    -0.204  0.448 -0.347  0.188 |    -0.187  0.487 -0.353  0.180 |    -0.296  0.266
+skew_ms                    5.665..36.329     |    -0.408  0.117 -0.394  0.131 |    -0.395  0.130 -0.350  0.184 |    -0.342  0.195
+board_z                   -0.040..-0.029     |    -0.059  0.828 -0.153  0.572 |    -0.022  0.935 -0.156  0.564 |    -0.126  0.641
+
+----------------------------------------------------------------------------------------------------
+2b. ERROR-MODE DECOMPOSITION (what kind of error produces the residual?)
+----------------------------------------------------------------------------------------------------
+translation-vs-rotation residual coupling: orig r=+0.952 (p=0.000); LOO r=+0.947 (p=0.000)
+pair       res_t  res_r lever_m lever*r rot-about-board part left-over axis|board-plane axis|world-horiz  radial/tang cam-xy
+pair01     18.20  1.244   0.929   20.17                20.15      5.48             79.7             79.7     15.12/3.57    
+pair02      8.13  0.414   0.958    6.92                 6.81      1.78             81.2             81.4      7.13/3.85    
+pair03     19.36  1.179   0.997   20.51                20.24      1.24             74.6             74.9     19.00/1.24    
+pair04 *   18.80  1.067   1.075   20.02                19.20      6.86             80.7             81.0      9.92/14.89   
+pair05     13.21  0.799   1.110   15.49                14.89      9.16             86.7             87.2      1.28/10.94   
+pair06      8.76  0.453   1.050    8.30                 7.33      6.40             74.5             74.0      0.10/6.37    
+pair07     15.03  1.121   1.001   19.59                18.91      4.25             82.9             82.7     13.91/3.08    
+pair08 *   21.03  1.538   0.975   26.16                25.26      4.27             85.1             85.0     18.47/1.60    
+pair09     23.38  1.546   1.043   28.14                26.66      7.62             87.4             87.2     19.83/10.09   
+pair10     17.98  1.095   1.067   20.39                20.30     11.78             80.2             79.6     15.77/7.96    
+pair11     17.23  1.004   1.112   19.49                19.47     13.02             81.1             80.5     13.15/9.22    
+pair12 *   18.38  1.086   1.157   21.93                21.92     15.70             85.3             84.8     11.75/11.37   
+pair13     18.52  1.294   1.017   22.98                22.44      8.63             80.3             80.5     12.61/13.11   
+pair14     15.02  1.151   0.956   19.21                18.68      7.47             84.1             84.3      7.40/12.72   
+pair15     23.46  1.675   0.925   27.02                26.95      8.08             83.1             83.4     19.56/11.48   
+pair16 *   23.42  1.529   0.934   24.93                24.92      4.71             88.3             88.4     15.54/16.92   
+rms: translation residual 18.06 mm = rotation-about-board part 20.44 mm (+) left-over 8.19 mm; lever*rot_rms = 21.15 mm
+rotation axis: mean angle to board normal 82.2 deg (90 = pure tilt error, 0 = in-plane spin); mean angle to world z 82.2 deg (90 = horizontal axis)
+lateral camera-frame residual: mean radial fraction 0.72 (1.0 = purely radial in the top image, as a top distortion-model error would be; ~0.71 = isotropic)
+board-normal scatter about its own mean (planar-table prior; diagnostic): wrist chain rms 0.680 max 1.260 deg | top PnP through solved pose rms 0.700 max 1.244 deg | wrist-vs-top normal angle per pair rms 1.179 max 1.663 deg
+board centre z (world) sd: wrist chain 3.66 mm | top PnP through solved pose 3.22 mm | per-pair difference wrist-top: mean +4.45 sd 5.28 mm
+Monte-Carlo corner-noise propagation (200 draws/pair; sigma_top=0.219 px, sigma_wrist=0.249 px), rms candidate deviation per pair [mm / deg]:
+pair                top           wrist            both
+pair01     3.24/0.200      3.86/0.250      4.96/0.315  
+pair02     2.37/0.142      2.00/0.125      3.16/0.192  
+pair03     2.11/0.121      2.36/0.141      3.04/0.179  
+pair04     1.92/0.102      1.51/0.091      2.55/0.143  
+pair05     1.78/0.091      2.35/0.129      2.86/0.154  
+pair06     1.81/0.099      1.77/0.102      2.62/0.148  
+pair07     1.84/0.105      3.85/0.229      4.35/0.254  
+pair08     1.94/0.114      3.83/0.231      4.29/0.259  
+pair09     1.59/0.087      2.52/0.146      2.86/0.164  
+pair10     1.65/0.088      2.28/0.130      2.86/0.159  
+pair11     1.56/0.080      2.19/0.119      2.58/0.138  
+pair12     1.63/0.081      2.11/0.111      2.74/0.142  
+pair13     1.98/0.112      2.12/0.127      2.99/0.174  
+pair14     2.38/0.142      3.49/0.213      4.18/0.253  
+pair15     3.52/0.217      2.95/0.187      4.57/0.285  
+pair16     3.17/0.194      2.82/0.180      4.07/0.253  
+pooled rms:  top-noise only 2.24 mm / 0.131 deg;  wrist-noise only 2.73 mm / 0.164 deg;  both 3.51 mm / 0.209 deg   vs observed calibration rms 17.16 mm / 1.141 deg
+=> corner noise explains 3.51 mm of 17.16 mm; quadrature remainder 16.80 mm must come from the wrist chain (FK + hand-eye) or unmodelled optics (distortion/intrinsics model error)
+hand-eye (corrected) fixed-target consistency: 1.37 mm / 0.266 deg rms over 11 poses; propagated through the 1.02 m top-camera lever arm: sqrt(1.37^2 + (1.02 m * 0.266 deg)^2) = 4.92 mm expected top-candidate scatter from the wrist chain alone
+factor inter-correlation: top_offset~board_xy_from_base r=-0.543; top_offset~top_board_dist r=+0.271; board_xy~wrist_reach r=+0.970
+partial correlations with LOO translation residual: top_offset | board_xy_from_base = +0.060; board_xy_from_base | top_offset = -0.080; wrist_reach | top_offset = -0.090; top_board_dist | board_xy = -0.079
+top-image halves: u<cx (3 pairs) LOO_t rms 20.57 mm; u>cx (13 pairs) rms 18.94 mm; Mann-Whitney p=0.611
+top offset below/above median (411 px): near rms 19.46 mm (n=8), far rms 19.05 mm (n=8); Mann-Whitney p=0.798
+board xy from base below/above median (0.455 m): near rms 20.53 mm, far rms 17.88 mm; Mann-Whitney p=0.328
+
+----------------------------------------------------------------------------------------------------
+3. RE-SOLVE VARIANTS  (outputs under calib/analysis/out/, nothing installed)
+----------------------------------------------------------------------------------------------------
+variant                            nC/nV cal_rms cal_max rot_rms rot_max val_tmax val_rmax status |    dpos vs orig (mm) |dpos|   drot |          cam pos world (m)
+c_original                         12/4    17.16   23.46   1.141   1.675    23.42    1.538   FAIL | ( +0.00, +0.00, +0.00)   0.00  0.000 | (+0.0634,+0.3065,+0.8674)
+a_all16                            16/0    18.05   23.23   1.188   1.671      nan      nan   FAIL | ( +0.40, +0.15, +0.20)   0.47  0.047 | (+0.0638,+0.3066,+0.8676)
+b1_drop_outliers_same_split        12/4    17.16   23.46   1.141   1.675    23.42    1.538   FAIL | ( +0.00, +0.00, +0.00)   0.00  0.000 | (+0.0634,+0.3065,+0.8674)
+b2_drop_outliers_resplit           12/4    17.16   23.46   1.141   1.675    23.42    1.538   FAIL | ( +0.00, +0.00, +0.00)   0.00  0.000 | (+0.0634,+0.3065,+0.8674)
+b3_drop_outliers_all_loo           16/0    18.05   23.23   1.188   1.671      nan      nan   FAIL | ( +0.40, +0.15, +0.20)   0.47  0.047 | (+0.0638,+0.3066,+0.8676)
+s2_drop_worst2_loo                 10/4    15.42   20.60   1.007   1.394    25.02    1.665   FAIL | ( -2.23, -0.92, +0.29)   2.43  0.166 | (+0.0612,+0.3056,+0.8677)
+  (a) LOO validation over 16: translation rms 19.25 max 24.78 mm (pair09); rotation rms 1.268 max 1.782 deg (pair15); LOO solutions vs all-16: position spread max 1.55 mm (sd 0.29), rotation max 0.111 deg; status with LOO as the validation set: FAIL (13 of 16 LOO residuals exceed the 15 mm validation threshold)
+  exhaustive 4-of-16 hold-out scan (1820 splits, 12 calibrate each): PASS in 0.0% of splits; validation max translation: median 23.68, 90th pct 26.31, max 29.05 mm; calibration rms: min 15.54 median 17.85 max 19.63 mm; solved camera position spread over splits: sd per axis (1.78, 1.98, 0.40) mm, max |dpos| vs original 5.93 mm
+  held-out pairs responsible for the FAIL splits (count of failing splits in which the pair exceeded a validation threshold): {'pair01': 455, 'pair03': 455, 'pair04': 455, 'pair08': 455, 'pair09': 455, 'pair10': 455, 'pair12': 455, 'pair13': 455, 'pair15': 455, 'pair16': 455, 'pair11': 450, 'pair14': 325, 'pair07': 304, 'pair05': 196}
+  (b'') LOO validation over 16: translation rms 19.25 max 24.78 mm (pair09); rotation rms 1.268 max 1.782 deg
+  b1_drop_outliers_same_split: calib=['pair01', 'pair02', 'pair03', 'pair05', 'pair06', 'pair07', 'pair09', 'pair10', 'pair11', 'pair13', 'pair14', 'pair15'] held-out=['pair04', 'pair08', 'pair12', 'pair16']; held-out residuals mm/deg: pair04 18.80/1.067, pair08 21.03/1.538, pair12 18.38/1.086, pair16 23.42/1.529
+  b2_drop_outliers_resplit: calib=['pair01', 'pair02', 'pair03', 'pair05', 'pair06', 'pair07', 'pair09', 'pair10', 'pair11', 'pair13', 'pair14', 'pair15'] held-out=['pair04', 'pair08', 'pair12', 'pair16']; held-out residuals mm/deg: pair04 18.80/1.067, pair08 21.03/1.538, pair12 18.38/1.086, pair16 23.42/1.529
+  dropped pairs' pair_skew_ns: 
+  all pairs skew ms: pair01=20.2, pair02=27.5, pair03=6.2, pair04=14.1, pair05=24.1, pair06=31.9, pair07=5.7, pair08=15.9, pair09=22.9, pair10=14.4, pair11=19.2, pair12=24.7, pair13=36.3, pair14=23.3, pair15=20.7, pair16=7.0
+  dropped pairs scored against b1_drop_outliers_same_split: 
+  dropped pairs scored against b3_drop_outliers_all_loo: 
+
+overlay impact at 0.8 m (fx~384.6 px -> 1 cm world ~ 4.8 px; 1 deg ~ 6.7 px at image centre):
+  a_all16                            board-centre reprojection shift orig->variant: mean 0.48 px, max 0.63 px
+  b1_drop_outliers_same_split        board-centre reprojection shift orig->variant: mean 0.00 px, max 0.00 px
+  b2_drop_outliers_resplit           board-centre reprojection shift orig->variant: mean 0.00 px, max 0.00 px
+  b3_drop_outliers_all_loo           board-centre reprojection shift orig->variant: mean 0.48 px, max 0.63 px
+  s2_drop_worst2_loo                 board-centre reprojection shift orig->variant: mean 1.60 px, max 2.18 px
+per-pair residual as top-image reprojection of the board centre (wrist-chain board pose projected through the ORIGINAL solve vs detected centre):
+  pair01 6.70, pair02 1.04, pair03 2.66, pair04 6.97, pair05 8.00, pair06 3.64, pair07 5.21, pair08 6.10, pair09 9.02, pair10 8.33, pair11 8.92, pair12 12.35, pair13 9.76, pair14 10.29, pair15 11.45, pair16 7.22  | rms 7.95 max 12.35 px
+
+----------------------------------------------------------------------------------------------------
+4. STATISTICS FOR THE RECOMMENDATION (see final report text)
+----------------------------------------------------------------------------------------------------
+  c_original                         cal_rms margin x0.87, val_max margin x0.64, |dpos| vs orig 0.00 mm (0.0 px at 0.8 m), drot 0.000 deg (0.0 px)
+  a_all16                            cal_rms margin x0.83, val_max margin xnan, |dpos| vs orig 0.47 mm (0.7 px at 0.8 m), drot 0.047 deg (1.0 px)
+  b1_drop_outliers_same_split        cal_rms margin x0.87, val_max margin x0.64, |dpos| vs orig 0.00 mm (0.0 px at 0.8 m), drot 0.000 deg (0.0 px)
+  b2_drop_outliers_resplit           cal_rms margin x0.87, val_max margin x0.64, |dpos| vs orig 0.00 mm (0.0 px at 0.8 m), drot 0.000 deg (0.0 px)
+  b3_drop_outliers_all_loo           cal_rms margin x0.83, val_max margin xnan, |dpos| vs orig 0.47 mm (0.7 px at 0.8 m), drot 0.047 deg (1.0 px)
+  s2_drop_worst2_loo                 cal_rms margin x0.97, val_max margin x0.60, |dpos| vs orig 2.43 mm (3.6 px at 0.8 m), drot 0.166 deg (3.4 px)
+
+wrote: <repo>/calib/analysis/out_right/report.txt, <repo>/calib/analysis/out_right/report.json, <repo>/calib/analysis/out_right/per_pair_residuals.csv, <repo>/calib/analysis/out_right/top_board_map.png, <repo>/calib/analysis/out_right/variant_c_original.json, <repo>/calib/analysis/out_right/variant_a_all16.json, <repo>/calib/analysis/out_right/variant_b1_drop_outliers_same_split.json, <repo>/calib/analysis/out_right/variant_b2_drop_outliers_resplit.json, <repo>/calib/analysis/out_right/variant_b3_drop_outliers_all_loo.json, <repo>/calib/analysis/out_right/variant_s2_drop_worst2_loo.json

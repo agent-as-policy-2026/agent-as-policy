@@ -1,0 +1,4 @@
+trial,session,model,effort,service_tier,interface,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260907_212417_paper_singleinsert_bare_medium_yieldbatch_v2_kn_01,gpt-6-astra,medium,default,bare,"yield,batch",2,task,2,0,2026-09-07 21:24:17,318,no,20,10,2,0,8,660733,590464,4289,288,success (agent),,
+02,20260907_213007_paper_singleinsert_bare_medium_yieldbatch_v2_kn_02,gpt-6-astra,medium,default,bare,"yield,batch",2,task,2,0,2026-09-07 21:30:07,288,no,20,10,2,0,8,581711,537984,4431,47,success (agent),,
+03,20260907_213524_paper_singleinsert_bare_medium_yieldbatch_v2_kn_03,gpt-6-astra,medium,default,bare,"yield,batch",2,task,2,0,2026-09-07 21:35:24,304,no,20,10,2,0,8,806943,756864,3659,90,success (agent),,

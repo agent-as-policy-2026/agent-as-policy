@@ -1,0 +1,141 @@
+# DEFAULT / REFERENCE BRIDGE CONFIG.
+#
+# This is the package default: preflight.py's DEFAULT_CONFIG, i.e. what the
+# agp-yam-* console scripts load when no --config is given, what FakeYamSource()
+# builds from, and the fixture the test suite validates the schema against. It
+# describes a single right-hand YAM station: the P4 first-motion speed and
+# safety envelope, with the workspace kept in step with the runtime configs.
+#
+# It is NOT what the rig runs: agp/start_bridges.sh always passes an
+# explicit --config (left_arm.yaml / left_arm_throw.yaml / right_arm.yaml), and
+# those files carry the current settle tolerances and gripper limits.
+
+schema_version: 1
+
+# Loopback keeps the hardware owner inaccessible from other machines. The client
+# process runs on this host and must reject a frame older than 500 ms.
+bridge:
+  host: 127.0.0.1
+  port: 9020
+  request_timeout_s: 1.0
+  stale_after_s: 0.5
+
+# Paths are resolved relative to this file: the patched i2rt checkout that sits
+# next to hardware-bridge (see third_party/i2rt/UPSTREAM.md), not the obsolete
+# copy vendored by robots_realtime.
+i2rt:
+  source: ../../i2rt
+  package_version: "1.1.2"
+  git_revision: "2c2f3ae7a9040e3ce892873eb9aa744eb286063f"
+  # SHA-256 of: git -C ../i2rt diff --binary HEAD -- i2rt pyproject.toml
+  # The current local i2rt modifications are intentional hardware facts. Any
+  # tracked change requires explicit review and a deliberate baseline update.
+  tracked_diff_sha256: "ef0864c34beec62849c39f5a3f211c0758adcbac1c4a563bbfbc747fde0673a7"
+
+hardware:
+  arm: yam
+  gripper: linear_4310
+  can_channel: can_follower_r
+  can_bitrate: 1000000
+  camera_model: Intel RealSense D405
+  camera_serial: "353322271910"
+  camera_physical_port: "6-2"
+  arm_model: ../../i2rt/i2rt/robot_models/arm/yam/v1/yam.xml
+  gripper_model: ../../i2rt/i2rt/robot_models/gripper/linear_4310/linear_4310.xml
+  station_model: ../../i2rt/i2rt/robot_models/station/yam_station_linear_4310_d405/yam_station_linear_4310_d405.xml
+
+# D405 RGB-D contract. 640x360@30 is supported by both RGB8 and Z16 on the
+# two detected D405 devices and matches the already-used wrist preview mode.
+camera:
+  name: wrist_d405
+  width: 640
+  height: 360
+  fps: 30
+  frame_timeout_s: 1.0
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+  min_depth_m: 0.01
+  max_depth_m: 1.0
+  # Independent post-writeback hand-eye verification, P3 postupdate report.
+  transform_translation_error_bound_m: 0.0016787199367799639
+  station_flange_body: right_gripper
+  station_camera_body: right_camera
+
+# Fixed RGB-only overhead camera. The PASS artifact is the sole source for
+# its stable device path, serial, stream profile, lens model, and world pose --
+# there is no width/height/fps here on purpose. The artifact this path resolves
+# to is the right station's BRIO B8C7F203 at 1920x1080@30 (held-out translation
+# error 0.0234 m); the bridge opens that profile via V4L2/MJPG and fails closed
+# if the driver reports anything else. The superseded 640x360 calibration of the
+# same camera is not shipped.
+top_camera:
+  calibration_path: ../acceptance/top/top_brio_calibration.json
+  stale_after_s: 0.25
+  max_joint_skew_s: 0.05
+
+# First-motion acceptance envelope. Coordinates are in the YAM base frame and
+# constrain the physical grasp_site. Motion remains slower than the current
+# i2rt example's 30 deg/s limit.
+acceptance:
+  # joint4=88 deg leaves the configured 2 deg settle-bias reserve below the
+  # model's 90 deg upper limit. At 90 deg gravity error cannot be corrected.
+  home_joints_deg: [0, 0, 0, 88, 90, 90]
+  workspace:
+    frame: yam_base
+    tcp: grasp_site
+    # Aligned with the runtime configs (left_arm.yaml / right_arm.yaml), which
+    # both record: "WIDE OPEN by explicit user decision: the user supervises
+    # every run and past safety-box rejections were a recurring pain point. No
+    # table-z / reach limits are enforced client-side either. The schema
+    # requires ordered bounds, so these are set beyond any physical reach."
+    # Previously [-1.60, 1.60] / [-1.75, 1.75] / [-0.06, 0.50] -- x and y were
+    # already past the arm's ~0.8 m grasp_site reach and never rejected; only
+    # the z pair still gated, and it now matches the two arms the rig serves.
+    # The speed caps and the safety block below stay at the P4 values.
+    x_m: [-2.0, 2.0]
+    y_m: [-2.0, 2.0]
+    z_m: [-0.2, 1.0]
+  speed_limits:
+    control_frequency_hz: 50
+    joint_velocity_deg_s: 20
+    joint_acceleration_deg_s2: 40
+    cartesian_translation_m_s: 0.03
+    cartesian_rotation_deg_s: 10
+    gripper_fraction_s: 0.25
+
+# Application-level safety thresholds. These are enforced by the bridge in
+# addition to i2rt's motor-loop checks and are part of the reproducible P4
+# first-motion envelope. A null tracking-error threshold disables only that
+# gate while preserving measured-error logging.
+safety:
+  command_heartbeat_timeout_s: 0.5
+  feedback_stale_after_s: 0.1
+  max_tracking_error_deg: null
+  tracking_error_timeout_s: 0.5
+  # Matches the established YAM saved-pose final settle tolerance.
+  joint_settle_tolerance_rad: 0.03
+  cartesian_position_tolerance_m: 0.0005
+  cartesian_orientation_tolerance_deg: 0.5
+  # Bounded final-target settle correction remains active independently.
+  cartesian_settle_gain_s_inv: 4.0
+  cartesian_settle_max_bias_deg: 2.0
+  gripper_max_effort_nm: 0.9
+  # Empty motion measured about 0.14 Nm during P4. Intentional close contact
+  # must exceed this threshold while remaining below the overcurrent limit.
+  gripper_contact_min_effort_nm: 0.2
+  # Hysteresis: one quantized sample just below the acquisition threshold must
+  # not resume squeezing a soft object. Empty travel was measured around 0.14 Nm.
+  gripper_contact_release_effort_nm: 0.15
+  # Five fresh 50 Hz frames reject a spike without squeezing a compliant cube
+  # for the longer mechanical-stall fault interval.
+  gripper_contact_confirmation_s: 0.1
+  # Soft foam can keep compressing slowly after contact. This is separate from
+  # the stricter mechanical-stall velocity used to diagnose a jam.
+  gripper_contact_max_velocity_fraction_s: 0.1
+  # Fractions at or below this value are the physically observed empty endpoint,
+  # not an object contact even if endpoint friction briefly exceeds 0.2 Nm.
+  gripper_contact_min_open_fraction: 0.05
+  gripper_stall_velocity_fraction_s: 0.01
+  gripper_stall_error_fraction: 0.02
+  gripper_stall_timeout_s: 0.5
+  action_log_path: ../logs/actions.jsonl

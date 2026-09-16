@@ -1,0 +1,2 @@
+trial,session,model,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260908_175849_paper_towel_full_medium_yieldbatch_v2_kn_dual_01,gpt-6-astra,medium,default,full,"left,right","yield,batch",2,task,0,0,2026-09-08 17:58:48,1188,no,47,12,3,3,29,4649055,4500992,13016,3526,fail (agent),,

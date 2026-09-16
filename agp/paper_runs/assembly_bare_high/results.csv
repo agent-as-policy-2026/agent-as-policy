@@ -1,0 +1,2 @@
+trial,session,model,effort,service_tier,interface,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260907_172929_paper_assembly_bare_high_01,gpt-6-astra,high,default,bare,none,0,0,2026-09-07 17:29:29,1623,no,91,39,12,8,32,6931282,6815232,23608,6689,success (agent),,

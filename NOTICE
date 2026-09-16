@@ -1,0 +1,21 @@
+Agent as Policy (AgP)
+Copyright (c) 2026 Yang Lin and the AgP authors
+
+Except where noted below, this product is licensed under the Apache License,
+Version 2.0; see LICENSE.
+
+This product includes software developed by the graph-as-policy project
+(https://github.com/graph-robots/graph-as-policy), licensed under the Apache
+License, Version 2.0. The copy vendored under third_party/graph-as-policy/ is
+a subset of that project and has been modified. Upstream's LICENSE and
+NOTICE.md are preserved there unchanged;
+third_party/graph-as-policy/UPSTREAM.md records the pinned upstream commit,
+every file that was modified or added, and what was deliberately left out.
+
+This product includes software from i2rt
+(https://github.com/i2rt-robotics/i2rt), licensed under the MIT License.
+third_party/i2rt/ carries the upstream notice and our patch; the checkout the
+patch applies to is not part of this repository.
+
+The dataset published on Hugging Face is licensed CC BY 4.0 and is not covered
+by this notice; see CITATION.cff.

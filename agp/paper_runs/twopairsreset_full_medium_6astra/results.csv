@@ -1,0 +1,13 @@
+trial,session,model,effort,service_tier,interface,arms,harness,harness_version,notes_used,tools_inherited,tools_left,start,duration_s,timed_out,cmds_counted,moves_ok,gripper_cmds,failed_cmds,frames,tokens_input,tokens_cached_input,tokens_output,tokens_reasoning,agent_verdict,operator_verdict,remarks
+01,20260910_123410_scatter_twopairsreset_full_medium_6astra_01,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-10 12:34:10,438,no,35,13,4,0,18,1654756,1591552,4945,314,success (agent),,
+02,20260910_125836_scatter_twopairsreset_full_medium_6astra_02,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-10 12:58:36,469,no,38,14,4,0,20,2959090,2862720,6663,595,success (agent),,
+03,20260911_015554_scatter_twopairsreset_full_medium_6astra_03,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 01:55:53,438,no,35,12,4,2,18,2406713,2285184,5454,246,success (agent),,
+04,20260911_024902_scatter_twopairsreset_full_medium_6astra_04,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 02:49:02,468,no,35,12,4,1,18,2200947,2130560,5170,294,success (agent),,
+05,20260911_030614_scatter_twopairsreset_full_medium_6astra_05,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 03:06:14,453,no,35,12,4,1,18,2202924,2127488,5265,279,success (agent),,
+06,20260911_032311_scatter_twopairsreset_full_medium_6astra_06,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 03:23:11,423,no,36,12,4,1,19,2790093,2636928,5442,351,success (agent),,
+07,20260911_033938_scatter_twopairsreset_full_medium_6astra_07,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 03:39:38,484,no,36,13,4,0,19,2130478,2016640,5914,551,success (agent),,
+09,20260911_041817_scatter_twopairsreset_full_medium_6astra_09,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 04:18:17,438,no,37,14,4,0,19,2442594,2346368,5947,501,success (agent),,
+10,20260911_043811_scatter_twopairsreset_full_medium_6astra_10,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 04:38:11,513,no,37,13,4,2,19,2159533,2095616,6165,416,success (agent),,
+11,20260911_050154_scatter_twopairsreset_full_medium_6astra_11,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 05:01:54,468,no,39,15,4,1,20,3091842,3011200,6494,463,success (agent),,
+12,20260911_121604_scatter_twopairsreset_full_medium_6astra_12,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 12:16:04,678,no,69,23,8,3,35,5053474,4958848,7528,394,success (agent),,
+13,20260911_124152_scatter_twopairsreset_full_medium_6astra_13,gpt-6-astra,medium,default,full,left,none,0,none,0,0,2026-09-11 12:41:52,528,no,38,13,4,1,20,4492077,4402560,6180,538,success (agent),,
