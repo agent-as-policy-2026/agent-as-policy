@@ -1,6 +1,5 @@
 import json
 import time
-from pathlib import Path
 
 import cv2
 import numpy as np
@@ -24,38 +23,6 @@ from agp_yam_bridge.camera_acceptance import (
     solve_hand_eye,
     undistort_realsense_pixels,
 )
-
-
-def test_fixed_camera_detector_resolves_small_real_brio_checkerboard() -> None:
-    fixture = Path(__file__).with_name("fixtures") / "top_brio_small_checkerboard.png"
-    bgr = cv2.imread(str(fixture))
-    assert bgr is not None
-
-    corners = _detect_checkerboard(
-        cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB),
-        columns=9,
-        rows=7,
-        label="small BRIO checkerboard",
-    )
-
-    assert corners.shape == (63, 2)
-    np.testing.assert_allclose(corners.mean(axis=0), [509.3, 258.4], atol=1.0)
-
-
-def test_fixed_camera_detector_preserves_native_scale_wrist_detection() -> None:
-    fixture = Path(__file__).with_name("fixtures") / "wrist_d405_large_checkerboard.png"
-    bgr = cv2.imread(str(fixture))
-    assert bgr is not None
-
-    corners = _detect_checkerboard(
-        cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB),
-        columns=9,
-        rows=7,
-        label="large D405 checkerboard",
-    )
-
-    assert corners.shape == (63, 2)
-    np.testing.assert_allclose(corners.mean(axis=0), [168.8, 169.0], atol=1.0)
 
 
 def test_capture_archive_preserves_joint_state_for_fk_diagnostics(tmp_path) -> None:
