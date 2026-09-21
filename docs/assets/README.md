@@ -4,7 +4,7 @@ Presentation assets for the Agent as Policy repository, drawn from the project r
 
 | Asset | Source | Conversion |
 | --- | --- | --- |
-| [Project video](https://github.com/user-attachments/assets/1ccd77b9-64c3-4755-9408-e18a936907dc) | `Promotional_Materials/AGP-promo.mp4` | Original English film, 38.31 seconds, 960 × 720, hosted as a GitHub video attachment |
+| [Project video](https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342) | `Promotional_Materials/Bilibili/AgP_Bilibili_Promo_v2.mp4` and its source recordings | English version of the full 348.9-second v2 film. Same 16 segments, cuts, speeds, holds, and soundtrack. Hosted as a 1280 × 720 GitHub video attachment |
 | `project-video-cover.jpg` | Editable layout from `Promotional_Materials/Bilibili/verify_video.py` | English headings, two towel-folding methods at left, block construction and assembly at right. All panels use real recording frames. |
 | `method-overview.png` | `paper_latex/agp_arxiv_2026-09-14/imgs/method_big.pdf` | First page rendered to PNG, 2200-pixel long edge |
 | `towel-preview.gif` | `Videos/Edited_4x/11_fold_towel_method2_4x.mp4` | Seconds 252–264, 4× original speed |
@@ -17,3 +17,5 @@ The cover uses a frame at 400 seconds from `Videos/Edited_4x/10_fold_towel_metho
 GIFs are 640 × 360, 8 fps, with 96-color palettes. Frames are fitted without cropping and padded to a common canvas. Sampling reduces frame rate without changing playback speed. The README labels each preview's playback speed.
 
 The README links to the public project site's task videos, including both towel-folding methods. These cover the same task categories but can be different trials, with their own playback speeds. The paper and dataset contain the experimental results and full records.
+
+The English film retains the reference timeline exactly. Chinese text is removed and English headings are reflowed. The agent section is rebuilt from its original recorded interface footage to restore the image beneath the Chinese subtitle overlay. The 1920 × 1080 master copies the original audio stream byte-for-byte; the web version encodes the same audio at 64 kbps.
