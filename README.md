@@ -9,20 +9,20 @@ Mengzhao Jia · Yang Lin · Xixin Zhang · Zhihan Zhang · Xiaobai Liu · Meng J
 
 <a href="https://agent-as-policy-2026.github.io/"><img alt="Project page" src="https://img.shields.io/badge/Project-Page-187764?style=for-the-badge"></a>
 <a href="https://arxiv.org/abs/2609.12541"><img alt="Paper on arXiv" src="https://img.shields.io/badge/arXiv-2609.12541-b31b1b?style=for-the-badge"></a>
-<a href="https://github.com/user-attachments/assets/1ccd77b9-64c3-4755-9408-e18a936907dc"><img alt="Watch project video" src="https://img.shields.io/badge/Watch-Video-187764?style=for-the-badge"></a>
+<a href="https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342"><img alt="Watch project video" src="https://img.shields.io/badge/Watch-Video-187764?style=for-the-badge"></a>
 <a href="https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy"><img alt="Hugging Face dataset" src="https://img.shields.io/badge/Hugging_Face-Dataset-ffd21e?style=for-the-badge"></a>
 
 </div>
 
 <p align="center">
-  <a href="https://github.com/user-attachments/assets/1ccd77b9-64c3-4755-9408-e18a936907dc"><img src="docs/assets/project-video-cover.jpg" alt="Watch Agent as Policy demonstrations, including bimanual towel folding, block construction, and assembly" width="100%"></a>
+  <a href="https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342"><img src="docs/assets/project-video-cover.jpg" alt="Watch Agent as Policy demonstrations, including bimanual towel folding, block construction, and assembly" width="100%"></a>
 </p>
-<p align="center"><b><a href="https://github.com/user-attachments/assets/1ccd77b9-64c3-4755-9408-e18a936907dc">▶ Watch the project video</a></b> · 38 sec · Task demonstrations and recorded agent execution</p>
+<p align="center"><b><a href="https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342">▶ Watch the project video</a></b> · 5 min 49 sec · Full task demonstrations and recorded agent execution</p>
 
 <details>
 <summary><b>▶ Play the project video here</b></summary>
 
-https://github.com/user-attachments/assets/1ccd77b9-64c3-4755-9408-e18a936907dc
+https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342
 
 </details>
 
