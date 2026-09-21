@@ -9,15 +9,22 @@ Mengzhao Jia · Yang Lin · Xixin Zhang · Zhihan Zhang · Xiaobai Liu · Meng J
 
 <a href="https://agent-as-policy-2026.github.io/"><img alt="Project page" src="https://img.shields.io/badge/Project-Page-187764?style=for-the-badge"></a>
 <a href="https://arxiv.org/abs/2609.12541"><img alt="Paper on arXiv" src="https://img.shields.io/badge/arXiv-2609.12541-b31b1b?style=for-the-badge"></a>
-<a href="docs/assets/project-video.mp4"><img alt="Watch project video" src="https://img.shields.io/badge/Watch-Video-187764?style=for-the-badge"></a>
+<a href="https://github.com/user-attachments/assets/37d1d44c-292a-4207-9e5f-8cf7528e7d1f"><img alt="Watch project video" src="https://img.shields.io/badge/Watch-Video-187764?style=for-the-badge"></a>
 <a href="https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy"><img alt="Hugging Face dataset" src="https://img.shields.io/badge/Hugging_Face-Dataset-ffd21e?style=for-the-badge"></a>
 
 </div>
 
 <p align="center">
-  <a href="docs/assets/project-video.mp4"><img src="docs/assets/project-video-cover.jpg" alt="Watch Agent as Policy demonstrations, including bimanual towel folding, block construction, and assembly" width="100%"></a>
+  <a href="https://github.com/user-attachments/assets/37d1d44c-292a-4207-9e5f-8cf7528e7d1f"><img src="docs/assets/project-video-cover.jpg" alt="Watch Agent as Policy demonstrations, including bimanual towel folding, block construction, and assembly" width="100%"></a>
 </p>
-<p align="center"><b><a href="docs/assets/project-video.mp4">▶ Watch the project video</a></b> · 5 min 49 sec · Bilingual task captions and recorded agent execution</p>
+<p align="center"><b><a href="https://github.com/user-attachments/assets/37d1d44c-292a-4207-9e5f-8cf7528e7d1f">▶ Watch the project video</a></b> · 5 min 49 sec · Bilingual task captions and recorded agent execution</p>
+
+<details>
+<summary><b>▶ Play the project video here</b></summary>
+
+https://github.com/user-attachments/assets/37d1d44c-292a-4207-9e5f-8cf7528e7d1f
+
+</details>
 
 **Agent as Policy (AgP)** uses a general-purpose agent as the policy for real-world robotic manipulation. Given a task and a documented robot interface, the agent interprets camera observations, writes executable programs, commands the robot, and revises its actions from physical feedback. Model parameters remain fixed during execution.
 
