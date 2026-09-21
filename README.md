@@ -37,18 +37,19 @@ From deformable objects to precision assembly and dynamic motion. Click a previe
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="https://agent-as-policy-2026.github.io/media/towel-simultaneous-run-8x-views.mp4"><img src="docs/assets/towel-preview.gif" alt="Two robot arms folding a blue towel, 20x excerpt" width="100%"></a><br>
-      <b>Bimanual towel folding</b><br><sub>Coordinate two arms to fold a deformable object · 20× preview</sub>
+      <a href="https://agent-as-policy-2026.github.io/media/towel-simultaneous-run-8x-views.mp4"><img src="docs/assets/towel-preview.gif" alt="Two robot arms folding a blue towel, 4x excerpt" width="100%"></a><br>
+      <b>Bimanual towel folding</b><br><sub>Coordinate two arms to fold a deformable object · 4× preview</sub><br>
+      <sub><a href="https://agent-as-policy-2026.github.io/media/towel-sequential-run-8x-views.mp4">Method 1</a> · <a href="https://agent-as-policy-2026.github.io/media/towel-simultaneous-run-8x-views.mp4">Method 2</a></sub>
     </td>
     <td align="center" width="50%">
-      <a href="https://agent-as-policy-2026.github.io/media/blocks-pyramid-8x-views.mp4"><img src="docs/assets/pyramid-preview.gif" alt="Robot building a six-block pyramid, 20x excerpt" width="100%"></a><br>
-      <b>Block construction</b><br><sub>Build a six-block pyramid from a goal image · 20× preview</sub>
+      <a href="https://agent-as-policy-2026.github.io/media/blocks-pyramid-8x-views.mp4"><img src="docs/assets/pyramid-preview.gif" alt="Robot building a six-block pyramid, 4x excerpt" width="100%"></a><br>
+      <b>Block construction</b><br><sub>Build a six-block pyramid from a goal image · 4× preview</sub>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <a href="https://agent-as-policy-2026.github.io/media/assembly-trial4-timelapse-8x-views.mp4"><img src="docs/assets/assembly-preview.gif" alt="Robot assembling matching parts, 20x excerpt" width="100%"></a><br>
-      <b>Precision assembly</b><br><sub>Match and assemble four pairs of parts · 20× preview</sub>
+      <a href="https://agent-as-policy-2026.github.io/media/assembly-trial4-timelapse-8x-views.mp4"><img src="docs/assets/assembly-preview.gif" alt="Robot assembling matching parts, 4x excerpt" width="100%"></a><br>
+      <b>Precision assembly</b><br><sub>Match and assemble four pairs of parts · 4× preview</sub>
     </td>
     <td align="center">
       <a href="https://agent-as-policy-2026.github.io/media/throw-probe-then-throw-8x-views.mp4"><img src="docs/assets/throw-preview.gif" alt="Robot throwing an object toward a target bowl at original speed" width="100%"></a><br>
@@ -57,7 +58,7 @@ From deformable objects to precision assembly and dynamic motion. Click a previe
   </tr>
 </table>
 
-Previews are selected excerpts from the promotional film. Linked task recordings play at 8× and may show a different trial of the same task. The [project page](https://agent-as-policy-2026.github.io/) also includes dice reorientation, alternative towel-folding strategies, and recorded agent sessions. Videos, per-step frames, joint trajectories, and full agent traces are available in the [dataset](https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy).
+Previews are selected excerpts from the task recordings. Linked task recordings play at 8× and may show a different trial of the same task. The [project page](https://agent-as-policy-2026.github.io/) also includes dice reorientation, alternative towel-folding strategies, and recorded agent sessions. Videos, per-step frames, joint trajectories, and full agent traces are available in the [dataset](https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy).
 
 ## How it works
 
