@@ -111,9 +111,10 @@ USAGE_LIMIT_COOLING_S = 3600     # usage limit without a known reset time
 LABEL = re.compile(r"^[a-z0-9][a-z0-9_-]{0,31}$")
 AUTH_NS = "https://api.openai.com/auth"
 # codex failure text (error events, stderr) -> mark
-USAGE_LIMIT = re.compile(r"usage.?limit|out of credits|spend cap|quota exceeded", re.I)
+USAGE_LIMIT = re.compile(r"usage.?limit|out of credits|spend cap|quota exceeded|insufficient_quota|"
+                         r"exceeded your current quota", re.I)
 AUTH_FAILURE = re.compile(r"could not be refreshed|sign in again|invalidated oauth|refresh_token_(?:reused|expired|"
-                          r"invalidated)|\b401\b|unauthori[sz]ed|not logged in", re.I)
+                          r"invalidated)|\b401\b|unauthori[sz]ed|not logged in|invalid_api_key|incorrect api key", re.I)
 RATE_LIMITED = re.compile(r"\b429\b|too many requests|rate.?limit|overloaded|\b503\b", re.I)
 
 
@@ -196,8 +197,9 @@ def _claims(jwt):
 
 
 def describe_bytes(data):
-    """What a login file is, without any credential value: {ok, error, key_names, auth_mode, has_refresh, plan,
-    account_hash, session_hash, last_refresh, access_expires, file_sha256}."""
+    """What a login file is, without any credential value: {ok, error, kind (chatgpt or api_key), key_names,
+    auth_mode, has_refresh, plan, account_hash, session_hash, last_refresh, access_expires, file_sha256}. ok: a ChatGPT
+    login, the only kind the pool takes; an API key works only without a pool (~/.codex/auth.json)."""
     info = {"ok": False, "error": None, "file_sha256": sha256_bytes(data)}
     try:
         doc = json.loads(data)
@@ -214,7 +216,9 @@ def describe_bytes(data):
         access.get(AUTH_NS) if isinstance(access.get(AUTH_NS), dict) else {})
     account = tokens.get("account_id") or auth.get("chatgpt_account_id")
     user = auth.get("chatgpt_user_id") or ident.get("sub")
-    info.update(key_names=sorted(doc), token_key_names=sorted(tokens), auth_mode=doc.get("auth_mode"),
+    info.update(kind="api_key" if doc.get("auth_mode") == "apikey" or (doc.get("OPENAI_API_KEY") and not tokens)
+                else "chatgpt",
+                key_names=sorted(doc), token_key_names=sorted(tokens), auth_mode=doc.get("auth_mode"),
                 has_api_key=bool(doc.get("OPENAI_API_KEY")), has_refresh=bool(tokens.get("refresh_token")),
                 plan=auth.get("chatgpt_plan_type"), account_hash=identity_hash(account, user),
                 workspace_hash=short_hash(account),
@@ -624,7 +628,7 @@ def _disable(state, label, reason):
 # ----------------------------------------------------------------------------- lease / finish (agp_core/run_agent.py)
 def public(lease):
     """The part of a lease that goes into launch.json (no path of a credential copy, no file hash)."""
-    keys = ("source", "label", "account_hash", "session_hash", "plan", "last_refresh", "access_expires", "exclusive",
+    keys = ("source", "label", "kind", "account_hash", "session_hash", "plan", "last_refresh", "access_expires", "exclusive",
             "used_percent_at_select", "resets_at", "effective_percent_at_select", "account_leases", "login_leases",
             "renewal", "recovered_stale")
     return {k: lease.get(k) for k in keys if k in lease}
@@ -639,7 +643,7 @@ def _copy_in(source, copy_to):
 
 def _new_lease(root, lease_id, *, source, label, target, copy_to, data, found, owner, pid, exclusive=False):
     lease = {"id": lease_id, "source": source, "label": label, "target": str(target), "copy": str(copy_to),
-             "sha256_at_lease": sha256_bytes(data), "account_hash": found.get("account_hash"),
+             "sha256_at_lease": sha256_bytes(data), "kind": found.get("kind"), "account_hash": found.get("account_hash"),
              "session_hash": found.get("session_hash"), "plan": found.get("plan"),
              "last_refresh": found.get("last_refresh"), "access_expires": found.get("access_expires"),
              "exclusive": bool(exclusive), "pid": pid, "pid_start": _pid_start(pid), "owner": owner,

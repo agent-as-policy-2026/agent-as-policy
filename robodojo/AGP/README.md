@@ -69,14 +69,19 @@ bash scripts/robodojo.sh summarize    # writes eval_result/RoboDojo/_summary.md
 
 ## Model Assets
 
-There is no checkpoint. The agent uses a ChatGPT subscription through the codex login, not an API key. We provide the logins to the organizers as an account pool folder:
+There is no checkpoint. The agent uses codex with a ChatGPT login or an OpenAI API key. We provide ChatGPT logins to the organizers as an account pool folder:
 
 ```bash
 mkdir -p -m 700 ~/.agp-robodojo/private
 tar -xzf agp_accounts.tar.gz -C ~/.agp-robodojo/private    # creates private/accounts/
 ```
 
-Every episode takes one of its logins; the accounts we provide support at most 12 simulators running at the same time. Without the pool folder, every episode uses the login in `~/.codex/auth.json`.
+Every episode takes one of its logins; the accounts we provide support at most 12 simulators running at the same time. Without the pool folder, every episode uses the login in `~/.codex/auth.json`, which can also be an API key with access to `gpt-6-astra`:
+
+```bash
+printenv OPENAI_API_KEY | CODEX_HOME="$HOME/.codex" ~/.codex/packages/standalone/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex \
+    -c 'cli_auth_credentials_store="file"' login --with-api-key
+```
 
 ## Configuration
 

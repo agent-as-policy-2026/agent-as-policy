@@ -142,9 +142,9 @@ same files as the policy adapter submitted to XPolicyLab in
 of the code above.
 
 Requirements: Ubuntu 22.04 x86_64, an NVIDIA GPU with RT cores (not A100/H100)
-and at least 16 GB of memory, NVIDIA driver 570 or 580, conda, and a ChatGPT
-account with codex access to `gpt-6-astra` (device code login enabled in its
-security settings).
+and at least 16 GB of memory, NVIDIA driver 570 or 580, conda, and either a
+ChatGPT account with codex access to `gpt-6-astra` (device code login enabled in
+its security settings) or an OpenAI API key with access to it.
 
 ```bash
 # 1. RoboDojo, as in its install guide (https://robodojo-benchmark.com/doc/usage/install-and-download/)
@@ -161,6 +161,9 @@ cd XPolicyLab/policy/AGP
 bash install.sh                             # venvs under ~/.agp-robodojo and the pinned codex
 CODEX_HOME="$HOME/.codex" ~/.codex/packages/standalone/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex \
     -c 'cli_auth_credentials_store="file"' login --device-auth
+# or, with an OpenAI API key:
+# printenv OPENAI_API_KEY | CODEX_HOME="$HOME/.codex" ~/.codex/packages/standalone/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex \
+#     -c 'cli_auth_credentials_store="file"' login --with-api-key
 
 # 3. a check without the model, then one episode of the agent
 EVAL_NUM=1 AGP_SCRIPTED=smoke bash eval.sh RoboDojo stack_blocks no-checkpoint arx_x5 joint 0 0 0 default RoboDojo

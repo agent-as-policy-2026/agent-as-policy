@@ -417,6 +417,8 @@ report_access() {
     cat <<EOF
   Log in once with your ChatGPT account (headless: a device code is shown):
     CODEX_HOME="\$HOME/.codex" ${CODEX_BIN} -c 'cli_auth_credentials_store="file"' login --device-auth
+  Or with an OpenAI API key (used without a pool):
+    printenv OPENAI_API_KEY | CODEX_HOME="\$HOME/.codex" ${CODEX_BIN} -c 'cli_auth_credentials_store="file"' login --with-api-key
   Or an account pool, one login per slot (at most 3 slots per account):
     S="${AGP_HOME}/private/accounts/staging/a1s1"; mkdir -p -m 700 "\$S"
     CODEX_HOME="\$S" ${CODEX_BIN} -c 'cli_auth_credentials_store="file"' login --device-auth
