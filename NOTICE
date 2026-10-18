@@ -19,3 +19,8 @@ patch applies to is not part of this repository.
 
 The dataset published on Hugging Face is licensed CC BY 4.0 and is not covered
 by this notice; see CITATION.cff.
+
+robodojo/AGP/ uses task definitions, configuration and robot model assets from
+RoboDojo (https://github.com/RoboDojo-Benchmark/RoboDojo, MIT) and follows the
+adapter template of XPolicyLab (https://github.com/XPolicyLab/XPolicyLab,
+Apache-2.0).

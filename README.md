@@ -28,7 +28,7 @@ https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342
 
 **Agent as Policy (AgP)** uses a general-purpose agent as the policy for real-world robotic manipulation. Given a task and a documented robot interface, the agent interprets camera observations, writes executable programs, commands the robot, and revises its actions from physical feedback. Model parameters remain fixed during execution.
 
-[**Demos**](#real-robot-demonstrations) · [**Method**](#how-it-works) · [**Results**](#results-from-the-paper) · [**Setup**](#getting-the-robot-sdk) · [**Running**](#running) · [**Citation**](#citation)
+[**Demos**](#real-robot-demonstrations) · [**Method**](#how-it-works) · [**Results**](#results-from-the-paper) · [**Setup**](#getting-the-robot-sdk) · [**Running**](#running) · [**RoboDojo**](#robodojo-simulation) · [**Citation**](#citation)
 
 ## Real robot demonstrations
 
@@ -91,6 +91,7 @@ See the [paper](https://arxiv.org/abs/2609.12541) for per-task results and exper
 | `calib/` | Hand-eye and overhead-camera calibration procedures (`calib/README_runbook_zh.md`) |
 | `third_party/graph-as-policy/` | The vendored connector package (`gap`, `gap_core`), Apache-2.0, pinned to one upstream commit (see its `UPSTREAM.md`) |
 | `third_party/i2rt/` | Patch + pinned upstream commit for the robot SDK (see its `UPSTREAM.md`) |
+| `robodojo/AGP/` | AgP on the RoboDojo simulation benchmark: a self-contained XPolicyLab policy adapter, independent of the code above (see [RoboDojo simulation](#robodojo-simulation)) |
 
 The bridge ships as the Python package `agp_yam_bridge` with three console
 scripts: `agp-yam-preflight`, `agp-yam-bridge`, `agp-yam-camera-acceptance`.
@@ -130,6 +131,44 @@ bash agp/start_bridges.sh stop left
 
 Large artefacts referenced by these steps (goal sets, demo videos, session
 recordings) come from the Hugging Face dataset or from Drive.
+
+## RoboDojo simulation
+
+`robodojo/AGP/` runs AgP on the [RoboDojo](https://robodojo-benchmark.com)
+simulation benchmark: codex with `gpt-6-astra` drives both ARX X5 arms through
+MCP tools, from the official RGB images and proprioception only. It holds the
+same files as the policy adapter submitted to XPolicyLab in
+[XPolicyLab#182](https://github.com/XPolicyLab/XPolicyLab/pull/182) and uses none
+of the code above.
+
+Requirements: Ubuntu 22.04 x86_64, an NVIDIA GPU with RT cores (not A100/H100)
+and at least 16 GB of memory, NVIDIA driver 570 or 580, conda, and a ChatGPT
+account with codex access to `gpt-6-astra` (device code login enabled in its
+security settings).
+
+```bash
+# 1. RoboDojo, as in its install guide (https://robodojo-benchmark.com/doc/usage/install-and-download/)
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-tools git-lfs python3-yaml
+git lfs install
+git clone https://github.com/RoboDojo-Benchmark/RoboDojo.git && cd RoboDojo
+bash scripts/install.sh -i                  # the conda environment RoboDojo
+bash scripts/init_assets.sh                 # robot, object and layout assets into ./Assets
+conda activate RoboDojo && python utils/update_embodiment_config_path.py
+
+# 2. AgP as an XPolicyLab policy, and a codex login
+cp -r <agent-as-policy>/robodojo/AGP XPolicyLab/policy/
+cd XPolicyLab/policy/AGP
+bash install.sh                             # venvs under ~/.agp-robodojo and the pinned codex
+CODEX_HOME="$HOME/.codex" ~/.codex/packages/standalone/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex \
+    -c 'cli_auth_credentials_store="file"' login --device-auth
+
+# 3. a check without the model, then one episode of the agent
+EVAL_NUM=1 AGP_SCRIPTED=smoke bash eval.sh RoboDojo stack_blocks no-checkpoint arx_x5 joint 0 0 0 default RoboDojo
+EVAL_NUM=1 bash eval.sh RoboDojo stack_blocks no-checkpoint arx_x5 joint 0 0 0 default RoboDojo
+```
+
+Results go to RoboDojo's `eval_result/`. [robodojo/AGP/README.md](robodojo/AGP/README.md)
+has the command for a complete seed and the other options.
 
 ## License
 
