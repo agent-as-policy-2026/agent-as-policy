@@ -92,6 +92,7 @@ See the [paper](https://arxiv.org/abs/2609.12541) for per-task results and exper
 | `third_party/graph-as-policy/` | The vendored connector package (`gap`, `gap_core`), Apache-2.0, pinned to one upstream commit (see its `UPSTREAM.md`) |
 | `third_party/i2rt/` | Patch + pinned upstream commit for the robot SDK (see its `UPSTREAM.md`) |
 | `robodojo/AGP/` | AgP on the RoboDojo simulation benchmark: a self-contained XPolicyLab policy adapter, independent of the code above (see [RoboDojo simulation](#robodojo-simulation)) |
+| `robodojo/results/` | The RoboDojo results of that adapter: the `summarize` output of one complete seed |
 
 The bridge ships as the Python package `agp_yam_bridge` with three console
 scripts: `agp-yam-preflight`, `agp-yam-bridge`, `agp-yam-camera-acceptance`.
@@ -172,6 +173,21 @@ EVAL_NUM=1 bash eval.sh RoboDojo stack_blocks no-checkpoint arx_x5 joint 0 0 0 d
 
 Results go to RoboDojo's `eval_result/`. [robodojo/AGP/README.md](robodojo/AGP/README.md)
 has the command for a complete seed and the other options.
+
+### Results (seed 0)
+
+One complete seed of the official evaluation: all 54 configurations at their
+native counts, 2,100 episodes, scored with RoboDojo's `scripts/robodojo.sh summarize`
+([robodojo/results/seed0/_summary.md](robodojo/results/seed0/_summary.md)).
+
+| | Generalization | Precision | Long-Horizon | Memory | Open | Average |
+|---|---|---|---|---|---|---|
+| success rate (%) | 54.67 | 44.00 | 28.75 | 91.00 | 62.25 | **56.13** |
+| score | 59.79 | 50.90 | 49.48 | 92.22 | 65.75 | **63.63** |
+
+Every episode, with its recordings, the agent's tool calls and the images it
+received, is in the dataset
+[Agent-as-Policy/agent-as-policy-robodojo](https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy-robodojo).
 
 ## License
 
