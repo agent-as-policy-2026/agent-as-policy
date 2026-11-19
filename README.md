@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342
 
 **Agent as Policy (AgP)** uses a general-purpose agent as the policy for real-world robotic manipulation. Given a task and a documented robot interface, the agent interprets camera observations, writes executable programs, commands the robot, and revises its actions from physical feedback. Model parameters remain fixed during execution.
 
-[**Demos**](#real-robot-demonstrations) · [**Method**](#how-it-works) · [**Results**](#results-from-the-paper) · [**Setup**](#getting-the-robot-sdk) · [**Running**](#running) · [**RoboDojo**](#robodojo-simulation) · [**Citation**](#citation)
+[**Demos**](#real-robot-demonstrations) · [**Method**](#how-it-works) · [**Setup**](#getting-the-robot-sdk) · [**Running**](#running) · [**RoboDojo**](#robodojo-simulation) · [**Citation**](#citation)
 
 ## Real robot demonstrations
 
@@ -74,14 +74,6 @@ Previews are selected excerpts from the task recordings. Linked task recordings 
 3. **Act and verify.** The robot bridge executes joint or Cartesian targets. Fresh observations and motion feedback guide the agent's next decision.
 
 Saved procedures and programs can be reused across trials. The [paper](https://arxiv.org/abs/2609.12541) describes the task setup, controller, and evaluation protocol.
-
-## Results from the paper
-
-- **Real-world task coverage.** Assembly from human videos, block construction from goal images, dice flipping, targeted throwing, and bimanual towel folding.
-- **Task completion.** At least 8 successful trials out of 10 for each evaluated assembly, block-construction, and dice-flipping configuration.
-- **Experience reuse.** Reusing saved procedures and programs shortens execution time across repeated trials.
-
-See the [paper](https://arxiv.org/abs/2609.12541) for per-task results and experimental conditions.
 
 ## What is here
 
