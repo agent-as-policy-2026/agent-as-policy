@@ -22,13 +22,6 @@
 </p>
 <p align="center"><b><a href="https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342">▶ Watch the project video</a></b> · 5 min 49 sec · Full task demonstrations and recorded agent execution</p>
 
-<details>
-<summary><b>▶ Play the project video here</b></summary>
-
-https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342
-
-</details>
-
 **Agent as Policy (AgP)** uses a general-purpose agent as the policy for real-world robotic manipulation. Given a task and a documented robot interface, the agent interprets camera observations, writes executable programs, commands the robot, and revises its actions from physical feedback. Model parameters remain fixed during execution.
 
 [**Demos**](#real-robot-demonstrations) · [**Method**](#how-it-works) · [**Setup**](#getting-the-robot-sdk) · [**Running**](#running) · [**RoboDojo**](#robodojo-simulation) · [**Citation**](#citation)
