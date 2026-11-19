@@ -2,8 +2,7 @@
 
 <img src="docs/assets/agp-logo.png" alt="Agent as Policy logo" width="128" height="128">
 
-# Agent as Policy
-### Agent as Policy for Robotic Manipulation
+# Agent as Policy for Robotic Manipulation
 
 **General-purpose agents observe, program, act, and verify on real robots.**
 
