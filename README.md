@@ -61,8 +61,6 @@ From deformable objects to precision assembly and dynamic motion. Click a previe
   </tr>
 </table>
 
-Previews are selected excerpts from the task recordings. Linked task recordings play at 8× and may show a different trial of the same task. The [project page](https://agent-as-policy-2026.github.io/) also includes dice reorientation, alternative towel-folding strategies, and recorded agent sessions. Videos, per-step frames, joint trajectories, and full agent traces are available in the [dataset](https://huggingface.co/datasets/Agent-as-Policy/agent-as-policy).
-
 ## How it works
 
 <p align="center">
