@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/agp-logo.png" alt="Agent as Policy logo" width="128" height="128">
+
 # Agent as Policy
 ### Agent as Policy for Robotic Manipulation
 
@@ -63,7 +65,7 @@ Previews are selected excerpts from the task recordings. Linked task recordings 
 ## How it works
 
 <p align="center">
-  <a href="docs/assets/method-overview.png"><img src="docs/assets/method-overview.png" alt="Agent as Policy method. A preparation agent creates a reusable task definition. At runtime, an execution agent interprets observations, writes programs, and sends actions through the robot interface, using new observations and feedback to revise its actions." width="100%"></a>
+  <a href="docs/assets/method-overview.webp"><img src="docs/assets/method-overview.webp" alt="Code as Policy compared with Agent as Policy, the agent robot interface, and real world manipulation tasks with success rates." width="100%"></a>
 </p>
 
 1. **Prepare the task.** A preparation agent turns the request and video, image, or language references into a reusable definition with goals, constraints, and completion criteria.

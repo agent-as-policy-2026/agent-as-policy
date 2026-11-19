@@ -1,12 +1,13 @@
 # README media
 
-Presentation assets for the Agent as Policy repository, drawn from the project recordings and the September 14, 2026 paper source.
+Presentation assets for the Agent as Policy repository, drawn from the project recordings, paper figures, and project website.
 
 | Asset | Source | Conversion |
 | --- | --- | --- |
 | [Project video](https://github.com/user-attachments/assets/788696b7-7461-4011-b58c-dce6ee930342) | `Promotional_Materials/Bilibili/AgP_Bilibili_Promo_v2.mp4` and its source recordings | English version of the full 348.9-second v2 film. Same 16 segments, cuts, speeds, holds, and soundtrack. Hosted as a 1280 × 720 GitHub video attachment |
 | `project-video-cover.jpg` | Editable layout from `Promotional_Materials/Bilibili/verify_video.py` | English headings, two towel-folding methods at left, block construction and assembly at right. All panels use real recording frames. |
-| `method-overview.png` | `paper_latex/agp_arxiv_2026-09-14/imgs/method_big.pdf` | First page rendered to PNG, 2200-pixel long edge |
+| `method-overview.webp` | Project website `img/paper/agp-method-cvpr2027.webp`, from `Agent_as_Policy_Figure1_ABC.pdf` | Original 2600 × 1452 WebP copied from the project website |
+| `agp-logo.png` | Project website `img/agp-logo-512.png` | Original 512 × 512 PNG with red, yellow, and blue AGP lettering |
 | `towel-preview.gif` | `Videos/Edited_4x/11_fold_towel_method2_4x.mp4` | Seconds 252–264, 4× original speed |
 | `pyramid-preview.gif` | `Videos/Edited_4x/01_pyramid_4x.mp4` | Seconds 162–174, 4× original speed |
 | `assembly-preview.gif` | `Videos/Edited_4x/06_four_assemblies_4x.mp4` | Seconds 252–264, 4× original speed |
