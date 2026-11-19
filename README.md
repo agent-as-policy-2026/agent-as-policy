@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/agp-logo.png" alt="Agent as Policy logo" width="128" height="128">
-
-# Agent as Policy for Robotic Manipulation
+# <img src="docs/assets/agp-logo.png" alt="Agent as Policy logo" width="48" height="48" align="absmiddle"> Agent as Policy for Robotic Manipulation
 
 **General-purpose agents observe, program, act, and verify on real robots.**
 
