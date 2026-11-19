@@ -203,7 +203,7 @@ vendored SDK under `third_party/i2rt/` remains MIT, upstream notice preserved.
 @article{jia2026agent,
   title   = {Agent as Policy for Robotic Manipulation},
   author  = {Jia, Mengzhao and Lin, Yang and Zhang, Xixin and
-             Zhang, Zhihan and Liu, Xiaobai and Jiang, Meng},
+             Zhang, Zhihan and Jiang, Meng},
   journal = {arXiv preprint arXiv:2609.12541},
   year    = {2026},
   doi     = {10.48550/arXiv.2609.12541},
