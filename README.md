@@ -6,7 +6,7 @@
 
 **General-purpose agents observe, program, act, and verify on real robots.**
 
-Mengzhao Jia<sup>*</sup> · Yang Lin<sup>*</sup> · Xixin Zhang<sup>*</sup> · Zhihan Zhang · Meng Jiang
+[Mengzhao Jia](https://jill0001.github.io/)<sup>*</sup> · Yang Lin<sup>*</sup> · Xixin Zhang<sup>*</sup> · Zhihan Zhang · [Meng Jiang](https://meng-jiang.com/)
 
 <sup>*</sup> Core contributors
 
