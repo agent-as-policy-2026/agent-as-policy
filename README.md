@@ -6,7 +6,9 @@
 
 **General-purpose agents observe, program, act, and verify on real robots.**
 
-Mengzhao Jia · Yang Lin · Xixin Zhang · Zhihan Zhang · Meng Jiang
+Mengzhao Jia<sup>*</sup> · Yang Lin<sup>*</sup> · Xixin Zhang<sup>*</sup> · Zhihan Zhang · Meng Jiang
+
+<sup>*</sup> Core contributors
 
 <a href="https://agent-as-policy-2026.github.io/"><img alt="Project page" src="https://img.shields.io/badge/Project-Page-187764?style=for-the-badge"></a>
 <a href="https://arxiv.org/abs/2609.12541"><img alt="Paper on arXiv" src="https://img.shields.io/badge/arXiv-2609.12541-b31b1b?style=for-the-badge"></a>
